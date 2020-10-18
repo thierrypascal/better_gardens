@@ -81,10 +81,10 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             Container(
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 120),
+              padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
               child: Image.asset(
                 'res/logo.png',
-                width: 150,
+                width: 180,
               ),
             ),
             TextField(
