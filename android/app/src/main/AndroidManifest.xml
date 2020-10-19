@@ -9,6 +9,11 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="flutter_app"
         android:icon="@mipmap/ic_launcher">
+
+        <!--set api key for maps-->
+        <meta-data android:name="com.google.android.geo.API_KEY"
+                   android:value="AIzaSyCluGMsV1MadS-nQpHqkmCe7OgV4-pTUek"/>
+
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
