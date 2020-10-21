@@ -20,18 +20,34 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Account'),
-      ),
-      drawer: MyDrawer(),
-      body: Container(
-        child: ListView(
-          children: [
-            UserAccountsDrawerHeader(
-              accountEmail: Text('markus.hofer@gmail.com'),
-              accountName: Text('Markus Hofer'),
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Account'),
+          //TODO Make header display properly
+          /* flexibleSpace: UserAccountsDrawerHeader(
+            accountEmail: Text('markus.hofer@gmail.com'),
+            accountName: Text('Markus Hofer'),
+            currentAccountPicture: CircleAvatar(
+              child: FlutterLogo(size: 42.0),
             ),
+          ), */
+          bottom: TabBar(
+            tabs: [
+              Tab(text: 'My Info',),
+              Tab(text: 'My Garden',),
+              Tab(text: 'My Posts',),
+            ],
+          ),
+        ),
+        drawer: MyDrawer(),
+        body: TabBarView(
+          children: [
+            //TODO Create te actual tab contents
+            Icon(Icons.info),
+            Icon(Icons.grass),
+            Column(),
           ],
         ),
       ),
