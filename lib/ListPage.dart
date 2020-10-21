@@ -15,7 +15,7 @@ class _ListPageState extends State<ListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Liste'),
+        title: Text('List'),
       ),
       drawer: MyDrawer(),
       body: new DefaultTabController(
