@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:biodiversity/main.dart';
+import 'package:biodiversity/Drawer.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapsPage extends StatefulWidget {
