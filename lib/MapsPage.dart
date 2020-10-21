@@ -14,7 +14,6 @@ class MapsPage extends StatefulWidget {
 class _MapsPageState extends State<MapsPage> {
   GoogleMapController mapController;
 
-
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }

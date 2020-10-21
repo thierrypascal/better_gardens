@@ -10,7 +10,7 @@ class LoginPage extends StatelessWidget {
         appBar: AppBar(
           title: Text('Login'),
         ),
-        drawer: context.widget,
+        drawer: MyDrawer(),
         body: Center(
           child: LayoutBuilder(
             builder: (BuildContext context, BoxConstraints viewportConstraints) {
@@ -39,12 +39,16 @@ class LoginPage extends StatelessWidget {
                       TextField(
                         obscureText: true,
                         decoration: InputDecoration(
-                            labelText: 'Password', hintText: 'Enter password'),
+                            labelText: 'Password',
+                            hintText: 'Enter password'),
                       ),
                       RaisedButton(child: Text('Login'), onPressed: null),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [Text('Sign-Up'), Text('Forgot Password?')],
+                        children: [
+                          Text('Sign-Up'),
+                          Text('Forgot Password?')
+                        ],
                       )
                     ],
                   ),
