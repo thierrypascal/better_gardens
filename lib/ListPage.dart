@@ -1,15 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:biodiversity/main.dart';
 
-class ListPage extends StatefulWidget {
-  ListPage({Key key}) : super(key: key);
-
-
-  @override
-  _ListPageState createState() => _ListPageState();
-}
-
-class _ListPageState extends State<ListPage> {
+class ListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +35,7 @@ class _ListPageState extends State<ListPage> {
     );
   }
 }
+
 
 //This class needs to be replaced: load the elements from database and change each listelement into expandable
 class SubList extends StatefulWidget {
