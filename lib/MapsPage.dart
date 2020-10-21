@@ -3,7 +3,9 @@ import 'package:biodiversity/Drawer.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapsPage extends StatefulWidget {
-  MapsPage({Key key}) : super(key: key);
+  MapsPage({Key key, this.latitude, this.longitude}) : super(key: key);
+  final double latitude;
+  final double longitude;
 
   @override
   _MapsPageState createState() => _MapsPageState();
@@ -12,7 +14,6 @@ class MapsPage extends StatefulWidget {
 class _MapsPageState extends State<MapsPage> {
   GoogleMapController mapController;
 
-  final LatLng _center = const LatLng(46.948915, 7.445423);
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -22,13 +23,13 @@ class _MapsPageState extends State<MapsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Karte'),
+        title: Text('Map'),
       ),
       drawer: MyDrawer(),
       body: GoogleMap(
         onMapCreated: _onMapCreated,
         initialCameraPosition: CameraPosition(
-          target: _center,
+          target: LatLng(widget.latitude, widget.longitude),
           zoom: 14.0,
         ),
       ),
