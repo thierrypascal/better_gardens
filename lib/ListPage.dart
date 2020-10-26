@@ -14,7 +14,7 @@ class ListPage extends StatelessWidget {
         length: 3,
         child: Scaffold(
           appBar: AppBar(
-            automaticallyImplyLeading: false,
+            automaticallyImplyLeading: true,
             bottom: TabBar(
               tabs: [
                 Tab(text: 'ELEMENT',),

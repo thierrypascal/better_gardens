@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "658901568912",
+    "firebase_url": "https://biodiversity-database.firebaseio.com",
+    "project_id": "biodiversity-database",
+    "storage_bucket": "biodiversity-database.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:658901568912:android:79f3b509085c643fc5b715",
+        "android_client_info": {
+          "package_name": "local.ch.biodiversity"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "658901568912-fhrit6fu17840v4jj81bug55gnpbtbcl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrO1yo9QazI9wxfgpztr8LhcmMyJomanA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "658901568912-fhrit6fu17840v4jj81bug55gnpbtbcl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

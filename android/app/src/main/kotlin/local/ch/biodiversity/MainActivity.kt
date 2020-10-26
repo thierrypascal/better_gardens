@@ -1,4 +1,4 @@
-package flutterapp.flutter_app
+package local.ch.biodiversity
 
 import io.flutter.embedding.android.FlutterActivity
 
