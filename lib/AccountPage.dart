@@ -44,7 +44,7 @@ class _AccountPageState extends State<AccountPage> {
         drawer: MyDrawer(),
         body: TabBarView(
           children: [
-            //TODO Create te actual tab contents
+            //TODO Create the actual tab contents
             Icon(Icons.info),
             Icon(Icons.grass),
             Column(),
