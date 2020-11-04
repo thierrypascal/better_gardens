@@ -3,7 +3,7 @@ import 'package:biodiversity/Drawer.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapsPage extends StatefulWidget {
-  MapsPage({Key key, this.latitude, this.longitude}) : super(key: key);
+  MapsPage(this.latitude, this.longitude,  {Key key, }) : super(key: key);
   final double latitude;
   final double longitude;
 
