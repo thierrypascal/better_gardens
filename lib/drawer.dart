@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:biodiversity/LoginPage.dart';
-import 'package:biodiversity/MapsPage.dart';
-import 'package:biodiversity/AccountPage.dart';
-import 'package:biodiversity/ListPage.dart';
+import 'package:biodiversity/login_page.dart';
+import 'package:biodiversity/maps_page.dart';
+import 'package:biodiversity/account_page.dart';
+import 'package:biodiversity/list_page.dart';
 
 class MyDrawer extends StatelessWidget {
   @override

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:biodiversity/Drawer.dart';
+import 'package:biodiversity/drawer.dart';
 
 class AccountPage extends StatefulWidget {
   AccountPage({Key key}) : super(key: key);
@@ -33,13 +33,6 @@ class _AccountPageState extends State<AccountPage> {
               child: FlutterLogo(size: 42.0),
             ),
           ), */
-          bottom: TabBar(
-            tabs: [
-              Tab(text: 'My Info',),
-              Tab(text: 'My Garden',),
-              Tab(text: 'My Posts',),
-            ],
-          ),
         ),
         drawer: MyDrawer(),
         body: TabBarView(
@@ -49,6 +42,13 @@ class _AccountPageState extends State<AccountPage> {
             Icon(Icons.grass),
             Column(),
           ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+            items: [
+            BottomNavigationBarItem(label: 'My Info', icon: Icon(Icons.person)),
+            BottomNavigationBarItem(label: 'My Garden',icon: Icon(Icons.nature_people)),
+            BottomNavigationBarItem(label: 'My Posts',icon: Icon(Icons.local_post_office)),
+            ],
         ),
       ),
     );
