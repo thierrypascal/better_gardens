@@ -1,16 +1,12 @@
-# flutter_app
+# Biodiversity app
+A app created by Students of the FHNW on behalf of the FIBL.
 
-Biodiversity app
+##Customers and Developers
 
-## Getting Started
+Project initiators: Robert and Miriam
+Development team: Sina, Manuel, Janko, Andreas, Thierry and Gabriel
 
-This project is a starting point for a Flutter application.
+###further details
+All further details about the developers and the project can be found at Confluence
+https://www.cs.technik.fhnw.ch/confluence20/display/VT342002/IP34-20vt_Biodiversity
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.

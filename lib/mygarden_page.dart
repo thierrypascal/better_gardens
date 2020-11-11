@@ -6,6 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
+final formControler = TextEditingController();
+
 class MyGarden extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -14,6 +16,7 @@ class MyGarden extends StatefulWidget {
 }
 
 class _MyGardenState extends State<MyGarden> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,20 +66,37 @@ Widget _buildBody(BuildContext context, List<DocumentSnapshot> snapshot) {
               "Mein Garten durchsuchen...",
               style: TextStyle(backgroundColor: Colors.grey, fontSize: 14),
             ),
-            const Divider(
-              height: 10,
-            ),
-            _ElementCard("Steinwand", 5, const AssetImage('res/stonewall.jpg'),
-                "Steinwand beschreibung")
           ],
         ),
       ),
-      Text(
-          "Name: ${garden.name}\nStreet: ${garden.street}\nCity: ${garden.city}"),
-      Text("2"),
+      Padding(
+        padding: EdgeInsets.all(10),
+        child: Column(
+          children: [
+            _ElementCard("Steinwand", 5, const AssetImage('res/stonewall.jpg'),
+                "Steinwand beschreibung"),
+            Text(
+                "Name: ${garden.name}\nStreet: ${garden.street}\nCity: ${garden.city}"),
+            Form(
+              child: TextFormField(
+                initialValue: garden.name,
+                onChanged: (value) => {garden.name = value},
+              ),
+            ),
+            //TODO add working button
+            MaterialButton(
+              child: Text("SAVE"),
+              onPressed: garden.saveGarden(),
+            )
+          ],
+        ),
+      ),
     ],
   );
 }
+
+
+
 
 class _ElementCounterCard extends StatelessWidget {
   final String text;
@@ -87,29 +107,31 @@ class _ElementCounterCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        icon,
-        const VerticalDivider(
-          width: 10,
-        ),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                text,
-                style: const TextStyle(color: Colors.grey),
-              ),
-              const Divider(
-                height: 0,
-                color: Colors.grey,
-              ),
-              Text(data.toString()),
-            ],
+    return Container(
+      child: Row(
+        children: [
+          icon,
+          const VerticalDivider(
+            width: 10,
           ),
-        )
-      ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  text,
+                  style: const TextStyle(color: Colors.grey),
+                ),
+                const Divider(
+                  height: 0,
+                  color: Colors.grey,
+                ),
+                Text(data.toString()),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }
@@ -133,31 +155,41 @@ class _ElementCard extends StatelessWidget {
         ),
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Padding(
-            padding: EdgeInsets.all(10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("$name",
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
-                    Text("Anzahl:$count"),
-                  ],
-                ),
-                Column(
-                  children: [
-                    const Text("Bearbeiten",
-                        style: TextStyle(decoration: TextDecoration.underline)),
-                    const Text("Löschen",
-                        style: TextStyle(decoration: TextDecoration.underline)),
-                  ],
-                )
-              ],
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.all(10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("$name",
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                      Text("Anzahl: $count"),
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text("Bearbeiten",
+                          style:
+                              TextStyle(decoration: TextDecoration.underline)),
+                      const Text("Löschen",
+                          style:
+                              TextStyle(decoration: TextDecoration.underline)),
+                    ],
+                  ),
+                ],
+              ),
             ),
+          ),
+          Image(
+            image: AssetImage('res/stonewall.jpg'),
           ),
         ],
       ),
