@@ -6,6 +6,9 @@ class Garden{
   String name;
   String street;
   String city;
+  int numberOfStructureElements;
+  int numberOfPlants;
+  int numberOfMethods;
   DocumentReference reference;
 
   Garden(this.name, this.street, this.city);
