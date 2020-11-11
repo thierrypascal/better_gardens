@@ -1,3 +1,4 @@
+import 'package:biodiversity/mygarden_page.dart';
 import 'package:flutter/material.dart';
 import 'package:biodiversity/login_page.dart';
 import 'package:biodiversity/maps_page.dart';
@@ -45,7 +46,10 @@ class MyDrawer extends StatelessWidget {
           ListTile(
             title: Text('My Garden'),
             onTap: () {
-              // Update the state of the app.
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MyGarden()),
+              );
               // ...
             },
           ),

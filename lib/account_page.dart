@@ -1,3 +1,4 @@
+import 'package:biodiversity/mygarden_page.dart';
 import 'package:flutter/material.dart';
 import 'package:biodiversity/drawer.dart';
 
@@ -42,13 +43,6 @@ class _AccountPageState extends State<AccountPage> {
             Icon(Icons.grass),
             Column(),
           ],
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-            items: [
-            BottomNavigationBarItem(label: 'My Info', icon: Icon(Icons.person)),
-            BottomNavigationBarItem(label: 'My Garden',icon: Icon(Icons.nature_people)),
-            BottomNavigationBarItem(label: 'My Posts',icon: Icon(Icons.local_post_office)),
-            ],
         ),
       ),
     );
