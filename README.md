@@ -10,3 +10,5 @@ Development team: Sina, Manuel, Janko, Andreas, Thierry and Gabriel
 All further details about the developers and the project can be found at Confluence
 https://www.cs.technik.fhnw.ch/confluence20/display/VT342002/IP34-20vt_Biodiversity
 
+####for developers
+Requirements to run this app are the Dart & Flutter SDK
