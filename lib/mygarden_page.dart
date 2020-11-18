@@ -2,11 +2,9 @@ import 'dart:ui';
 import 'package:biodiversity/drawer.dart';
 import 'package:biodiversity/garden.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-
-final formControler = TextEditingController();
+import 'dart:io' as io;
 
 class MyGarden extends StatefulWidget {
   @override
@@ -16,10 +14,10 @@ class MyGarden extends StatefulWidget {
 }
 
 class _MyGardenState extends State<MyGarden> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(title: const Text("Mein Garten")),
       drawer: MyDrawer(),
       body: StreamBuilder<QuerySnapshot>(
@@ -38,65 +36,113 @@ class _MyGardenState extends State<MyGarden> {
 
 Widget _buildBody(BuildContext context, List<DocumentSnapshot> snapshot) {
   final garden = Garden.fromSnapshot(snapshot.first);
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Image(
-        width: MediaQuery.of(context).size.width,
-        height: 100,
-        fit: BoxFit.fitWidth,
-        image: const AssetImage('res/myGarden.jpg'),
-      ),
-      Padding(
-        padding: const EdgeInsets.all(30),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Dein Garten enthält bereits:\n",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+  final TextEditingController _textController =
+      TextEditingController(text: garden.name);
+
+  void _onSaveGarden() {
+    if (garden.name != _textController.text.trim()) {
+      garden.name = _textController.text.trim();
+      garden.saveGarden();
+    }
+  }
+
+  return SingleChildScrollView(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Stack(
+          alignment: AlignmentDirectional.center,
+          children: <Widget>[
+            Image(
+              width: MediaQuery.of(context).size.width,
+              height: 100,
+              fit: BoxFit.fitWidth,
+              image: const AssetImage('res/myGarden.jpg'),
+              semanticLabel: garden.name,
             ),
-            _ElementCounterCard("Anzahl Strukturelemente:",
-                garden.numberOfStructureElements, const Icon(MdiIcons.wall)),
-            _ElementCounterCard("Anzahl Pflanzen:", garden.numberOfPlants,
-                const Icon(MdiIcons.nature)),
-            _ElementCounterCard("Anzahl Methoden:", garden.numberOfMethods,
-                const Icon(MdiIcons.meteor)),
-            const Text(
-              "Mein Garten durchsuchen...",
-              style: TextStyle(backgroundColor: Colors.grey, fontSize: 14),
-            ),
-          ],
-        ),
-      ),
-      Padding(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          children: [
-            _ElementCard("Steinwand", 5, const AssetImage('res/stonewall.jpg'),
-                "Steinwand beschreibung"),
-            Text(
-                "Name: ${garden.name}\nStreet: ${garden.street}\nCity: ${garden.city}"),
-            Form(
-              child: TextFormField(
-                initialValue: garden.name,
-                onChanged: (value) => {garden.name = value},
+            Center(
+              child: Text(
+                garden.name,
+                textAlign: TextAlign.center,
+                softWrap: true,
+                textScaleFactor: 2,
+                style: TextStyle(color: Color.fromRGBO(255, 255, 255, 0.8)),
               ),
             ),
-            //TODO add working button
-            MaterialButton(
-              child: Text("SAVE"),
-              onPressed: garden.saveGarden(),
-            )
           ],
         ),
-      ),
-    ],
+        Padding(
+          padding: const EdgeInsets.only(right: 30, left: 30, top: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Dein Garten enthält bereits:\n",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              _ElementCounterCard("Anzahl Strukturelemente:",
+                  garden.numberOfStructureElements, const Icon(MdiIcons.wall)),
+              _ElementCounterCard("Anzahl Pflanzen:", garden.numberOfPlants,
+                  const Icon(MdiIcons.nature)),
+              _ElementCounterCard("Anzahl Methoden:", garden.numberOfMethods,
+                  const Icon(MdiIcons.meteor)),
+              const Text(
+                "Mein Garten durchsuchen...",
+                style: TextStyle(backgroundColor: Colors.grey, fontSize: 14),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.all(10),
+          child: Column(
+            children: [
+              Row(
+                children: <Widget>[
+                  Flexible(
+                    fit: FlexFit.tight,
+                    child: TextField(
+                      decoration: InputDecoration(contentPadding: EdgeInsets.only(bottom: -10)),
+                      controller: _textController,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.save),
+                    onPressed: _onSaveGarden,
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              ListView.separated(
+                shrinkWrap: true,
+                itemCount: garden.ownedObjects.length,
+                itemBuilder: (BuildContext context, int index) {
+                  String name =
+                      garden.ownedObjects.entries.elementAt(index).key;
+                  int count =
+                      garden.ownedObjects.entries.elementAt(index).value;
+
+                  return _ElementCard(
+                      name,
+                      count,
+                      garden,
+                      //TODO implement a more save to load the images
+                      AssetImage("res/${name}.jpg"),
+                      "Beschreibung von ${name}");
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return SizedBox(height: 3);
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
   );
 }
-
-
-
 
 class _ElementCounterCard extends StatelessWidget {
   final String text;
@@ -141,8 +187,10 @@ class _ElementCard extends StatelessWidget {
   int count;
   AssetImage image;
   String description;
+  final Garden garden;
 
-  _ElementCard(this.name, this.count, this.image, this.description);
+  _ElementCard(
+      this.name, this.count, this.garden, this.image, this.description);
 
   @override
   Widget build(BuildContext context) {
@@ -173,15 +221,19 @@ class _ElementCard extends StatelessWidget {
                       Text("Anzahl: $count"),
                     ],
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Row(
                     children: [
-                      const Text("Bearbeiten",
-                          style:
-                              TextStyle(decoration: TextDecoration.underline)),
-                      const Text("Löschen",
-                          style:
-                              TextStyle(decoration: TextDecoration.underline)),
+                      IconButton(
+                        icon: Icon(Icons.edit),
+                        onPressed: () {},
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () {
+                          garden.removeFromOwnedObjects(name);
+                          garden.saveGarden();
+                        },
+                      )
                     ],
                   ),
                 ],
@@ -189,7 +241,10 @@ class _ElementCard extends StatelessWidget {
             ),
           ),
           Image(
-            image: AssetImage('res/stonewall.jpg'),
+            width: 90,
+            height: 60,
+            fit: BoxFit.cover,
+            image: image,
           ),
         ],
       ),
