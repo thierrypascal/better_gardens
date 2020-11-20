@@ -1,7 +1,6 @@
-import 'dart:convert';
 import 'dart:core';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:developer' as developer;
 
 class Garden {
   String name;
@@ -27,23 +26,21 @@ class Garden {
         name = map['name'] as String,
         city = map['city'] as String,
         street = map['street'] as String,
-        numberOfStructureElements = map['numberOfStructureElements'],
-        numberOfPlants = map['numberOfPlants'],
-        numberOfMethods = map['numberOfMethods'],
-        ownedObjects = Map<String, int>.from(map['ownedObjects']);
+        numberOfStructureElements = map['numberOfStructureElements'] as int,
+        numberOfPlants = map['numberOfPlants'] as int,
+        numberOfMethods = map['numberOfMethods'] as int,
+        ownedObjects = Map<String, int>.from(map['ownedObjects'] as Map);
 
   Garden.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data, reference: snapshot.reference);
 
-  saveGardenDetail(String field, var value) {
+  void saveGardenDetail(String field, dynamic value) {
     Firestore.instance
         .document(reference.documentID)
         .updateData({field: value});
   }
 
   Future<void> saveGarden() async {
-    developer.log('Start save with path ${reference.path} id ${reference.documentID}');
-    developer.log(ownedObjects.toString());
     return Firestore.instance.document(reference.path).setData({
       'name': name,
       'street': street,

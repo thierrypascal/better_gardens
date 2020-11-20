@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:biodiversity/login_page.dart';
-import 'package:lint/lint.dart';
+import 'package:flutter/material.dart';
 
 void main() {
   runApp(MyApp());

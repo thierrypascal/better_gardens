@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:biodiversity/drawer.dart';
+import 'package:flutter/material.dart';
 
 class ListPage extends StatelessWidget {
   @override
@@ -9,9 +9,8 @@ class ListPage extends StatelessWidget {
       child: Scaffold(
         drawer: MyDrawer(),
         appBar: AppBar(
-          automaticallyImplyLeading: true,
-          title: Text('List'),
-          bottom: TabBar(
+          title: const Text('List'),
+          bottom: const TabBar(
             tabs: [
               Tab(
                 text: 'ELEMENT',
@@ -43,7 +42,7 @@ class ListPage extends StatelessWidget {
   }
 }
 
-//This class needs to be replaced: load the elements from database and change each listelement into expandable
+//This class needs to be replaced: load the elements from database and change each list element into expandable
 class SubList extends StatefulWidget {
   SubList({Key key, this.elementType}) : super(key: key);
 
@@ -62,7 +61,7 @@ class _SubListState extends State<SubList> {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) =>
-                  ListTile(title: Text(widget.elementType + ' #$index')),
+                  ListTile(title: Text("${widget.elementType}: $index")),
               childCount: 200,
             ),
           ),

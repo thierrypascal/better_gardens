@@ -1,9 +1,9 @@
-import 'package:biodiversity/mygarden_page.dart';
-import 'package:flutter/material.dart';
-import 'package:biodiversity/login_page.dart';
-import 'package:biodiversity/maps_page.dart';
 import 'package:biodiversity/account_page.dart';
 import 'package:biodiversity/list_page.dart';
+import 'package:biodiversity/login_page.dart';
+import 'package:biodiversity/maps_page.dart';
+import 'package:biodiversity/my_garden_page.dart';
+import 'package:flutter/material.dart';
 
 class MyDrawer extends StatelessWidget {
   @override
@@ -13,11 +13,11 @@ class MyDrawer extends StatelessWidget {
         // Important: Remove any padding from the ListView.
         padding: EdgeInsets.zero,
         children: <Widget>[
-          DrawerHeader(
+          const DrawerHeader(
             child: Text(''),
           ),
           ListTile(
-            title: Text('Login'),
+            title: const Text('Login'),
             onTap: () {
               Navigator.push(
                 context,
@@ -26,7 +26,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text('Map'),
+            title: const Text('Map'),
             onTap: () {
               Navigator.push(
                 context,
@@ -35,7 +35,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text('Account'),
+            title: const Text('Account'),
             onTap: () {
               Navigator.push(
                 context,

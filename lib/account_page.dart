@@ -1,6 +1,5 @@
-import 'package:biodiversity/mygarden_page.dart';
-import 'package:flutter/material.dart';
 import 'package:biodiversity/drawer.dart';
+import 'package:flutter/material.dart';
 
 class AccountPage extends StatefulWidget {
   AccountPage({Key key}) : super(key: key);
@@ -25,7 +24,7 @@ class _AccountPageState extends State<AccountPage> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Account'),
+          title: const Text('Account'),
           //TODO Make header display properly
           /* flexibleSpace: UserAccountsDrawerHeader(
             accountEmail: Text('markus.hofer@gmail.com'),
@@ -39,8 +38,8 @@ class _AccountPageState extends State<AccountPage> {
         body: TabBarView(
           children: [
             //TODO Create the actual tab contents
-            Icon(Icons.info),
-            Icon(Icons.grass),
+            const Icon(Icons.info),
+            const Icon(Icons.grass),
             Column(),
           ],
         ),

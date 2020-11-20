@@ -192,7 +192,7 @@ packages:
     source: hosted
     version: "1.8.0-nullsafety.1"
   pedantic:
-    dependency: "direct dev"
+    dependency: transitive
     description:
       name: pedantic
       url: "https://pub.dartlang.org"
