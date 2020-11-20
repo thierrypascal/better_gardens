@@ -44,7 +44,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text('My Garden'),
+            title: const Text('My Garden'),
             onTap: () {
               Navigator.push(
                 context,
@@ -54,7 +54,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text('List'),
+            title: const Text('List'),
             onTap: () {
               Navigator.push(
                 context,
@@ -63,7 +63,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text('Bookmarks'),
+            title: const Text('Bookmarks'),
             onTap: () {
               // Update the state of the app.
               // ...

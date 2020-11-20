@@ -12,8 +12,15 @@ class Garden {
   DocumentReference reference;
   Map<String, int> ownedObjects;
 
-  Garden(this.name, this.street, this.city, this.numberOfStructureElements,
-      this.numberOfMethods, this.numberOfPlants);
+  Garden(
+      this.name,
+      this.street,
+      this.city,
+      this.numberOfStructureElements,
+      this.numberOfMethods,
+      this.numberOfPlants,
+      this.reference,
+      this.ownedObjects);
 
   Garden.fromMap(Map<String, dynamic> map, {this.reference})
       : assert(map['name'] != null),
@@ -52,10 +59,10 @@ class Garden {
     });
   }
 
-  void removeFromOwnedObjects(String object){
-    if(ownedObjects.containsKey(object)) {
+  void removeFromOwnedObjects(String object) {
+    if (ownedObjects.containsKey(object)) {
       ownedObjects.remove(object);
-    }else{
+    } else {
       throw Exception("Object is not owned");
     }
   }
