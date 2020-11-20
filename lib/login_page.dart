@@ -42,7 +42,7 @@ class LoginPage extends StatelessWidget {
                       decoration: const InputDecoration(
                           labelText: 'Password', hintText: 'Enter password'),
                     ),
-                    RaisedButton(child: Text('Login'), onPressed: null),
+                    const RaisedButton( onPressed: null,child: Text('Login')),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [Text('Sign-Up'), Text('Forgot Password?')],

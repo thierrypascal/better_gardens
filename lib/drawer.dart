@@ -30,7 +30,7 @@ class MyDrawer extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => MapsPage(46.948915, 7.445423),)
+                MaterialPageRoute(builder: (context) => MapsPage(),)
               );
             },
           ),

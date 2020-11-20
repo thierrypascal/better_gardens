@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:biodiversity/drawer.dart';
+import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapsPage extends StatefulWidget {
@@ -14,19 +14,15 @@ class MapsPage extends StatefulWidget {
 class _MapsPageState extends State<MapsPage> {
   GoogleMapController mapController;
 
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Map'),
+        title: const Text('Map'),
       ),
       drawer: MyDrawer(),
       body: GoogleMap(
-        onMapCreated: _onMapCreated,
+        onMapCreated: (controller) => {mapController = controller},
         initialCameraPosition: CameraPosition(
           target: LatLng(widget.latitude, widget.longitude),
           zoom: 14.0,
