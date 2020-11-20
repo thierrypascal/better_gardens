@@ -195,7 +195,6 @@ class _ElementCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      //TODO test
       height: 60,
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(3)),
