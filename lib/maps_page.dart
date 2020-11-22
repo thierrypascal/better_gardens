@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:biodiversity/drawer.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -40,11 +39,11 @@ class _MapsPageState extends State<MapsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Karte'),
+        title: const Text('Map'),
       ),
       drawer: MyDrawer(),
       body: GoogleMap(
-        onMapCreated: _onMapCreated,
+        onMapCreated: (controller) => {mapController = controller},
         initialCameraPosition: CameraPosition(
           target: LatLng(widget.latitude, widget.longitude),
           zoom: 14.0,
