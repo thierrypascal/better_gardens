@@ -1,9 +1,8 @@
 import 'package:biodiversity/drawer.dart';
+import 'package:biodiversity/strucural_element_card_widget.dart';
 import 'package:flutter/material.dart';
 
 class ListPage extends StatelessWidget {
-
-  //TEST
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -58,16 +57,18 @@ class _SubListState extends State<SubList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) =>
-                  ListTile(title: Text("${widget.elementType}: $index")),
-              childCount: 200,
-            ),
-          ),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListView.separated(
+          itemCount: 10,
+          itemBuilder: (BuildContext context, int index) {
+            return StructuralElementCard(widget.elementType, index.toString(),
+                const AssetImage('res/logo.png'), "lorem ipsum maximus");
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return const SizedBox(height: 5);
+          },
+        ),
       ),
     );
   }
