@@ -1,5 +1,4 @@
 import 'dart:developer' as logging;
-
 import 'package:biodiversity/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
