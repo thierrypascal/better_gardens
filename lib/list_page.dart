@@ -1,5 +1,7 @@
+import 'package:biodiversity/biodiversity_measure.dart';
 import 'package:biodiversity/drawer.dart';
 import 'package:biodiversity/strucural_element_card_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ListPage extends StatelessWidget {
@@ -59,16 +61,55 @@ class _SubListState extends State<SubList> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: ListView.separated(
-          itemCount: 10,
-          itemBuilder: (BuildContext context, int index) {
-            return StructuralElementCard(widget.elementType, index.toString(),
-                const AssetImage('res/logo.png'), "lorem ipsum maximus");
-          },
-          separatorBuilder: (BuildContext context, int index) {
-            return const SizedBox(height: 5);
-          },
-        ),
+        child: StreamBuilder<QuerySnapshot>(
+            stream: Firestore.instance
+                .collection('biodiversityMeasures')
+                .where('type', isEqualTo: widget.elementType.toLowerCase())
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              final List<BiodiversityMeasure> list = [];
+              for (final DocumentSnapshot in snapshot.data.documents) {
+                list.add(BiodiversityMeasure.fromSnapshot(DocumentSnapshot));
+              }
+              if (list.isEmpty) {
+                return Center(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Text(
+                      "Leider keine Einträge vorhanden",
+                      textScaleFactor: 2,
+                      textAlign: TextAlign.center,
+                    ),
+                    Icon(
+                      Icons.emoji_nature,
+                      size: 80,
+                    )
+                  ],
+                ));
+              }
+              return ListView.separated(
+                itemCount: list.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final element = list.elementAt(index);
+                  final beneficialFor = StringBuffer();
+                  for (final String item in element.beneficialFor.keys) {
+                    beneficialFor.write('$item ');
+                  }
+                  return StructuralElementCard(
+                      element.name,
+                      beneficialFor.toString().trim(),
+                      AssetImage(element.imageSource),
+                      element.description);
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return const SizedBox(height: 5);
+                },
+              );
+            }),
       ),
     );
   }
