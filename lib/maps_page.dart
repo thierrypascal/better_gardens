@@ -24,6 +24,7 @@ class _MapsPageState extends State<MapsPage> {
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
 
+    //auslagern auf database
     myMarker.add(Marker(
         markerId: MarkerId('SomeId'),
         position: LatLng(46.946667, 7.451944),
@@ -58,23 +59,155 @@ class _MapsPageState extends State<MapsPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _addMarker(tapPosition);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddMapIcon()),
+          );
         },
-        child: Icon(Icons.add),
         backgroundColor: Colors.green,
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class AddMapIcon extends StatelessWidget{
+  String dropdownValue = 'One';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Element hinzufügen'),
+      ),
+      drawer: MyDrawer(),
+      body: Column(
+        children: <Widget>[
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => showList()),
+              );
+            },
+            child: Text('wähle ein Element'),
+          ),
+          Row(
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Abbrechen'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  //save to database
+                  Navigator.pop(context);
+                },
+                child: Text('Speichern'),
+              ),
+            ],
+          ),
+        ]
+      ),
+    );
+  }
+}
+
+class showList extends StatelessWidget{
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Element hinzufügen'),
+      ),
+      body: Column(
+          children: <Widget>[
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Abbrechen'),
+                ),
+              ],
+            ),
+          ]
+      ),
+    );
+  }
+}
+
+
+
+/*  Widget AddMapIcon(){
+    setState(() {
+      DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          drawer: MyDrawer(),
+          appBar: AppBar(
+            title: const Text('List'),
+            bottom: const TabBar(
+              tabs: [
+                Tab(
+                  text: 'ELEMENT',
+                ),
+                Tab(
+                  text: 'PLANT',
+                ),
+                Tab(
+                  text: 'METHOD',
+                ),
+              ],
+            ),
+          ),
+          body: TabBarView(
+            children: <Widget>[
+              subList('Element'),
+              subList('Plant'),
+              subList('Method')
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
+  Widget subList(String elementType){
+    return Scaffold(
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+                  (context, index) =>
+                  ListTile(
+                      leading: IconButton(
+                        icon: Icon(Icons.add),
+                        onPressed: () {
+                          //_createMapIcon();
+                        },
+                      ),
+                      title: Text("$elementType: $index")),
+              childCount: 200,
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  _addMarker(LatLng tappedPoint) {
+  void _createMapIcon(LatLng tappedPoint) {
     setState(() {
       myMarker.add(Marker(
-          markerId: MarkerId(tappedPoint.toString()),
+          markerId: MarkerId(tappedPoint.toString()), //if tappedPoint is null, use current location
           position: tappedPoint,
           draggable: true,
           onDragEnd: (dragEndPosition) {
             logging.log(dragEndPosition.toString());
           }));
     });
-  }
-}
+  }*/
