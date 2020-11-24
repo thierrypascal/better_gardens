@@ -4,6 +4,7 @@ import 'package:biodiversity/globals.dart' as globals;
 import 'package:biodiversity/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -92,6 +93,14 @@ class AddMapIcon extends StatefulWidget {
 
 class _AddMapIconState extends State<AddMapIcon>{
 
+  Future<String> getAddressByLocation(LatLng location) async{
+    final List<Placemark> placemark = await placemarkFromCoordinates(location.latitude, location.longitude);
+
+    print(placemark[0].country);
+
+    return Future.value(placemark[0].country);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +115,7 @@ class _AddMapIconState extends State<AddMapIcon>{
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget> [
-                Text('Standort: ${globals.tappedPoint}'),
+                Text('Standort: ${getAddressByLocation(globals.tappedPoint)} ${globals.tappedPoint}'),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(
@@ -250,10 +259,10 @@ class _SubListState extends State<SubList> {
                 itemCount: list.length,
                 itemBuilder: (BuildContext context, int index) {
                   final element = list.elementAt(index);
-                  final desc = "${element.description.trim().substring(0, 20)}...";
+                  final desc = "${element.description.trim()}";
                   return SelectElementCard(
                       element.name,
-                      desc,   //create substring
+                      desc,
                       AssetImage(element.imageSource));
                 },
                 separatorBuilder: (BuildContext context, int index) {
@@ -318,6 +327,15 @@ class SelectElementCard extends StatefulWidget {  //same as structural_element_c
 }
 
 class _selectElementCardState extends State<SelectElementCard> {
+
+  String getShortDesc(String s){
+    if (s.length >= 25){
+      return "${s.substring(0, 25)}...";
+    }else{
+      return s;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -343,7 +361,7 @@ class _selectElementCardState extends State<SelectElementCard> {
                   Text(widget.name,
                     style: const TextStyle(
                     fontWeight: FontWeight.bold, fontSize: 16)),
-                  Text(widget.description),
+                  Text(getShortDesc(widget.description)),
                 ],
               ),
               Image(
