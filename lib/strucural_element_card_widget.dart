@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class StructuralElementCard extends StatefulWidget {
+class StructuralElementCard extends StatelessWidget {
   final String name;
   final String beneficialFor;
   final AssetImage image;
@@ -9,13 +9,6 @@ class StructuralElementCard extends StatefulWidget {
 
   const StructuralElementCard(
       this.name, this.beneficialFor, this.image, this.description);
-
-  @override
-  _StructuralElementCardState createState() => _StructuralElementCardState();
-}
-
-class _StructuralElementCardState extends State<StructuralElementCard> {
-  bool extended = false;
 
   @override
   Widget build(BuildContext context) {
@@ -34,17 +27,17 @@ class _StructuralElementCardState extends State<StructuralElementCard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(widget.name,
+                Text(name,
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 16)),
-                Text("Gut für: ${widget.beneficialFor}"),
+                Text("Gut für: $beneficialFor"),
               ],
             ),
             Image(
               width: 60,
               height: 60,
               fit: BoxFit.cover,
-              image: widget.image,
+              image: image,
             ),
           ],
         ),
@@ -54,7 +47,7 @@ class _StructuralElementCardState extends State<StructuralElementCard> {
               child: Container(
                 alignment: Alignment.topLeft,
                 child: Text(
-                  widget.description,
+                  description,
                   textAlign: TextAlign.left,
                 ),
               ))

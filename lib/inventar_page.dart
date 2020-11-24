@@ -4,68 +4,77 @@ import 'package:biodiversity/strucural_element_card_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class ListPage extends StatelessWidget {
+class InventarPage extends StatefulWidget {
+  @override
+  _InventarPageState createState() => _InventarPageState();
+}
+
+class _InventarPageState extends State<InventarPage> {
+  final _pageList = ["Element", "Plant", "Method"];
+  final PageController _controller = PageController();
+  int _currentPage = 0;
+
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        drawer: MyDrawer(),
-        appBar: AppBar(
-          title: const Text('List'),
-          bottom: const TabBar(
-            tabs: [
-              Tab(
-                text: 'ELEMENT',
-              ),
-              Tab(
-                text: 'PLANT',
-              ),
-              Tab(
-                text: 'METHOD',
-              ),
-            ],
-          ),
-        ),
-        body: TabBarView(
-          children: <Widget>[
-            SubList(
-              elementType: 'Element',
-            ),
-            SubList(
-              elementType: 'Plant',
-            ),
-            SubList(
-              elementType: 'Method',
-            )
-          ],
-        ),
+    return Scaffold(
+      appBar: AppBar(title: const Text("Inventar")),
+      drawer: MyDrawer(),
+      body: PageView.builder(
+        controller: _controller,
+        onPageChanged: (index) {
+          setState(() {
+            _currentPage = index;
+          });
+        },
+        itemCount: _pageList.length,
+        itemBuilder: (BuildContext context, int index) {
+          String elementType = _pageList.elementAt(index);
+          return ItemList(
+            elementType: elementType,
+            data: Firestore.instance
+                .collection('biodiversityMeasures')
+                .where('type', isEqualTo: elementType.toLowerCase())
+                .snapshots(),
+          );
+        },
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.nature), label: "Struktur"),
+          BottomNavigationBarItem(icon: Icon(Icons.people), label: "Pflanzen"),
+          BottomNavigationBarItem(icon: Icon(Icons.save), label: "Methoden"),
+        ],
+        onTap: _onTap,
+        currentIndex: _currentPage,
+        backgroundColor: const Color.fromRGBO(33, 150, 83, 1),
+        selectedItemColor: const Color.fromRGBO(255, 255, 255, 1),
+        unselectedItemColor: const Color.fromRGBO(255, 255, 255, 0.3),
       ),
     );
   }
+
+  void _onTap(int index) {
+    _controller.animateToPage(index,
+        duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
+    setState(() {
+      _currentPage = index;
+    });
+  }
 }
 
-//This class needs to be replaced: load the elements from database and change each list element into expandable
-class SubList extends StatefulWidget {
-  SubList({Key key, this.elementType}) : super(key: key);
-
+class ItemList extends StatelessWidget {
   final String elementType;
+  final Stream<QuerySnapshot> data;
 
-  @override
-  _SubListState createState() => _SubListState();
-}
+  const ItemList({Key key, this.elementType, this.data}) : super(key: key);
 
-class _SubListState extends State<SubList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: StreamBuilder<QuerySnapshot>(
-            stream: Firestore.instance
-                .collection('biodiversityMeasures')
-                .where('type', isEqualTo: widget.elementType.toLowerCase())
-                .snapshots(),
+            stream: data,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return const Center(child: CircularProgressIndicator());
