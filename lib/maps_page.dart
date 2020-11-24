@@ -112,14 +112,15 @@ class _AddMapIconState extends State<AddMapIcon>{
         ),
       ),
       body: Column(
-        children: <Widget>[
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget> [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget> [
+                  ElevatedButton(
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -128,19 +129,16 @@ class _AddMapIconState extends State<AddMapIcon>{
                     },
                     child: Text('Auswahl: ${globals.chosenElement}'),
                   ),
-                ),
-                getSelectedElementAsCard(),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: FutureBuilder<String>(          //catch geocode
+                  getSelectedElementAsCard(),
+                  FutureBuilder<String>(          //catch geocode
                     future: getAddressByLocation(globals.tappedPoint),
                     builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
                       return Text('Standort: ${snapshot.data}');
                     },
                   ),
-                ),
-                SubMap(globals.tappedPoint.latitude, globals.tappedPoint.longitude),
-              ],
+//                SubMap(globals.tappedPoint.latitude, globals.tappedPoint.longitude),
+                ],
+              ),
             ),
           ),
           Container(
@@ -187,48 +185,32 @@ class _AddMapIconState extends State<AddMapIcon>{
 
   Widget getSelectedElementAsCard(){        //return a structuralElementCard with the selected card
     if (globals.chosenElementType != null){
-      return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: StreamBuilder<QuerySnapshot>(
-          stream: Firestore.instance
-              .collection('biodiversityMeasures')
-              .where('type', isEqualTo: globals.chosenElementType.toLowerCase())
-              .where('name', isEqualTo: globals.chosenElement)
-              .snapshots(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            final List<BiodiversityMeasure> list = [];
-            for (final DocumentSnapshot in snapshot.data.documents) {
-              list.add(BiodiversityMeasure.fromSnapshot(DocumentSnapshot));
-            }
-            final BiodiversityMeasure chElement = list
-                .first; //extract first element, because it will only be one element; TODO: make that function use a single element, not a list
-            if (chElement == null) {
-              return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Text( //nötig?
-                        "Ausgewähltes Element konnte nicht gefunden werden. Bitte wenden Sie sich an den Support",
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  )
-              );
-            }
+      return StreamBuilder<QuerySnapshot>(
+        stream: Firestore.instance
+            .collection('biodiversityMeasures')
+            .where('type', isEqualTo: globals.chosenElementType.toLowerCase())
+            .where('name', isEqualTo: globals.chosenElement)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          final List<BiodiversityMeasure> list = [];
+          for (final DocumentSnapshot in snapshot.data.documents) {
+            list.add(BiodiversityMeasure.fromSnapshot(DocumentSnapshot));
+          }
+          final BiodiversityMeasure chElement = list
+              .first; //extract first element, because it will only be one element; TODO: make that function use a single element, not a list
 
-            final beneficialFor = StringBuffer();
-            beneficialFor.write(chElement.beneficialFor.keys);
+          final beneficialFor = StringBuffer();
+          beneficialFor.write(chElement.beneficialFor.keys);
 
-            return StructuralElementCard(
-                chElement.name,
-                beneficialFor.toString().trim(),
-                AssetImage(chElement.imageSource),
-                chElement.description);
-            }
-          ),
+          return StructuralElementCard(
+              chElement.name,
+              beneficialFor.toString().trim(),
+              AssetImage(chElement.imageSource),
+              chElement.description);
+          }
         );
     }else{
       return Text('');
