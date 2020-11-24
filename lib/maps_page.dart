@@ -96,9 +96,7 @@ class _AddMapIconState extends State<AddMapIcon>{
   Future<String> getAddressByLocation(LatLng location) async{
     final List<Placemark> placemark = await placemarkFromCoordinates(location.latitude, location.longitude);
 
-    print(placemark[0].country);
-
-    return Future.value(placemark[0].country);
+    return Future.value("${placemark[0].street}, ${placemark[0].postalCode} ${placemark[0].locality}");
   }
 
 
@@ -115,7 +113,12 @@ class _AddMapIconState extends State<AddMapIcon>{
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget> [
-                Text('Standort: ${getAddressByLocation(globals.tappedPoint)} ${globals.tappedPoint}'),
+                FutureBuilder<String>(          //catch geocode
+                  future: getAddressByLocation(globals.tappedPoint),
+                  builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                    return Text('Standort: ${snapshot.data}');
+                  },
+                ),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(
