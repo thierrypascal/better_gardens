@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer' as logging;
 import 'package:biodiversity/globals.dart' as globals;
 import 'package:biodiversity/drawer.dart';
+import 'package:biodiversity/maps_submap_widget.dart';
 import 'package:biodiversity/strucural_element_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -138,7 +139,7 @@ class _AddMapIconState extends State<AddMapIcon>{
                     },
                   ),
                 ),
-                //smallSubMap(),
+                SubMap(globals.tappedPoint.latitude, globals.tappedPoint.longitude),
               ],
             ),
           ),
