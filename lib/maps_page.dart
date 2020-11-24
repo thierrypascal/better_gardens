@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer' as logging;
 import 'package:biodiversity/globals.dart' as globals;
 import 'package:biodiversity/drawer.dart';
+import 'package:biodiversity/strucural_element_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
@@ -30,7 +31,7 @@ class _MapsPageState extends State<MapsPage> {
     mapController = controller;
     setState(() {});
 
-    //auslagern auf database
+/*    //auslagern auf database
     globals.markerList.add(Marker(
         markerId: MarkerId('SomeId'),
         position: LatLng(46.946667, 7.451944),
@@ -38,6 +39,8 @@ class _MapsPageState extends State<MapsPage> {
           title: 'Münsterplattform',
           snippet: 'Das Münster ist wundervoll',
         )));
+
+ */
   }
 
   void _setPosition(LatLng tapPos) {
@@ -93,52 +96,61 @@ class AddMapIcon extends StatefulWidget {
 
 class _AddMapIconState extends State<AddMapIcon>{
 
-  Future<String> getAddressByLocation(LatLng location) async{
-    final List<Placemark> placemark = await placemarkFromCoordinates(location.latitude, location.longitude);
-
-    return Future.value("${placemark[0].street}, ${placemark[0].postalCode} ${placemark[0].locality}");
-  }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Element hinzufügen'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: (){
+            globals.chosenElement = 'wähle ein Element';    //reset globals if popup closed
+            globals.chosenElementType = null;
+            Navigator.pop(context);
+          },
+        ),
       ),
-      drawer: MyDrawer(),
       body: Column(
         children: <Widget>[
           Expanded(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget> [
-                FutureBuilder<String>(          //catch geocode
-                  future: getAddressByLocation(globals.tappedPoint),
-                  builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-                    return Text('Standort: ${snapshot.data}');
-                  },
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ShowList()),    //opens selectionList
+                      ).then(onGoBack);                                         //updates globals.chosenElement
+                    },
+                    child: Text('Auswahl: ${globals.chosenElement}'),
+                  ),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ShowList()),    //opens selectionList
-                    ).then(onGoBack);                                         //updates globals.chosenElement
-                  },
-                  child: Text(globals.chosenElement),
+                getSelectedElementAsCard(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: FutureBuilder<String>(          //catch geocode
+                    future: getAddressByLocation(globals.tappedPoint),
+                    builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                      return Text('Standort: ${snapshot.data}');
+                    },
+                  ),
                 ),
+                //smallSubMap(),
               ],
             ),
           ),
           Container(
-            padding: EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 ElevatedButton(
                   onPressed: () {
                     globals.chosenElement = 'wähle ein Element';
+                    globals.chosenElementType = null;
                     Navigator.pop(context);
                   },
                   child: Text('Abbrechen'),
@@ -153,6 +165,7 @@ class _AddMapIconState extends State<AddMapIcon>{
                           ));
                     });
                     globals.chosenElement = 'wähle ein Element';
+                    globals.chosenElementType = null;
                     Navigator.pop(context);
                   },
                   child: Text('Speichern'),
@@ -165,8 +178,65 @@ class _AddMapIconState extends State<AddMapIcon>{
     );
   }
 
+  Future<String> getAddressByLocation(LatLng location) async{
+    final List<Placemark> placemark = await placemarkFromCoordinates(location.latitude, location.longitude);
+
+    return Future.value("${placemark[0].street}, ${placemark[0].postalCode} ${placemark[0].locality}");
+  }
+
+  Widget getSelectedElementAsCard(){        //return a structuralElementCard with the selected card
+    if (globals.chosenElementType != null){
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: StreamBuilder<QuerySnapshot>(
+          stream: Firestore.instance
+              .collection('biodiversityMeasures')
+              .where('type', isEqualTo: globals.chosenElementType.toLowerCase())
+              .where('name', isEqualTo: globals.chosenElement)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            final List<BiodiversityMeasure> list = [];
+            for (final DocumentSnapshot in snapshot.data.documents) {
+              list.add(BiodiversityMeasure.fromSnapshot(DocumentSnapshot));
+            }
+            final BiodiversityMeasure chElement = list
+                .first; //extract first element, because it will only be one element; TODO: make that function use a single element, not a list
+            if (chElement == null) {
+              return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Text( //nötig?
+                        "Ausgewähltes Element konnte nicht gefunden werden. Bitte wenden Sie sich an den Support",
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  )
+              );
+            }
+
+            final beneficialFor = StringBuffer();
+            beneficialFor.write(chElement.beneficialFor.keys);
+
+            return StructuralElementCard(
+                chElement.name,
+                beneficialFor.toString().trim(),
+                AssetImage(chElement.imageSource),
+                chElement.description);
+            }
+          ),
+        );
+    }else{
+      return Text('');
+    }
+  }
+
   FutureOr onGoBack(dynamic value){
     globals.chosenElement = globals.chosenElement;
+    globals.chosenElementType = globals.chosenElementType;
     setState((){});
   }
 }
@@ -177,7 +247,6 @@ class ShowList extends StatelessWidget{
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        drawer: MyDrawer(),
         appBar: AppBar(
           title: const Text('List'),
           bottom: const TabBar(
@@ -266,7 +335,8 @@ class _SubListState extends State<SubList> {
                   return SelectElementCard(
                       element.name,
                       desc,
-                      AssetImage(element.imageSource));
+                      AssetImage(element.imageSource),
+                      widget.elementType);
                 },
                 separatorBuilder: (BuildContext context, int index) {
                   return const SizedBox(height: 5);
@@ -321,9 +391,10 @@ class SelectElementCard extends StatefulWidget {  //same as structural_element_c
   final String name;
   final String description;
   final AssetImage image;
+  final String type;
 
   const SelectElementCard(
-      this.name, this.description, this.image);
+      this.name, this.description, this.image, this.type);
 
   @override
   _selectElementCardState createState() => _selectElementCardState();
@@ -343,7 +414,7 @@ class _selectElementCardState extends State<SelectElementCard> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        _tappedCard(widget.name);
+        _tappedCard(widget.name, widget.type);
         Navigator.pop(context);
       },
       child:     Container(
@@ -380,7 +451,8 @@ class _selectElementCardState extends State<SelectElementCard> {
     );
   }
 
-  void _tappedCard(String title){
+  void _tappedCard(String title, String type){
     globals.chosenElement = title;
+    globals.chosenElementType = type;
   }
 }
