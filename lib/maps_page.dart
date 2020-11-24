@@ -136,7 +136,7 @@ class _AddMapIconState extends State<AddMapIcon>{
                       return Text('Standort: ${snapshot.data}');
                     },
                   ),
-//                SubMap(globals.tappedPoint.latitude, globals.tappedPoint.longitude),
+                SubMap(globals.tappedPoint.latitude, globals.tappedPoint.longitude),
                 ],
               ),
             ),

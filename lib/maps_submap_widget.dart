@@ -23,29 +23,44 @@ class _SubMapState extends State<SubMap> {
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
+    tempMarkerList.add(Marker(
+      markerId: MarkerId('temp'),
+      position: LatLng(widget.latitude, widget.longitude),
+      onTap: (){},
+    ));
     setState(() {});
   }
 
   void _setPosition(LatLng tapPos) {
-
-
-    globals.tappedPoint = tapPos;
+    setState(() {
+      tempMarkerList=[];
+      tempMarkerList.add(Marker(
+          markerId: MarkerId('temp'),
+          position: tapPos,
+          onTap: (){},
+      ));
+      globals.tappedPoint = tapPos;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: GoogleMap(
-        onMapCreated: _onMapCreated,
-        initialCameraPosition: CameraPosition(
-          target: LatLng(widget.latitude, widget.longitude),
-          zoom: 14.0,
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height/3,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: GoogleMap(
+          onMapCreated: _onMapCreated,
+          initialCameraPosition: CameraPosition(
+            target: LatLng(widget.latitude, widget.longitude),
+            zoom: 18.0,
+          ),
+          zoomControlsEnabled: false,
+          mapType: MapType.hybrid,
+          markers: Set.from(tempMarkerList),
+          onTap: _setPosition,
         ),
-        zoomControlsEnabled: false,
-        mapType: MapType.hybrid,
-        markers: Set.from(tempMarkerList),
-        onTap: _setPosition,
       ),
     );
   }
