@@ -28,7 +28,7 @@ class _InventarPageState extends State<InventarPage> {
         },
         itemCount: _pageList.length,
         itemBuilder: (BuildContext context, int index) {
-          String elementType = _pageList.elementAt(index);
+          final String elementType = _pageList.elementAt(index);
           return ItemList(
             elementType: elementType,
             data: Firestore.instance
@@ -85,20 +85,21 @@ class ItemList extends StatelessWidget {
               }
               if (list.isEmpty) {
                 return Center(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text(
-                      "Leider keine Einträge vorhanden",
-                      textScaleFactor: 2,
-                      textAlign: TextAlign.center,
-                    ),
-                    Icon(
-                      Icons.emoji_nature,
-                      size: 80,
-                    )
-                  ],
-                ));
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Text(
+                        "Leider keine Einträge vorhanden",
+                        textScaleFactor: 2,
+                        textAlign: TextAlign.center,
+                      ),
+                      Icon(
+                        Icons.emoji_nature,
+                        size: 80,
+                      )
+                    ],
+                  ),
+                );
               }
               return ListView.separated(
                 itemCount: list.length,
@@ -109,10 +110,12 @@ class ItemList extends StatelessWidget {
                     beneficialFor.write('$item ');
                   }
                   return StructuralElementCard(
-                      element.name,
-                      beneficialFor.toString().trim(),
-                      AssetImage(element.imageSource),
-                      element.description);
+                    element.name,
+                    beneficialFor.toString().trim(),
+                    AssetImage(element.imageSource),
+                    element.description,
+                    element: element,
+                  );
                 },
                 separatorBuilder: (BuildContext context, int index) {
                   return const SizedBox(height: 5);
