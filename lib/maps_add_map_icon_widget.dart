@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer' as logging;
-import 'package:biodiversity/globals.dart' as globals;
 import 'package:biodiversity/maps_submap_widget.dart';
 import 'package:biodiversity/strucural_element_card_widget.dart';
 import 'package:biodiversity/maps_show_selection_list.dart';
@@ -13,7 +12,8 @@ import 'package:flutter/cupertino.dart';
 
 
 class AddMapIcon extends StatefulWidget {
-  AddMapIcon({Key key,}) : super(key: key);
+  final LatLng tappedPosition;
+  AddMapIcon(this.tappedPosition, {Key key,}) : super(key: key);
 
   @override
   _AddMapIconState createState() => _AddMapIconState();
@@ -21,6 +21,8 @@ class AddMapIcon extends StatefulWidget {
 
 
 class _AddMapIconState extends State<AddMapIcon>{
+  String chosenElement = 'wähle ein Element';
+  String chosenElementType;
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +32,8 @@ class _AddMapIconState extends State<AddMapIcon>{
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: (){
-            globals.chosenElement = 'wähle ein Element';    //reset globals if popup closed
-            globals.chosenElementType = null;
+            chosenElement = 'wähle ein Element';    //reset globals if popup closed
+            chosenElementType = null;
             Navigator.pop(context);
           },
         ),
@@ -47,21 +49,19 @@ class _AddMapIconState extends State<AddMapIcon>{
                   children: <Widget> [
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => ShowSelectionList()),    //opens selectionList
-                        ).then(onGoBack);                                         //updates globals.chosenElement
+                        _navigateShowSelectionList(context)
+                        .then(onGoBack);                                         //updates chosenElement
                       },
-                      child: Text('Auswahl: ${globals.chosenElement}'),
+                      child: Text('Auswahl: ${chosenElement}'),
                     ),
                     getSelectedElementAsCard(),
                     FutureBuilder<String>(          //catch geocode
-                      future: getAddressByLocation(globals.tappedPoint),
+                      future: getAddressByLocation(widget.tappedPosition),
                       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
                         return Text('Standort: ${snapshot.data}');
                       },
                     ),
-                    SubMap(globals.tappedPoint.latitude, globals.tappedPoint.longitude),
+                    SubMap(widget.tappedPosition.latitude, widget.tappedPosition.longitude),
                   ],
                 ),
               ),
@@ -73,8 +73,8 @@ class _AddMapIconState extends State<AddMapIcon>{
                 children: <Widget>[
                   ElevatedButton(
                     onPressed: () {
-                      globals.chosenElement = 'wähle ein Element';
-                      globals.chosenElementType = null;
+                      chosenElement = 'wähle ein Element';
+                      chosenElementType = null;
                       Navigator.pop(context);
                     },
                     child: Text('Abbrechen'),
@@ -82,15 +82,10 @@ class _AddMapIconState extends State<AddMapIcon>{
                   ElevatedButton(
                     onPressed: () {
                       //save to database, show on map
-                      setState(() {
-                        globals.markerList.add(Marker(
-                          markerId: MarkerId(globals.tappedPoint.toString()), //if tappedPoint is null, use current camera location
-                          position: globals.tappedPoint,
-                        ));
-                      });
-                      globals.chosenElement = 'wähle ein Element';
-                      globals.chosenElementType = null;
-                      Navigator.pop(context);
+                      chosenElement = 'wähle ein Element';
+                      chosenElementType = null;
+                      Marker marker = Marker(markerId: MarkerId(widget.tappedPosition.toString()), position: widget.tappedPosition);
+                      Navigator.pop(context, marker);
                     },
                     child: Text('Speichern'),
                   ),
@@ -102,6 +97,16 @@ class _AddMapIconState extends State<AddMapIcon>{
     );
   }
 
+  _navigateShowSelectionList(BuildContext context) async{
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ShowSelectionList()),
+    ) as List<String>;
+
+    chosenElement = result.first;
+    chosenElementType = result.last;
+  }
+
   Future<String> getAddressByLocation(LatLng location) async{
     final List<Placemark> placemark = await placemarkFromCoordinates(location.latitude, location.longitude);
 
@@ -109,12 +114,12 @@ class _AddMapIconState extends State<AddMapIcon>{
   }
 
   Widget getSelectedElementAsCard(){        //return a structuralElementCard with the selected card
-    if (globals.chosenElementType != null){
+    if (chosenElementType != null){
       return StreamBuilder<QuerySnapshot>(
           stream: Firestore.instance
               .collection('biodiversityMeasures')
-              .where('type', isEqualTo: globals.chosenElementType.toLowerCase())
-              .where('name', isEqualTo: globals.chosenElement)
+              .where('type', isEqualTo: chosenElementType.toLowerCase())
+              .where('name', isEqualTo: chosenElement)
               .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
@@ -143,8 +148,8 @@ class _AddMapIconState extends State<AddMapIcon>{
   }
 
   FutureOr onGoBack(dynamic value){
-    globals.chosenElement = globals.chosenElement;
-    globals.chosenElementType = globals.chosenElementType;
+    chosenElement = chosenElement;
+    chosenElementType = chosenElementType;
     setState((){});
   }
 }

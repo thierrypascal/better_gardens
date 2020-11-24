@@ -1,5 +1,4 @@
 import 'dart:developer' as logging;
-import 'package:biodiversity/globals.dart' as globals;
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,7 +6,8 @@ import 'package:flutter/cupertino.dart';
 class SubMap extends StatefulWidget {
   SubMap(
       this.latitude,
-      this.longitude, {
+      this.longitude,
+      {
         Key key,
       }) : super(key: key);
   final double latitude;
@@ -39,7 +39,6 @@ class _SubMapState extends State<SubMap> {
           position: tapPos,
           onTap: (){},
       ));
-      globals.tappedPoint = tapPos;
     });
   }
 

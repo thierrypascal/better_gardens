@@ -1,5 +1,4 @@
 import 'dart:developer' as logging;
-import 'package:biodiversity/globals.dart' as globals;
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -23,8 +22,8 @@ class _SelectElementCardState extends State<SelectElementCard> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        _tappedCard(widget.name, widget.type);
-        Navigator.pop(context);
+        final List<String> toReturn = [widget.name, widget.type];
+        Navigator.pop(context, toReturn);
       },
       child:     Container(
         decoration: BoxDecoration(
@@ -58,10 +57,5 @@ class _SelectElementCardState extends State<SelectElementCard> {
         ),
       ),
     );
-  }
-
-  void _tappedCard(String title, String type){
-    globals.chosenElement = title;
-    globals.chosenElementType = type;
   }
 }
