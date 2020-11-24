@@ -47,8 +47,6 @@ class _SubMapState extends State<SubMap> {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height/3,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
         child: GoogleMap(
           onMapCreated: _onMapCreated,
           initialCameraPosition: CameraPosition(
@@ -60,7 +58,6 @@ class _SubMapState extends State<SubMap> {
           markers: Set.from(tempMarkerList),
           onTap: _setPosition,
         ),
-      ),
-    );
+      );
   }
 }
