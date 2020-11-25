@@ -1,7 +1,5 @@
-import 'dart:developer' as logging;
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-
+import 'package:flutter/material.dart';
 
 class SelectElementCard extends StatefulWidget {  //same as structural_element_card_widget.dart, but with less infos, not expandable and selectable
   final String name;
