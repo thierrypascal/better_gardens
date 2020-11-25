@@ -1,4 +1,4 @@
-import 'package:biodiversity/drawer.dart';
+import 'package:biodiversity/components/drawer.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
