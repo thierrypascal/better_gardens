@@ -31,7 +31,7 @@ class _InventarPageState extends State<InventarPage> {
           final String elementType = _pageList.elementAt(index);
           return ItemList(
             elementType: elementType,
-            data: Firestore.instance
+            data: FirebaseFirestore.instance
                 .collection('biodiversityMeasures')
                 .where('type', isEqualTo: elementType.toLowerCase())
                 .snapshots(),
@@ -80,7 +80,7 @@ class ItemList extends StatelessWidget {
                 return const Center(child: CircularProgressIndicator());
               }
               final List<BiodiversityMeasure> list = [];
-              for (final DocumentSnapshot in snapshot.data.documents) {
+              for (final DocumentSnapshot in snapshot.data.docs) {
                 list.add(BiodiversityMeasure.fromSnapshot(DocumentSnapshot));
               }
               if (list.isEmpty) {

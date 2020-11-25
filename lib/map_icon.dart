@@ -23,16 +23,14 @@ class MapIcon {
         creationDate = map['creationDate'] as DateTime;
 
   MapIcon.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data, reference: snapshot.reference);
+      : this.fromMap(snapshot.data(), reference: snapshot.reference);
 
   void saveMapIconDetail(String field, dynamic value) {
-    Firestore.instance
-        .document(reference.documentID)
-        .updateData({field: value});
+    FirebaseFirestore.instance.doc(reference.id).update({field: value});
   }
 
   Future<void> saveMapIcon() async {
-    return Firestore.instance.document(reference.path).setData({
+    return FirebaseFirestore.instance.doc(reference.path).set({
       'type': type,
       'element': element,
       'creationDate': creationDate,

@@ -1,8 +1,7 @@
-import 'dart:developer' as logging;
 import 'package:biodiversity/maps_select_from_selection_list.dart';
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 
 class ShowSelectionList extends StatelessWidget{
@@ -62,7 +61,7 @@ class _SubListState extends State<SubList> {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: StreamBuilder<QuerySnapshot>(
-            stream: Firestore.instance
+            stream: FirebaseFirestore.instance
                 .collection('biodiversityMeasures')
                 .where('type', isEqualTo: widget.elementType.toLowerCase())
                 .snapshots(),
@@ -71,7 +70,7 @@ class _SubListState extends State<SubList> {
                 return const Center(child: CircularProgressIndicator());
               }
               final List<BiodiversityMeasure> list = [];
-              for (final DocumentSnapshot in snapshot.data.documents) {
+              for (final DocumentSnapshot in snapshot.data.docs) {
                 list.add(BiodiversityMeasure.fromSnapshot(DocumentSnapshot));
               }
               if (list.isEmpty) {
@@ -150,5 +149,5 @@ class BiodiversityMeasure {
   }
 
   BiodiversityMeasure.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data, reference: snapshot.reference);
+      : this.fromMap(snapshot.data(), reference: snapshot.reference);
 }

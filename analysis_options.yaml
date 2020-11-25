@@ -44,3 +44,6 @@ analyzer:
     sort_child_properties_last: warning
     sort_constructors_first: warning
     sort_unnamed_constructors_first: warning
+
+
+    deprecated_member_use: error
