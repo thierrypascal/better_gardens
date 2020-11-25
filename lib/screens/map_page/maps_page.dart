@@ -59,7 +59,7 @@ class _MapsPageState extends State<MapsPage> {
           _navigateAddMapIcon(context)    //opens selection page
           .then(onGoBack);
         },
-        backgroundColor: Colors.green,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         child: const Icon(Icons.add),
       ),
     );

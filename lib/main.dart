@@ -27,6 +27,11 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               // This is the theme of your application.
               primarySwatch: Colors.green,
+              disabledColor: const Color.fromRGBO(255, 255, 255, 0.3),
+
+
+
+
 
               // This makes the visual density adapt to the platform that you run
               // the app on. For desktop platforms, the controls will be smaller and
