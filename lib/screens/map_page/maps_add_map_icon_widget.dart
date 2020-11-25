@@ -84,15 +84,22 @@ class _AddMapIconState extends State<AddMapIcon>{
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      //save to database, show on map
-                      AddMapIcon.chosenElement = 'wähle ein Element';
-                      AddMapIcon.chosenElementType = '';
-                      Marker marker = Marker(
-                          markerId: MarkerId(MapsPage.tappedPoint.toString()),
-                          position: MapsPage.tappedPoint,
-                          icon: MapsPage.icons["plant"]);
-                      MapsPage.markerList.add(marker);
-                      Navigator.pop(context);
+                      //check if location and element is set
+                      if (AddMapIcon.chosenElementType != null && AddMapIcon.chosenElementType != '' && MapsPage.tappedPoint != null){
+                        //TODO: save to database
+                        Marker marker = Marker(
+                            markerId: MarkerId(MapsPage.tappedPoint.toString()),
+                            position: MapsPage.tappedPoint,
+                            icon: MapsPage.icons[AddMapIcon.chosenElementType.toLowerCase()]);
+                        MapsPage.markerList.add(marker);
+
+                        //reset statics
+                        AddMapIcon.chosenElement = 'wähle ein Element';
+                        AddMapIcon.chosenElementType = '';
+                        Navigator.pop(context);
+                      }else{
+                        _showAlertNotSet();
+                      }
                     },
                     child: Text('Speichern'),
                   ),
@@ -104,6 +111,33 @@ class _AddMapIconState extends State<AddMapIcon>{
     );
   }
 
+  Future<void> _showAlertNotSet() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Achtung'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                const Text('Der Standort oder das Element wurde noch nicht erfasst.'),
+                const Text('Beides muss erfasst sein, um einen neuen Karteneintrag zu machen.'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Verstanden'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Widget getSelectedElementAsCard(){        //return a structuralElementCard with the selected card
     if (AddMapIcon.chosenElementType != ''){

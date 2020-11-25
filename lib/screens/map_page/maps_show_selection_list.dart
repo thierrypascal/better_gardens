@@ -30,7 +30,7 @@ class ShowSelectionList extends StatelessWidget{
         body: TabBarView(
           children: <Widget>[
             SubList(
-              elementType: 'Element',
+              elementType: 'Element',     //Important: if elementType is changed, MapsPage.icons keys need to be changed accordingly
             ),
             SubList(
               elementType: 'Plant',

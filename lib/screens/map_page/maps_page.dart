@@ -37,12 +37,12 @@ class _MapsPageState extends State<MapsPage> {
   }
   
   void initCustomIconMap() async{
-    BitmapDescriptor structureIcon = await BitmapDescriptor.fromAssetImage(const ImageConfiguration(size: Size(128, 128)), 'res/structureIcon.png');
-    BitmapDescriptor plantIcon = await BitmapDescriptor.fromAssetImage(const ImageConfiguration(), 'res/plantIcon.png');
-    BitmapDescriptor methodIcon = await BitmapDescriptor.fromAssetImage(const ImageConfiguration(size: Size(48, 48)), 'res/methodIcon.png');
-    BitmapDescriptor wishIcon = await BitmapDescriptor.fromAssetImage(const ImageConfiguration(size: Size(48, 48)), 'res/wishIcon.png');
+    final BitmapDescriptor structureIcon = await BitmapDescriptor.fromAssetImage(const ImageConfiguration(), 'res/structureIcon.png');
+    final BitmapDescriptor plantIcon = await BitmapDescriptor.fromAssetImage(const ImageConfiguration(), 'res/plantIcon.png');
+    final BitmapDescriptor methodIcon = await BitmapDescriptor.fromAssetImage(const ImageConfiguration(), 'res/methodIcon.png');
+    final BitmapDescriptor wishIcon = await BitmapDescriptor.fromAssetImage(const ImageConfiguration(), 'res/wishIcon.png');
 
-    MapsPage.icons.putIfAbsent('structure', () => structureIcon);
+    MapsPage.icons.putIfAbsent('element', () => structureIcon);
     MapsPage.icons.putIfAbsent('plant', () => plantIcon);
     MapsPage.icons.putIfAbsent('method', () => methodIcon);
     MapsPage.icons.putIfAbsent('wish', () => wishIcon);
