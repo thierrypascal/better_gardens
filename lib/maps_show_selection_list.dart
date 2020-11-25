@@ -44,7 +44,7 @@ class ShowSelectionList extends StatelessWidget{
   }
 }
 
-//This class needs to be replaced: load the elements from database and change each list element into expandable
+
 class SubList extends StatefulWidget {
   SubList({Key key, this.elementType}) : super(key: key);
 
