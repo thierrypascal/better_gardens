@@ -46,9 +46,9 @@ class _InformationListPageState extends State<InformationListPage> {
         ],
         onTap: _onTap,
         currentIndex: _currentPage,
-        backgroundColor: const Color.fromRGBO(33, 150, 83, 1),
-        selectedItemColor: const Color.fromRGBO(255, 255, 255, 1),
-        unselectedItemColor: const Color.fromRGBO(255, 255, 255, 0.3),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        selectedItemColor: Theme.of(context).colorScheme.onPrimary,
+        unselectedItemColor: Theme.of(context).disabledColor,
       ),
     );
   }
