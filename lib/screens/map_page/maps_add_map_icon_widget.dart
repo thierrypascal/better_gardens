@@ -104,8 +104,10 @@ class _AddMapIconState extends State<AddMapIcon>{
       MaterialPageRoute(builder: (context) => ShowSelectionList()),
     ) as List<String>;
 
-    chosenElement = result.first;
-    chosenElementType = result.last;
+    if (result != null){
+      chosenElement = result.first;
+      chosenElementType = result.last;
+    }
   }
 
   Future<String> getAddressByLocation(LatLng location) async{

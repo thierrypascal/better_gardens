@@ -71,7 +71,9 @@ class _MapsPageState extends State<MapsPage> {
       MaterialPageRoute(builder: (context) => AddMapIcon(tappedPoint)),
     ) as Marker;
 
-    markerList.add(result);
+    if (result != null){
+      markerList.add(result);
+    }
   }
 
   void _setPosition(LatLng tapPos) {
