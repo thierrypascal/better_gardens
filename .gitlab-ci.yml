@@ -11,7 +11,7 @@ flutter_test:
     - export JAVA_HOME=/usr/lib/jvm/jre-1.8.0-openjdk/
   script:
     - whoami
-    - flutter test
+    #- flutter test
 flutter_build_android:
   stage: build
   before_script:
