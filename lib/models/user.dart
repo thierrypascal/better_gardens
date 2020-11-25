@@ -1,5 +1,4 @@
 import 'dart:core';
-import 'dart:developer' as logging;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -49,27 +48,16 @@ class User with ChangeNotifier {
             ? Set.from(map['favoredObjects'] as List)
             : <String>{},
         hasConfirmedEmail = map.containsKey('hasConfirmedEmail') &&
-            map['hasConfirmedEmail'] as bool {
-    logging.log("fav len: ${_favoredObjects.length.toString()}");
-  }
+            map['hasConfirmedEmail'] as bool;
 
   User.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data(), snapshot.reference);
 
   Future<void> saveUser() async {
-    if (_reference == null) {
-      logging.log("reference is null");
-      _reference = await FirebaseFirestore.instance
-          .collection('users')
-          .add({'nickname': 'temp'});
-      logging.log("User added");
-    }
+    _reference ??= await FirebaseFirestore.instance
+        .collection('users')
+        .add({'nickname': 'temp'});
 
-    if (_reference == null) {
-      logging.log("Not possible");
-    }
-
-    logging.log("Saving the User: $this");
     return FirebaseFirestore.instance.doc(_reference.path).set({
       'nickname': nickname,
       'name': name,
@@ -95,7 +83,6 @@ class User with ChangeNotifier {
   }
 
   bool doesLikeElement(String element) {
-    logging.log("Does like $element ? $this");
     return _favoredObjects.contains(element);
   }
 

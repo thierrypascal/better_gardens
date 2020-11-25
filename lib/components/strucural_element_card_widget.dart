@@ -1,4 +1,3 @@
-import 'dart:developer' as logging;
 
 import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/user.dart';
@@ -14,7 +13,8 @@ class StructuralElementCard extends StatefulWidget {
   final String description;
   final BiodiversityMeasure element;
 
-  const StructuralElementCard(this.name, this.beneficialFor, this.image, this.description,
+  const StructuralElementCard(
+      this.name, this.beneficialFor, this.image, this.description,
       {this.element});
 
   @override
@@ -87,12 +87,16 @@ class _StructuralElementCardState extends State<StructuralElementCard> {
                   if (widget.element != null)
                     FlatButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  DetailViewPage(widget.element)),
-                        );
+                        if (_expanded) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    DetailViewPage(widget.element)),
+                          ).then((value) {
+                            setState(() {});
+                          });
+                        }
                       },
                       child: const Text(
                         "Weitere infos",
@@ -103,7 +107,6 @@ class _StructuralElementCardState extends State<StructuralElementCard> {
                     if (user == null) {
                       return const Text("");
                     }
-                    logging.log("provided user: ${user.toString()}");
                     return IconButton(
                       icon: Icon(
                         Icons.favorite,
