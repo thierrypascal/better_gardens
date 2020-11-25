@@ -14,7 +14,6 @@ class MapsPage extends StatefulWidget{
 
   @override
   _MapsPageState createState() => _MapsPageState();
-
 }
 
 class _MapsPageState extends State<MapsPage> {

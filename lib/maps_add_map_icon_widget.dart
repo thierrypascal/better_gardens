@@ -23,7 +23,7 @@ class AddMapIcon extends StatefulWidget {
 
 class _AddMapIconState extends State<AddMapIcon>{
   String chosenElement = 'wähle ein Element';
-  String chosenElementType;
+  String chosenElementType = '';
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class _AddMapIconState extends State<AddMapIcon>{
           icon: Icon(Icons.arrow_back),
           onPressed: (){
             chosenElement = 'wähle ein Element';    //reset globals if popup closed
-            chosenElementType = null;
+            chosenElementType = '';
             Navigator.pop(context);
           },
         ),
@@ -75,7 +75,7 @@ class _AddMapIconState extends State<AddMapIcon>{
                   ElevatedButton(
                     onPressed: () {
                       chosenElement = 'wähle ein Element';
-                      chosenElementType = null;
+                      chosenElementType = '';
                       Navigator.pop(context);
                     },
                     child: Text('Abbrechen'),
@@ -84,7 +84,7 @@ class _AddMapIconState extends State<AddMapIcon>{
                     onPressed: () {
                       //save to database, show on map
                       chosenElement = 'wähle ein Element';
-                      chosenElementType = null;
+                      chosenElementType = '';
                       Marker marker = Marker(markerId: MarkerId(widget.tappedPosition.toString()), position: widget.tappedPosition);
                       Navigator.pop(context, marker);
                     },
@@ -115,7 +115,7 @@ class _AddMapIconState extends State<AddMapIcon>{
   }
 
   Widget getSelectedElementAsCard(){        //return a structuralElementCard with the selected card
-    if (chosenElementType != null){
+    if (chosenElementType != ''){
       return StreamBuilder<QuerySnapshot>(
           stream: Firestore.instance
               .collection('biodiversityMeasures')
