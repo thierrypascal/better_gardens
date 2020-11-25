@@ -2,6 +2,7 @@ import 'package:biodiversity/screens/map_page/maps_select_from_selection_list.da
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:biodiversity/models/biodiversity_measure.dart';
 
 
 class ShowSelectionList extends StatelessWidget{
@@ -11,11 +12,11 @@ class ShowSelectionList extends StatelessWidget{
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('List'),
+          title: const Text('Element auswählen'),
           bottom: const TabBar(
             tabs: [
               Tab(
-                text: 'ELEMENT',
+                text: 'STRUKTUR',
               ),
               Tab(
                 text: 'PLANT',
@@ -98,7 +99,7 @@ class _SubListState extends State<SubList> {
                   for (final String item in element.beneficialFor.keys) {
                     beneficialFor.write('$item ');
                   }
-                  return SelectElementCard(
+                  return SelectElementCard(         //TODO: refactor to use simple_element_card_widget.dart but remain selectable
                       element.name,
                       beneficialFor.toString().trim(),
                       AssetImage(element.imageSource),
@@ -112,42 +113,4 @@ class _SubListState extends State<SubList> {
       ),
     );
   }
-}
-
-//Remove class BiodiversityMeasure and import biodiversity_measure.dart when merched branch of Gabriel TODO
-class BiodiversityMeasure {
-  final String name;
-  final String description;
-  final String buildInstructions;
-  final String type;
-  final Map<String, bool> beneficialFor;
-  final Map<String, bool> badFor;
-  final String imageSource;
-  final DocumentReference reference;
-
-  BiodiversityMeasure(this.name, this.description, this.buildInstructions,
-      this.type, this.beneficialFor, this.reference, this.imageSource, this.badFor);
-
-  BiodiversityMeasure.fromMap(Map<String, dynamic> map, {this.reference})
-      : name = map.containsKey('name') ? map['name'] as String : "",
-        description =
-        map.containsKey('description') ? map['description'] as String : "",
-        buildInstructions = map.containsKey('buildInstructions')
-            ? map['buildInstructions'] as String
-            : "",
-        type = map.containsKey('type') ? map['type'] as String : "",
-        beneficialFor = map.containsKey('beneficialFor')
-            ? Map<String, bool>.from(map['beneficialFor'] as Map)
-            : Map<String, bool>.identity(),
-        badFor = map.containsKey('beneficialFor')
-            ? Map<String, bool>.from(map['beneficialFor'] as Map)
-            : Map<String, bool>.identity(),
-        imageSource =
-        map.containsKey('image') ? map['image'] as String : 'res/logo.png' {
-    beneficialFor.removeWhere((key, value) => !value);
-    badFor.removeWhere((key, value) => value);
-  }
-
-  BiodiversityMeasure.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data(), reference: snapshot.reference);
 }

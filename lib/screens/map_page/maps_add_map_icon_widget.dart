@@ -3,27 +3,28 @@ import 'dart:async';
 import 'package:biodiversity/screens/map_page/maps_show_selection_list.dart';
 import 'package:biodiversity/screens/map_page/maps_submap_widget.dart';
 import 'package:biodiversity/components/strucural_element_card_widget.dart';
+import 'package:biodiversity/components/simple_element_card_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:biodiversity/screens/map_page/maps_page.dart';
+import 'package:biodiversity/models/biodiversity_measure.dart';
 
 class AddMapIcon extends StatefulWidget {
-  final LatLng tappedPosition;
-
   AddMapIcon(
-    this.tappedPosition, {
+    {
     Key key,
   }) : super(key: key);
 
   @override
   _AddMapIconState createState() => _AddMapIconState();
+
+  static String chosenElement = 'wähle ein Element';
+  static String chosenElementType = '';
 }
 
 class _AddMapIconState extends State<AddMapIcon>{
-  String chosenElement = 'wähle ein Element';
-  String chosenElementType = '';
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +34,8 @@ class _AddMapIconState extends State<AddMapIcon>{
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: (){
-            chosenElement = 'wähle ein Element';    //reset globals if popup closed
-            chosenElementType = '';
+            AddMapIcon.chosenElement = 'wähle ein Element';    //reset statics if popup closed
+            AddMapIcon.chosenElementType = '';
             Navigator.pop(context);
           },
         ),
@@ -50,19 +51,15 @@ class _AddMapIconState extends State<AddMapIcon>{
                   children: <Widget> [
                     ElevatedButton(
                       onPressed: () {
-                        _navigateShowSelectionList(context)
-                        .then(onGoBack);                                         //updates chosenElement
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ShowSelectionList()),
+                        ).then(onGoBack);                                         //updates chosenElement
                       },
-                      child: Text('Auswahl: ${chosenElement}'),
+                      child: Text('Auswahl: ${AddMapIcon.chosenElement}'),
                     ),
                     getSelectedElementAsCard(),
-                    FutureBuilder<String>(          //catch geocode
-                      future: getAddressByLocation(widget.tappedPosition),
-                      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-                        return Text('Standort: ${snapshot.data}');
-                      },
-                    ),
-                    SubMap(widget.tappedPosition.latitude, widget.tappedPosition.longitude),
+                    SubMap(),
                   ],
                 ),
               ),
@@ -74,8 +71,8 @@ class _AddMapIconState extends State<AddMapIcon>{
                 children: <Widget>[
                   ElevatedButton(
                     onPressed: () {
-                      chosenElement = 'wähle ein Element';
-                      chosenElementType = '';
+                      AddMapIcon.chosenElement = 'wähle ein Element';
+                      AddMapIcon.chosenElementType = '';
                       Navigator.pop(context);
                     },
                     child: Text('Abbrechen'),
@@ -83,10 +80,11 @@ class _AddMapIconState extends State<AddMapIcon>{
                   ElevatedButton(
                     onPressed: () {
                       //save to database, show on map
-                      chosenElement = 'wähle ein Element';
-                      chosenElementType = '';
-                      Marker marker = Marker(markerId: MarkerId(widget.tappedPosition.toString()), position: widget.tappedPosition);
-                      Navigator.pop(context, marker);
+                      AddMapIcon.chosenElement = 'wähle ein Element';
+                      AddMapIcon.chosenElementType = '';
+                      Marker marker = Marker(markerId: MarkerId(MapsPage.tappedPoint.toString()), position: MapsPage.tappedPoint);
+                      MapsPage.markerList.add(marker);
+                      Navigator.pop(context);
                     },
                     child: Text('Speichern'),
                   ),
@@ -98,31 +96,14 @@ class _AddMapIconState extends State<AddMapIcon>{
     );
   }
 
-  _navigateShowSelectionList(BuildContext context) async{
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => ShowSelectionList()),
-    ) as List<String>;
-
-    if (result != null){
-      chosenElement = result.first;
-      chosenElementType = result.last;
-    }
-  }
-
-  Future<String> getAddressByLocation(LatLng location) async{
-    final List<Placemark> placemark = await placemarkFromCoordinates(location.latitude, location.longitude);
-
-    return Future.value("${placemark[0].street}, ${placemark[0].postalCode} ${placemark[0].locality}");
-  }
 
   Widget getSelectedElementAsCard(){        //return a structuralElementCard with the selected card
-    if (chosenElementType != ''){
+    if (AddMapIcon.chosenElementType != ''){
       return StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
               .collection('biodiversityMeasures')
-              .where('type', isEqualTo: chosenElementType.toLowerCase())
-              .where('name', isEqualTo: chosenElement)
+              .where('type', isEqualTo: AddMapIcon.chosenElementType.toLowerCase())
+              .where('name', isEqualTo: AddMapIcon.chosenElement)
               .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
@@ -138,7 +119,7 @@ class _AddMapIconState extends State<AddMapIcon>{
             final beneficialFor = StringBuffer();
             beneficialFor.write(chElement.beneficialFor.keys);
 
-            return StructuralElementCard(
+            return SimpleElementCard(
                 chElement.name,
                 beneficialFor.toString().trim(),
                 AssetImage(chElement.imageSource),
@@ -151,8 +132,6 @@ class _AddMapIconState extends State<AddMapIcon>{
   }
 
   FutureOr onGoBack(dynamic value){
-    chosenElement = chosenElement;
-    chosenElementType = chosenElementType;
     setState((){});
   }
 }

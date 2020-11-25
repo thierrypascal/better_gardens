@@ -18,20 +18,19 @@ class MapsPage extends StatefulWidget {
   @override
   _MapsPageState createState() => _MapsPageState();
 
+  static LatLng tappedPoint = LatLng(46.948915, 7.445423);
+  static List<Marker> markerList = new List<Marker>();
 }
 
 class _MapsPageState extends State<MapsPage> {
   GoogleMapController mapController;
-  List<Marker> markerList = <Marker>[];
-  LatLng tappedPoint = LatLng(46.9472, 7.4512);
 
   void addToMarkerList(Marker marker){
-    markerList.add(marker);
+    MapsPage.markerList.add(marker);
   }
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
-    setState(() {});
   }
 
 
@@ -48,16 +47,17 @@ class _MapsPageState extends State<MapsPage> {
           target: LatLng(widget.latitude, widget.longitude),
           zoom: 14.0,
         ),
-        compassEnabled: true,
         zoomControlsEnabled: false,
         mapType: MapType.hybrid,
-        markers: Set.from(markerList),
-        onTap: _setPosition,
+        markers: Set.from(MapsPage.markerList),
+        onTap: (pos) {MapsPage.tappedPoint = pos;},
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _navigateAddMapIcon(context)    //opens selection page
-          .then(onGoBack);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddMapIcon()),
+          ).then(onGoBack);
         },
         backgroundColor: Colors.green,
         child: const Icon(Icons.add),
@@ -65,23 +65,7 @@ class _MapsPageState extends State<MapsPage> {
     );
   }
 
-  _navigateAddMapIcon(BuildContext context) async{
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => AddMapIcon(tappedPoint)),
-    ) as Marker;
-
-    if (result != null){
-      markerList.add(result);
-    }
-  }
-
-  void _setPosition(LatLng tapPos) {
-    tappedPoint = tapPos;
-  }
-
   FutureOr onGoBack(dynamic value){
-    markerList = markerList;
     setState((){});
   }
 }
