@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-import 'file:///C:/Users/gabri/ip34/mobile-front-end/lib/screens/login_page/login_page.dart';
+import 'package:biodiversity/screens/login_page/login_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               // This is the theme of your application.
               primarySwatch: Colors.green,
+
               // This makes the visual density adapt to the platform that you run
               // the app on. For desktop platforms, the controls will be smaller and
               // closer together (more dense) than on mobile platforms.
