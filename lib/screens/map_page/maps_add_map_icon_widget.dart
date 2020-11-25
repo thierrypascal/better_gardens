@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:biodiversity/screens/map_page/maps_show_selection_list.dart';
 import 'package:biodiversity/screens/map_page/maps_submap_widget.dart';
-import 'package:biodiversity/components/strucural_element_card_widget.dart';
 import 'package:biodiversity/components/simple_element_card_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -49,14 +48,20 @@ class _AddMapIconState extends State<AddMapIcon>{
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget> [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => ShowSelectionList()),
-                        ).then(onGoBack);                                         //updates chosenElement
-                      },
-                      child: Text('Auswahl: ${AddMapIcon.chosenElement}'),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: OutlineButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => ShowSelectionList()),
+                            ).then(onGoBack);                                         //updates chosenElement
+                          },
+                          child: Text('Auswahl: ${AddMapIcon.chosenElement}', textAlign: TextAlign.left, textScaleFactor: 1.1,),
+                        ),
+                      ),
                     ),
                     getSelectedElementAsCard(),
                     SubMap(),
@@ -82,7 +87,10 @@ class _AddMapIconState extends State<AddMapIcon>{
                       //save to database, show on map
                       AddMapIcon.chosenElement = 'wähle ein Element';
                       AddMapIcon.chosenElementType = '';
-                      Marker marker = Marker(markerId: MarkerId(MapsPage.tappedPoint.toString()), position: MapsPage.tappedPoint);
+                      Marker marker = Marker(
+                          markerId: MarkerId(MapsPage.tappedPoint.toString()),
+                          position: MapsPage.tappedPoint,
+                          icon: MapsPage.icons["plant"]);
                       MapsPage.markerList.add(marker);
                       Navigator.pop(context);
                     },

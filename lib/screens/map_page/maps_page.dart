@@ -20,6 +20,7 @@ class MapsPage extends StatefulWidget {
 
   static LatLng tappedPoint = LatLng(46.948915, 7.445423);
   static List<Marker> markerList = new List<Marker>();
+  static Map<String, BitmapDescriptor> icons = new Map<String, BitmapDescriptor>();
 }
 
 class _MapsPageState extends State<MapsPage> {
@@ -27,6 +28,24 @@ class _MapsPageState extends State<MapsPage> {
 
   void addToMarkerList(Marker marker){
     MapsPage.markerList.add(marker);
+  }
+  
+  @override
+  void initState() {
+    super.initState();
+    initCustomIconMap();
+  }
+  
+  void initCustomIconMap() async{
+    BitmapDescriptor structureIcon = await BitmapDescriptor.fromAssetImage(const ImageConfiguration(size: Size(128, 128)), 'res/structureIcon.png');
+    BitmapDescriptor plantIcon = await BitmapDescriptor.fromAssetImage(const ImageConfiguration(), 'res/plantIcon.png');
+    BitmapDescriptor methodIcon = await BitmapDescriptor.fromAssetImage(const ImageConfiguration(size: Size(48, 48)), 'res/methodIcon.png');
+    BitmapDescriptor wishIcon = await BitmapDescriptor.fromAssetImage(const ImageConfiguration(size: Size(48, 48)), 'res/wishIcon.png');
+
+    MapsPage.icons.putIfAbsent('structure', () => structureIcon);
+    MapsPage.icons.putIfAbsent('plant', () => plantIcon);
+    MapsPage.icons.putIfAbsent('method', () => methodIcon);
+    MapsPage.icons.putIfAbsent('wish', () => wishIcon);
   }
 
   void _onMapCreated(GoogleMapController controller) {

@@ -99,7 +99,8 @@ class _SubListState extends State<SubList> {
                   for (final String item in element.beneficialFor.keys) {
                     beneficialFor.write('$item ');
                   }
-                  return SelectElementCard(         //TODO: refactor to use simple_element_card_widget.dart but remain selectable
+
+                  return SelectElementCard(         //TODO: refactor to use simple_element_card_widget.dart but remain selectable (For current implementation the widget.name/title of SelectElementCard is needed)
                       element.name,
                       beneficialFor.toString().trim(),
                       AssetImage(element.imageSource),
