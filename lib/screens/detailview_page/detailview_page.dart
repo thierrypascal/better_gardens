@@ -1,6 +1,6 @@
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/models/biodiversity_measure.dart';
-import 'package:biodiversity/screens/inventar_page/inventar_page.dart';
+import 'package:biodiversity/screens/information_list_page/information_list_page.dart';
 import 'package:flutter/material.dart';
 
 class DetailViewPage extends StatelessWidget {
@@ -48,9 +48,10 @@ class DetailViewPage extends StatelessWidget {
                                   ? Navigator.pop(context)
                                   : Navigator.push(
                                 context,
-                                MaterialPageRoute(
-                                    builder: (context) => InventarPage()),
-                              );
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              InformationListPage()),
+                                    );
                             }),
                       ])
                     ],
