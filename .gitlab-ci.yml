@@ -4,7 +4,7 @@ stages:
 flutter_test:
   stage: test
   script:
-    - flutter test
+    - whoami
 flutter_build_android:
   stage: build
   before_script:
