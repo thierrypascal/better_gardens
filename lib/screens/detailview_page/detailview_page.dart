@@ -1,13 +1,20 @@
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/models/biodiversity_measure.dart';
-import 'package:biodiversity/screens/inventar_page/inventar_page.dart';
+import 'package:biodiversity/models/user.dart';
+import 'package:biodiversity/screens/information_list_page/information_list_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class DetailViewPage extends StatelessWidget {
+class DetailViewPage extends StatefulWidget {
   final BiodiversityMeasure element;
 
   const DetailViewPage(this.element, {Key key}) : super(key: key);
 
+  @override
+  _DetailViewPageState createState() => _DetailViewPageState();
+}
+
+class _DetailViewPageState extends State<DetailViewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,7 +24,7 @@ class DetailViewPage extends StatelessWidget {
         child: Column(
           children: [
             Image(
-              image: AssetImage(element.imageSource),
+              image: AssetImage(widget.element.imageSource),
               fit: BoxFit.fitWidth,
               height: 150,
               width: MediaQuery.of(context).size.width,
@@ -31,15 +38,30 @@ class DetailViewPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        element.name,
+                        widget.element.name,
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 20),
                       ),
                       Row(children: [
-                        //TODO implement like functionality
-                        IconButton(
-                          icon: const Icon(Icons.favorite_border),
-                          onPressed: () {},
+                        Consumer<User>(
+                          builder: (BuildContext context, user, Widget child) {
+                            if (user == null) {
+                              return const Text("");
+                            }
+                            return IconButton(
+                              icon: user.doesLikeElement(widget.element.name)
+                                  ? const Icon(Icons.favorite)
+                                  : const Icon(Icons.favorite_border),
+                              color: user.doesLikeElement(widget.element.name)
+                                  ? Colors.red
+                                  : Colors.black38,
+                              onPressed: () {
+                                setState(() {
+                                  user.likeUnlikeElement(widget.element.name);
+                                });
+                              },
+                            );
+                          },
                         ),
                         IconButton(
                             icon: const Icon(Icons.close),
@@ -49,7 +71,8 @@ class DetailViewPage extends StatelessWidget {
                                   : Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => InventarPage()),
+                                    builder: (context) =>
+                                        InformationListPage()),
                               );
                             }),
                       ])
@@ -58,7 +81,7 @@ class DetailViewPage extends StatelessWidget {
                   const SizedBox(
                     height: 10,
                   ),
-                  Text(element.description),
+                  Text(widget.element.description),
                   const SizedBox(
                     height: 20,
                   ),
@@ -66,7 +89,7 @@ class DetailViewPage extends StatelessWidget {
                     "Bauanleitung",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   ),
-                  Text(element.buildInstructions),
+                  Text(widget.element.buildInstructions),
                   const SizedBox(
                     height: 20,
                   ),
@@ -78,9 +101,11 @@ class DetailViewPage extends StatelessWidget {
                     height: 80,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: element.beneficialFor.length,
-                      itemBuilder: (context, index) => Text(
-                          "${element.beneficialFor.keys.elementAt(index)} "),
+                      itemCount: widget.element.beneficialFor.length,
+                      itemBuilder: (context, index) =>
+                          Text(
+                              "${widget.element.beneficialFor.keys.elementAt(
+                                  index)} "),
                     ),
                   ),
                 ],

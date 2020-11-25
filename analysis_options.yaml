@@ -45,5 +45,5 @@ analyzer:
     sort_constructors_first: warning
     sort_unnamed_constructors_first: warning
 
-
+    missing_required_param: error
     deprecated_member_use: error

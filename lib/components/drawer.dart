@@ -1,5 +1,5 @@
 import 'package:biodiversity/screens/account_page/account_page.dart';
-import 'package:biodiversity/screens/inventar_page/inventar_page.dart';
+import 'package:biodiversity/screens/information_list_page/information_list_page.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
@@ -58,7 +58,7 @@ class MyDrawer extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => InventarPage()),
+                MaterialPageRoute(builder: (context) => InformationListPage()),
               );
             },
           ),
