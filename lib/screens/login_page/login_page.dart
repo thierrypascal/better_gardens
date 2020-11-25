@@ -1,6 +1,5 @@
+import 'package:biodiversity/components/drawer.dart';
 import 'package:flutter/material.dart';
-
-import 'file:///C:/Users/gabri/ip34/mobile-front-end/lib/components/drawer.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({Key key}) : super(key: key);

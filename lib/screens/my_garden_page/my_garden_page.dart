@@ -1,7 +1,7 @@
 import 'dart:ui';
 
-import 'file:///C:/Users/gabri/ip34/mobile-front-end/lib/components/drawer.dart';
-import 'file:///C:/Users/gabri/ip34/mobile-front-end/lib/models/garden.dart';
+import 'package:biodiversity/components/drawer.dart';
+import 'package:biodiversity/models/garden.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';

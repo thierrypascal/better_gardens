@@ -1,5 +1,5 @@
-import 'file:///C:/Users/gabri/ip34/mobile-front-end/lib/models/biodiversity_measure.dart';
-import 'file:///C:/Users/gabri/ip34/mobile-front-end/lib/screens/detailview_page/detailview_page.dart';
+import 'package:biodiversity/models/biodiversity_measure.dart';
+import 'package:biodiversity/screens/detailview_page/detailview_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

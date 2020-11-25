@@ -1,8 +1,7 @@
+import 'package:biodiversity/components/drawer.dart';
+import 'package:biodiversity/models/biodiversity_measure.dart';
+import 'package:biodiversity/screens/inventar_page/inventar_page.dart';
 import 'package:flutter/material.dart';
-
-import 'file:///C:/Users/gabri/ip34/mobile-front-end/lib/components/drawer.dart';
-import 'file:///C:/Users/gabri/ip34/mobile-front-end/lib/models/biodiversity_measure.dart';
-import 'file:///C:/Users/gabri/ip34/mobile-front-end/lib/screens/inventar_page/inventar_page.dart';
 
 class DetailViewPage extends StatelessWidget {
   final BiodiversityMeasure element;
@@ -48,10 +47,10 @@ class DetailViewPage extends StatelessWidget {
                               Navigator.canPop(context)
                                   ? Navigator.pop(context)
                                   : Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => InventarPage()),
-                                    );
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => InventarPage()),
+                              );
                             }),
                       ])
                     ],
