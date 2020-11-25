@@ -1,5 +1,5 @@
 import 'package:biodiversity/account_page.dart';
-import 'package:biodiversity/list_page.dart';
+import 'package:biodiversity/inventar_page.dart';
 import 'package:biodiversity/login_page.dart';
 import 'package:biodiversity/maps_page.dart';
 import 'package:biodiversity/my_garden_page.dart';
@@ -54,11 +54,11 @@ class MyDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            title: const Text('List'),
+            title: const Text('Inventar'),
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ListPage()),
+                MaterialPageRoute(builder: (context) => InventarPage()),
               );
             },
           ),
