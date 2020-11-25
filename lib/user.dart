@@ -57,11 +57,11 @@ class User {
   }
 
   User.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data, reference: snapshot.reference);
+      : this.fromMap(snapshot.data(), reference: snapshot.reference);
 
   Future<void> saveUser() {
     logging.log("save user");
-    return Firestore.instance.document(reference.path).setData({
+    return FirebaseFirestore.instance.doc(reference.path).set({
       'nickname': nickname,
       'name': name,
       'surname': surname,

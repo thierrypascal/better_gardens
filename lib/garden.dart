@@ -39,16 +39,14 @@ class Garden {
         ownedObjects = Map<String, int>.from(map['ownedObjects'] as Map);
 
   Garden.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data, reference: snapshot.reference);
+      : this.fromMap(snapshot.data(), reference: snapshot.reference);
 
   void saveGardenDetail(String field, dynamic value) {
-    Firestore.instance
-        .document(reference.documentID)
-        .updateData({field: value});
+    FirebaseFirestore.instance.doc(reference.id).update({field: value});
   }
 
   Future<void> saveGarden() async {
-    return Firestore.instance.document(reference.path).setData({
+    return FirebaseFirestore.instance.doc(reference.path).set({
       'name': name,
       'street': street,
       'city': city,

@@ -21,13 +21,13 @@ class _MyGardenState extends State<MyGarden> {
       appBar: AppBar(title: const Text("Mein Garten")),
       drawer: MyDrawer(),
       body: StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('gardens').snapshots(),
+        stream: FirebaseFirestore.instance.collection('gardens').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const CircularProgressIndicator();
           }
 
-          return _buildBody(context, snapshot.data.documents);
+          return _buildBody(context, snapshot.data.docs);
         },
       ),
     );
