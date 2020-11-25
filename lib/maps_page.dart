@@ -1,42 +1,36 @@
+import 'dart:async';
 import 'dart:developer' as logging;
-
 import 'package:biodiversity/drawer.dart';
+import 'package:biodiversity/maps_add_map_icon_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter/cupertino.dart';
+
 
 class MapsPage extends StatefulWidget {
-  MapsPage(
-    this.latitude,
-    this.longitude, {
-    Key key,
-  }) : super(key: key);
+  const MapsPage(this.latitude, this.longitude, {Key key,}) : super(key: key);
   final double latitude;
   final double longitude;
 
   @override
   _MapsPageState createState() => _MapsPageState();
+
 }
 
 class _MapsPageState extends State<MapsPage> {
   GoogleMapController mapController;
-  List<Marker> myMarker = <Marker>[];
-  LatLng tapPosition;
+  List<Marker> markerList = <Marker>[];
+  LatLng tappedPoint = LatLng(46.9472, 7.4512);
+
+  void addToMarkerList(Marker marker){
+    markerList.add(marker);
+  }
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
-
-    myMarker.add(Marker(
-        markerId: MarkerId('SomeId'),
-        position: LatLng(46.946667, 7.451944),
-        infoWindow: const InfoWindow(
-          title: 'Münsterplattform',
-          snippet: 'Das Münster ist wundervoll',
-        )));
+    setState(() {});
   }
 
-  _setPosition(LatLng tapPos) {
-    tapPosition = tapPos;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,28 +48,35 @@ class _MapsPageState extends State<MapsPage> {
         compassEnabled: true,
         zoomControlsEnabled: false,
         mapType: MapType.hybrid,
-        markers: Set.from(myMarker),
+        markers: Set.from(markerList),
         onTap: _setPosition,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _addMarker(tapPosition);
+          _navigateAddMapIcon(context)    //opens selection page
+          .then(onGoBack);
         },
-        child: Icon(Icons.add),
         backgroundColor: Colors.green,
+        child: const Icon(Icons.add),
       ),
     );
   }
 
-  _addMarker(LatLng tappedPoint) {
-    setState(() {
-      myMarker.add(Marker(
-          markerId: MarkerId(tappedPoint.toString()),
-          position: tappedPoint,
-          draggable: true,
-          onDragEnd: (dragEndPosition) {
-            logging.log(dragEndPosition.toString());
-          }));
-    });
+  _navigateAddMapIcon(BuildContext context) async{
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddMapIcon(tappedPoint)),
+    ) as Marker;
+
+    markerList.add(result);
+  }
+
+  void _setPosition(LatLng tapPos) {
+    tappedPoint = tapPos;
+  }
+
+  FutureOr onGoBack(dynamic value){
+    markerList = markerList;
+    setState((){});
   }
 }
