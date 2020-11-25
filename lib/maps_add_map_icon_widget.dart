@@ -1,25 +1,25 @@
 import 'dart:async';
-import 'dart:developer' as logging;
+
+import 'package:biodiversity/maps_show_selection_list.dart';
 import 'package:biodiversity/maps_submap_widget.dart';
 import 'package:biodiversity/strucural_element_card_widget.dart';
-import 'package:biodiversity/maps_show_selection_list.dart';
-import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:biodiversity/biodiversity_measure.dart';
-
-
+import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class AddMapIcon extends StatefulWidget {
   final LatLng tappedPosition;
-  AddMapIcon(this.tappedPosition, {Key key,}) : super(key: key);
+
+  AddMapIcon(
+    this.tappedPosition, {
+    Key key,
+  }) : super(key: key);
 
   @override
   _AddMapIconState createState() => _AddMapIconState();
 }
-
 
 class _AddMapIconState extends State<AddMapIcon>{
   String chosenElement = 'wähle ein Element';
@@ -117,7 +117,7 @@ class _AddMapIconState extends State<AddMapIcon>{
   Widget getSelectedElementAsCard(){        //return a structuralElementCard with the selected card
     if (chosenElementType != ''){
       return StreamBuilder<QuerySnapshot>(
-          stream: Firestore.instance
+          stream: FirebaseFirestore.instance
               .collection('biodiversityMeasures')
               .where('type', isEqualTo: chosenElementType.toLowerCase())
               .where('name', isEqualTo: chosenElement)
@@ -127,7 +127,7 @@ class _AddMapIconState extends State<AddMapIcon>{
               return const Center(child: CircularProgressIndicator());
             }
             final List<BiodiversityMeasure> list = [];
-            for (final DocumentSnapshot in snapshot.data.documents) {
+            for (final DocumentSnapshot in snapshot.data.docs) {
               list.add(BiodiversityMeasure.fromSnapshot(DocumentSnapshot));
             }
             final BiodiversityMeasure chElement = list

@@ -1,9 +1,7 @@
-import 'dart:developer' as logging;
 import 'package:biodiversity/maps_select_from_selection_list.dart';
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:biodiversity/biodiversity_measure.dart';
+import 'package:flutter/material.dart';
 
 
 class ShowSelectionList extends StatelessWidget{
@@ -63,7 +61,7 @@ class _SubListState extends State<SubList> {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: StreamBuilder<QuerySnapshot>(
-            stream: Firestore.instance
+            stream: FirebaseFirestore.instance
                 .collection('biodiversityMeasures')
                 .where('type', isEqualTo: widget.elementType.toLowerCase())
                 .snapshots(),
@@ -72,7 +70,7 @@ class _SubListState extends State<SubList> {
                 return const Center(child: CircularProgressIndicator());
               }
               final List<BiodiversityMeasure> list = [];
-              for (final DocumentSnapshot in snapshot.data.documents) {
+              for (final DocumentSnapshot in snapshot.data.docs) {
                 list.add(BiodiversityMeasure.fromSnapshot(DocumentSnapshot));
               }
               if (list.isEmpty) {
@@ -114,4 +112,42 @@ class _SubListState extends State<SubList> {
       ),
     );
   }
+}
+
+//Remove class BiodiversityMeasure and import biodiversity_measure.dart when merched branch of Gabriel TODO
+class BiodiversityMeasure {
+  final String name;
+  final String description;
+  final String buildInstructions;
+  final String type;
+  final Map<String, bool> beneficialFor;
+  final Map<String, bool> badFor;
+  final String imageSource;
+  final DocumentReference reference;
+
+  BiodiversityMeasure(this.name, this.description, this.buildInstructions,
+      this.type, this.beneficialFor, this.reference, this.imageSource, this.badFor);
+
+  BiodiversityMeasure.fromMap(Map<String, dynamic> map, {this.reference})
+      : name = map.containsKey('name') ? map['name'] as String : "",
+        description =
+        map.containsKey('description') ? map['description'] as String : "",
+        buildInstructions = map.containsKey('buildInstructions')
+            ? map['buildInstructions'] as String
+            : "",
+        type = map.containsKey('type') ? map['type'] as String : "",
+        beneficialFor = map.containsKey('beneficialFor')
+            ? Map<String, bool>.from(map['beneficialFor'] as Map)
+            : Map<String, bool>.identity(),
+        badFor = map.containsKey('beneficialFor')
+            ? Map<String, bool>.from(map['beneficialFor'] as Map)
+            : Map<String, bool>.identity(),
+        imageSource =
+        map.containsKey('image') ? map['image'] as String : 'res/logo.png' {
+    beneficialFor.removeWhere((key, value) => !value);
+    badFor.removeWhere((key, value) => value);
+  }
+
+  BiodiversityMeasure.fromSnapshot(DocumentSnapshot snapshot)
+      : this.fromMap(snapshot.data(), reference: snapshot.reference);
 }
