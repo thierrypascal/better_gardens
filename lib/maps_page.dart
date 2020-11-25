@@ -7,7 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/cupertino.dart';
 
 
-class MapsPage extends StatefulWidget {
+class MapsPage extends StatefulWidget{
   const MapsPage(this.latitude, this.longitude, {Key key,}) : super(key: key);
   final double latitude;
   final double longitude;
