@@ -1,15 +1,13 @@
-import 'dart:developer' as logging;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:flutter/cupertino.dart';
 
 class SubMap extends StatefulWidget {
   SubMap(
-      this.latitude,
-      this.longitude,
-      {
-        Key key,
-      }) : super(key: key);
+    this.latitude,
+    this.longitude, {
+    Key key,
+  }) : super(key: key);
   final double latitude;
   final double longitude;
 

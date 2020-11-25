@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:biodiversity/maps_show_selection_list.dart';
-import 'package:biodiversity/maps_submap_widget.dart';
-import 'package:biodiversity/strucural_element_card_widget.dart';
+import 'file:///C:/Users/gabri/ip34/mobile-front-end/lib/screens/map_page/maps_show_selection_list.dart';
+import 'file:///C:/Users/gabri/ip34/mobile-front-end/lib/screens/map_page/maps_submap_widget.dart';
+import 'file:///C:/Users/gabri/ip34/mobile-front-end/lib/components/strucural_element_card_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

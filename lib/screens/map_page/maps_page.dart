@@ -1,14 +1,17 @@
 import 'dart:async';
 import 'dart:developer' as logging;
-import 'package:biodiversity/drawer.dart';
-import 'package:biodiversity/maps_add_map_icon_widget.dart';
+import 'file:///C:/Users/gabri/ip34/mobile-front-end/lib/components/drawer.dart';
+import 'file:///C:/Users/gabri/ip34/mobile-front-end/lib/screens/map_page/maps_add_map_icon_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/cupertino.dart';
 
-
 class MapsPage extends StatefulWidget {
-  const MapsPage(this.latitude, this.longitude, {Key key,}) : super(key: key);
+  const MapsPage(
+    this.latitude,
+    this.longitude, {
+    Key key,
+  }) : super(key: key);
   final double latitude;
   final double longitude;
 

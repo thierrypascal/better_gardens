@@ -1,9 +1,10 @@
-import 'package:biodiversity/account_page.dart';
-import 'package:biodiversity/inventar_page.dart';
-import 'package:biodiversity/login_page.dart';
-import 'package:biodiversity/maps_page.dart';
-import 'package:biodiversity/my_garden_page.dart';
 import 'package:flutter/material.dart';
+
+import 'file:///C:/Users/gabri/ip34/mobile-front-end/lib/screens/account_page/account_page.dart';
+import 'file:///C:/Users/gabri/ip34/mobile-front-end/lib/screens/inventar_page/inventar_page.dart';
+import 'file:///C:/Users/gabri/ip34/mobile-front-end/lib/screens/login_page/login_page.dart';
+import 'file:///C:/Users/gabri/ip34/mobile-front-end/lib/screens/map_page/maps_page.dart';
+import 'file:///C:/Users/gabri/ip34/mobile-front-end/lib/screens/my_garden_page/my_garden_page.dart';
 
 class MyDrawer extends StatelessWidget {
   @override

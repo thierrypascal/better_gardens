@@ -1,5 +1,6 @@
-import 'package:biodiversity/drawer.dart';
 import 'package:flutter/material.dart';
+
+import 'file:///C:/Users/gabri/ip34/mobile-front-end/lib/components/drawer.dart';
 
 class AccountPage extends StatefulWidget {
   AccountPage({Key key}) : super(key: key);

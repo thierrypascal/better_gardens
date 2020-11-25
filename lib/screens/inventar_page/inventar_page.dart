@@ -1,8 +1,9 @@
-import 'package:biodiversity/biodiversity_measure.dart';
-import 'package:biodiversity/drawer.dart';
-import 'package:biodiversity/strucural_element_card_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
+import 'file:///C:/Users/gabri/ip34/mobile-front-end/lib/components/drawer.dart';
+import 'file:///C:/Users/gabri/ip34/mobile-front-end/lib/components/strucural_element_card_widget.dart';
+import 'file:///C:/Users/gabri/ip34/mobile-front-end/lib/models/biodiversity_measure.dart';
 
 class InventarPage extends StatefulWidget {
   @override

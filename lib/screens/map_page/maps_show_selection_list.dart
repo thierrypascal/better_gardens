@@ -1,4 +1,4 @@
-import 'package:biodiversity/maps_select_from_selection_list.dart';
+import 'file:///C:/Users/gabri/ip34/mobile-front-end/lib/screens/map_page/maps_select_from_selection_list.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
