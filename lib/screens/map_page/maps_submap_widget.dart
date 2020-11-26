@@ -1,14 +1,10 @@
 import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SubMap extends StatefulWidget {
-  SubMap(
-{
-    Key key,
-  }) : super(key: key);
 
   @override
   _SubMapState createState() => _SubMapState();
@@ -63,7 +59,8 @@ class _SubMapState extends State<SubMap> {
                     ),
                     Flexible(
                       child: Text(
-                        '${snapshot.data}',     //so it's not empty while loading
+                        snapshot.data.toString(),
+                        //so it's not empty while loading
                         textScaleFactor: 1.3,
                       ),
                     ),

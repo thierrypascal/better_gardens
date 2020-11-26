@@ -1,19 +1,30 @@
 import 'dart:async';
 
+import 'package:biodiversity/components/simple_element_card_widget.dart';
+import 'package:biodiversity/models/biodiversity_measure.dart';
+import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:biodiversity/screens/map_page/maps_show_selection_list.dart';
 import 'package:biodiversity/screens/map_page/maps_submap_widget.dart';
-import 'package:biodiversity/components/simple_element_card_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:biodiversity/screens/map_page/maps_page.dart';
-import 'package:biodiversity/models/biodiversity_measure.dart';
 
 class AddBiodiversityMeasure extends StatefulWidget {
-  AddBiodiversityMeasure({Key key,}) : super(key: key);
-  AddBiodiversityMeasure.fromMap(this.location, {Key key,}) : super(key: key);
-  AddBiodiversityMeasure.fromList(this.name, this.type, {Key key,}) : super(key: key);
+  AddBiodiversityMeasure({
+    Key key,
+  }) : super(key: key);
+
+  AddBiodiversityMeasure.fromMap(
+    this.location, {
+    Key key,
+  }) : super(key: key);
+
+  AddBiodiversityMeasure.fromList(
+    this.name,
+    this.type, {
+    Key key,
+  }) : super(key: key);
 
   LatLng location;
   String name;
@@ -26,12 +37,12 @@ class AddBiodiversityMeasure extends StatefulWidget {
   static String chosenElementType = '';
 }
 
-class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure>{
-  void setStatics(){
-    if (widget.name != null && widget.type != null){
+class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
+  void setStatics() {
+    if (widget.name != null && widget.type != null) {
       AddBiodiversityMeasure.chosenElement = widget.name;
       AddBiodiversityMeasure.chosenElementType = widget.type;
-    }else{
+    } else {
       widget.name = AddBiodiversityMeasure.chosenElement;
       widget.name = AddBiodiversityMeasure.chosenElementType;
     }
@@ -43,9 +54,10 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure>{
       appBar: AppBar(
         title: const Text('Element hinzufügen'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: (){
-            AddBiodiversityMeasure.chosenElement = 'wähle ein Element';    //reset statics if popup closed
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            AddBiodiversityMeasure.chosenElement =
+                'wähle ein Element'; //reset statics if popup closed
             AddBiodiversityMeasure.chosenElementType = '';
             Navigator.pop(context);
           },
@@ -59,8 +71,7 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure>{
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget> [
-
+                  children: <Widget>[
                     showSelectionOrShowSelected(),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
@@ -69,16 +80,20 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure>{
                         child: OutlineButton(
                           onPressed: () {
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => ShowSelectionList()),
-                            ).then(onGoBack);                                         //updates chosenElement
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ShowSelectionList()),
+                            ).then(onGoBack); //updates chosenElement
                           },
-                          child: Text('Auswahl: ${AddBiodiversityMeasure.chosenElement}', textAlign: TextAlign.left, textScaleFactor: 1.1,),
+                          child: Text(
+                            'Auswahl: ${AddBiodiversityMeasure.chosenElement}',
+                            textAlign: TextAlign.left,
+                            textScaleFactor: 1.1,
+                          ),
                         ),
                       ),
                     ),
                     getSelectedElementAsCard(),
-
                     showSubMapOrLargeSubMap(),
                     SubMap(),
                   ],
@@ -92,28 +107,34 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure>{
                 children: <Widget>[
                   ElevatedButton(
                     onPressed: () {
-                      AddBiodiversityMeasure.chosenElement = 'wähle ein Element';
+                      AddBiodiversityMeasure.chosenElement =
+                      'wähle ein Element';
                       AddBiodiversityMeasure.chosenElementType = '';
                       Navigator.pop(context);
                     },
-                    child: Text('Abbrechen'),
+                    child: const Text('Abbrechen'),
                   ),
                   ElevatedButton(
                     onPressed: () {
                       //check if location and element is set
-                      if (AddBiodiversityMeasure.chosenElementType != null && AddBiodiversityMeasure.chosenElementType != '' && MapsPage.tappedPoint != null){
+                      if (AddBiodiversityMeasure.chosenElementType != null &&
+                          AddBiodiversityMeasure.chosenElementType != '' &&
+                          MapsPage.tappedPoint != null) {
                         //TODO: save to database
                         Marker marker = Marker(
                             markerId: MarkerId(MapsPage.tappedPoint.toString()),
                             position: MapsPage.tappedPoint,
-                            icon: MapsPage.icons[AddBiodiversityMeasure.chosenElementType.toLowerCase()]);
+                            icon: MapsPage.icons[AddBiodiversityMeasure
+                                .chosenElementType
+                                .toLowerCase()]);
                         MapsPage.markerList.add(marker);
 
                         //reset statics
-                        AddBiodiversityMeasure.chosenElement = 'wähle ein Element';
+                        AddBiodiversityMeasure.chosenElement =
+                        'wähle ein Element';
                         AddBiodiversityMeasure.chosenElementType = '';
                         Navigator.pop(context);
-                      }else{
+                      } else {
                         _showAlertNotSet();
                       }
                     },
@@ -122,8 +143,7 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure>{
                 ],
               ),
             ),
-          ]
-      ),
+          ]),
     );
   }
 
@@ -133,12 +153,13 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure>{
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Achtung'),
+          title: const Text('Achtung'),
           content: SingleChildScrollView(
             child: ListBody(
-              children: <Widget>[
-                const Text('Der Standort oder das Element wurde noch nicht erfasst.'),
-                const Text('Beides muss erfasst sein, um einen neuen Karteneintrag zu machen.'),
+              children: const <Widget>[
+                Text('Der Standort oder das Element wurde noch nicht erfasst.'),
+                Text(
+                    'Beides muss erfasst sein, um einen neuen Karteneintrag zu machen.'),
               ],
             ),
           ),
@@ -155,10 +176,11 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure>{
     );
   }
 
-  Widget showSelectionOrShowSelected(){
-    if (AddBiodiversityMeasure.chosenElementType == ''){  //is not set
+  Widget showSelectionOrShowSelected() {
+    if (AddBiodiversityMeasure.chosenElementType == '') {
+      //is not set
       //redirect to Selection
-      WidgetsBinding.instance.addPostFrameCallback((_) async{
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => ShowSelectionList()),
@@ -168,19 +190,22 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure>{
     return getSelectedElementAsCard();
   }
 
-  Widget showSubMapOrLargeSubMap(){
-    if (widget.location == null){
+  Widget showSubMapOrLargeSubMap() {
+    if (widget.location == null) {
       //show big SubMap to set location
     }
     return SubMap();
   }
 
-  Widget getSelectedElementAsCard(){        //return a structuralElementCard with the selected card
-    if (AddBiodiversityMeasure.chosenElementType != ''){
+  Widget getSelectedElementAsCard() {
+    //return a structuralElementCard with the selected card
+    if (AddBiodiversityMeasure.chosenElementType != '') {
       return StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
               .collection('biodiversityMeasures')
-              .where('type', isEqualTo: AddBiodiversityMeasure.chosenElementType.toLowerCase())
+              .where('type',
+              isEqualTo:
+              AddBiodiversityMeasure.chosenElementType.toLowerCase())
               .where('name', isEqualTo: AddBiodiversityMeasure.chosenElement)
               .snapshots(),
           builder: (context, snapshot) {
@@ -202,14 +227,13 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure>{
                 beneficialFor.toString().trim(),
                 AssetImage(chElement.imageSource),
                 chElement.description);
-          }
-      );
-    }else{
-      return Text('');
+          });
+    } else {
+      return const Text('');
     }
   }
 
-  FutureOr onGoBack(dynamic value){
-    setState((){});
+  FutureOr onGoBack(dynamic value) {
+    setState(() {});
   }
 }
