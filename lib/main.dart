@@ -1,4 +1,5 @@
 import 'package:biodiversity/models/map_interactions_container.dart';
+import 'package:biodiversity/models/map_marker_service.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -32,7 +33,10 @@ class MyApp extends StatelessWidget {
                 },
               ),
               ChangeNotifierProvider<MapInteractionContainer>(
-                  create: (context) => MapInteractionContainer.empty())
+                  create: (context) => MapInteractionContainer.empty()),
+              ChangeNotifierProvider<MapMarkerService>(
+                create: (context) => MapMarkerService(),
+              ),
             ],
             child: MaterialApp(
               title: 'Better Gardens',
