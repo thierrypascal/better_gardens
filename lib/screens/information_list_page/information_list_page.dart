@@ -1,8 +1,9 @@
 import 'package:biodiversity/components/drawer.dart';
-import 'package:biodiversity/components/strucural_element_card_widget.dart';
+import 'package:biodiversity/components/expandable_element_card_widget.dart';
 import 'package:biodiversity/models/biodiversity_measure.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:biodiversity/models/biodiversity_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class InformationListPage extends StatefulWidget {
   @override
@@ -29,13 +30,7 @@ class _InformationListPageState extends State<InformationListPage> {
         itemCount: _pageList.length,
         itemBuilder: (BuildContext context, int index) {
           final String elementType = _pageList.elementAt(index);
-          return ItemList(
-            elementType: elementType,
-            data: FirebaseFirestore.instance
-                .collection('biodiversityMeasures')
-                .where('type', isEqualTo: elementType.toLowerCase())
-                .snapshots(),
-          );
+          return ItemList(elementType: elementType);
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -64,64 +59,52 @@ class _InformationListPageState extends State<InformationListPage> {
 
 class ItemList extends StatelessWidget {
   final String elementType;
-  final Stream<QuerySnapshot> data;
 
-  const ItemList({Key key, this.elementType, this.data}) : super(key: key);
+  const ItemList({Key key, this.elementType}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final List<BiodiversityMeasure> list =
+        Provider.of<BiodiversityService>(context)
+            .getBiodiversityObjectList(elementType);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: StreamBuilder<QuerySnapshot>(
-            stream: data,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              final List<BiodiversityMeasure> list = [];
-              for (final DocumentSnapshot in snapshot.data.docs) {
-                list.add(BiodiversityMeasure.fromSnapshot(DocumentSnapshot));
-              }
-              if (list.isEmpty) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Text(
-                        "Leider keine Einträge vorhanden",
-                        textScaleFactor: 2,
-                        textAlign: TextAlign.center,
-                      ),
-                      Icon(
-                        Icons.emoji_nature,
-                        size: 80,
-                      )
-                    ],
-                  ),
-                );
-              }
-              return ListView.separated(
-                itemCount: list.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final element = list.elementAt(index);
-                  final beneficialFor = StringBuffer();
-                  for (final String item in element.beneficialFor.keys) {
-                    beneficialFor.write('$item ');
-                  }
-                  return StructuralElementCard(
-                    element.name,
-                    beneficialFor.toString().trim(),
-                    AssetImage(element.imageSource),
-                    element.description,
-                    element: element,
-                  );
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return const SizedBox(height: 5);
-                },
+        child: ListView.separated(
+          itemCount: list.length,
+          itemBuilder: (BuildContext context, int index) {
+            final element = list.elementAt(index);
+
+            if (list.isEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Text(
+                      "Leider keine Einträge vorhanden",
+                      textScaleFactor: 2,
+                      textAlign: TextAlign.center,
+                    ),
+                    Icon(
+                      Icons.emoji_nature,
+                      size: 80,
+                    )
+                  ],
+                ),
               );
-            }),
+            }
+            return ExpandableElementCard(
+              element.name,
+              element.beneficialFor(),
+              AssetImage(element.imageSource),
+              element.description,
+              element: element,
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return const SizedBox(height: 5);
+          },
+        ),
       ),
     );
   }

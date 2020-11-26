@@ -3,7 +3,7 @@ import 'dart:developer' as logging;
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/map_marker_service.dart';
-import 'package:biodiversity/screens/map_page/maps_show_selection_list.dart';
+import 'package:biodiversity/screens/map_page/maps_selection_list_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -17,6 +17,7 @@ class MapsPage extends StatefulWidget {
 class _MapsPageState extends State<MapsPage> {
   GoogleMapController mapController;
   LatLng _lastLocation;
+  Set<Marker> _markers;
 
   @override
   void initState() {
@@ -25,6 +26,15 @@ class _MapsPageState extends State<MapsPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_markers == null) {
+      Provider.of<MapMarkerService>(context, listen: false)
+          .getMarkerSet()
+          .then((markers) {
+        setState(() {
+          _markers = markers;
+        });
+      });
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('Map'),
@@ -39,7 +49,7 @@ class _MapsPageState extends State<MapsPage> {
         zoomControlsEnabled: false,
         rotateGesturesEnabled: false,
         mapType: MapType.hybrid,
-        markers: Provider.of<MapMarkerService>(context).getMarkerSet(),
+        markers: _markers,
         onCameraIdle: () {
           mapController.getVisibleRegion().then((bounds) {
             final double lat =
@@ -51,7 +61,7 @@ class _MapsPageState extends State<MapsPage> {
         },
         onTap: (pos) =>
             Provider.of<MapInteractionContainer>(context, listen: false)
-                .selectedLocation = pos,
+            .selectedLocation = pos,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -61,7 +71,7 @@ class _MapsPageState extends State<MapsPage> {
           logging.log(_lastLocation.toString());
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ShowSelectionList()),
+            MaterialPageRoute(builder: (context) => SelectionList()),
           );
         },
         backgroundColor: Theme
