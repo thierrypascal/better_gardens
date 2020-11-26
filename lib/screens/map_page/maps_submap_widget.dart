@@ -34,6 +34,9 @@ class _SubMapState extends State<SubMap> {
                         .getAddressOfSelectedLocation(),
                     builder:
                         (BuildContext context, AsyncSnapshot<String> snapshot) {
+                      if (!snapshot.hasData) {
+                        return const Text("");
+                      }
                       return Text(
                         snapshot.data,
                         textScaleFactor: 1.3,
@@ -49,21 +52,21 @@ class _SubMapState extends State<SubMap> {
             height: MediaQuery.of(context).size.height / 3,
             child: GoogleMap(
               onMapCreated: (controller) => mapController = controller,
-              initialCameraPosition: CameraPosition(
-                target: Provider.of<MapInteractionContainer>(context)
-                    .selectedLocation,
-                zoom: 18.0,
-              ),
+              initialCameraPosition:
+              Provider.of<MapInteractionContainer>(context)
+                  .getCameraPosition(),
               zoomControlsEnabled: false,
               mapType: MapType.hybrid,
-              markers: Provider.of<MapInteractionContainer>(context)
-                          .selectedLocation !=
-                      null
+              markers: Provider
+                  .of<MapInteractionContainer>(context)
+                  .selectedLocation !=
+                  null
                   ? <Marker>{
-                      Marker(
-                        position: Provider.of<MapInteractionContainer>(context)
-                            .selectedLocation,
-                        markerId: MarkerId("subMapMarker"),
+                Marker(
+                  position: Provider
+                      .of<MapInteractionContainer>(context)
+                      .selectedLocation,
+                  markerId: MarkerId("subMapMarker"),
                       )
                     }
                   : <Marker>{},

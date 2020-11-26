@@ -4,7 +4,7 @@ import 'package:biodiversity/components/simple_element_card_widget.dart';
 import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/map_marker_service.dart';
-import 'package:biodiversity/screens/map_page/maps_large_submap_widget.dart';
+import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:biodiversity/screens/map_page/maps_submap_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -37,70 +37,71 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
           },
         ),
       ),
-      body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (_itemIsSelected)
-                      getSelectedElementAsCard()
-                    else
-                      showSubMapOrLargeSubMap(),
-                  ],
-                ),
-              ),
+      body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
+          Widget>[
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (_itemIsSelected) getSelectedElementAsCard() else SubMap(),
+              ],
             ),
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  ElevatedButton(
-                    onPressed: () {
-                      Provider.of<MapInteractionContainer>(context, listen: false).reset();
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Abbrechen'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      //check if location and element is set
-                      if (Provider.of<MapInteractionContainer>(context,
-                                      listen: false)
-                                  .name !=
-                              '' &&
-                          Provider.of<MapInteractionContainer>(context,
-                                      listen: false)
-                                  .type !=
-                              '' &&
-                          Provider.of<MapInteractionContainer>(context,
-                                      listen: false)
-                                  .selectedLocation !=
-                              null) {
-
-                        Provider.of<MapMarkerService>(context).addMarker(
-                            Provider.of<MapInteractionContainer>(context).name,
-                            1,
-                            Provider.of<MapInteractionContainer>(context)
-                                .selectedLocation);
-
-                        //reset statics
-                        Provider.of<MapInteractionContainer>(context).reset();
-                        Navigator.pop(context);
-                      } else {
-                        _showAlertNotSet();
-                      }
-                    },
-                    child: Text('Speichern'),
-                  ),
-                ],
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              ElevatedButton(
+                onPressed: () {
+                  Provider.of<MapInteractionContainer>(context, listen: false)
+                      .reset();
+                  Navigator.pop(context);
+                },
+                child: const Text('Abbrechen'),
               ),
-            ),
-          ]),
+              ElevatedButton(
+                onPressed: () {
+                  //check if location and element is set
+                  if (Provider.of<MapInteractionContainer>(context,
+                                  listen: false)
+                              .name !=
+                          '' &&
+                      Provider.of<MapInteractionContainer>(context,
+                                  listen: false)
+                              .type !=
+                          '' &&
+                      Provider.of<MapInteractionContainer>(context,
+                                  listen: false)
+                              .selectedLocation !=
+                          null) {
+                    Provider.of<MapMarkerService>(context).addMarker(
+                        Provider.of<MapInteractionContainer>(context).name,
+                        1,
+                        Provider.of<MapInteractionContainer>(context)
+                            .selectedLocation);
+
+                    //reset statics
+                    Provider.of<MapInteractionContainer>(context).reset();
+                    Navigator.canPop(context)
+                        ? Navigator.pop(context)
+                        : Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => MapsPage()),
+                          );
+                  } else {
+                    _showAlertNotSet();
+                  }
+                },
+                child: Text('Speichern'),
+              ),
+            ],
+          ),
+        ),
+      ]),
     );
   }
 
@@ -131,22 +132,6 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
         );
       },
     );
-  }
-
-  Widget showSubMapOrLargeSubMap() {
-    if (Provider
-        .of<MapInteractionContainer>(context)
-        .selectedLocation ==
-        null) {
-      //show big SubMap to set location
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => LargeSubMap()),
-        );
-      });
-    }
-    return SubMap();
   }
 
   Widget getSelectedElementAsCard() {

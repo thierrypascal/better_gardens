@@ -15,7 +15,7 @@ class MapInteractionContainer extends ChangeNotifier {
 
   String get type => _type;
 
-  LatLng get selectedLocation => _selectedLocation ?? const LatLng(0, 0);
+  LatLng get selectedLocation => _selectedLocation;
 
   set name(String value) {
     _name = value;
@@ -41,10 +41,16 @@ class MapInteractionContainer extends ChangeNotifier {
 
   Future<String> getAddressOfSelectedLocation() async {
     if (_selectedLocation == null) {
-      return "";
+      return "Keine Adresse ausgewählt";
     }
     final List<Placemark> placeMark = await placemarkFromCoordinates(
         _selectedLocation.latitude, _selectedLocation.longitude);
     return "${placeMark[0].street}, ${placeMark[0].locality}";
+  }
+
+  CameraPosition getCameraPosition() {
+    return CameraPosition(
+        zoom: 18.0,
+        target: _selectedLocation ?? const LatLng(46.948915, 7.445423));
   }
 }

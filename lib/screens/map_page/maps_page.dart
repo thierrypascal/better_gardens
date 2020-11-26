@@ -1,8 +1,9 @@
+import 'dart:developer' as logging;
 
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/map_marker_service.dart';
-import 'package:biodiversity/screens/map_page/maps_add_biodiversity_measure_widget.dart';
+import 'package:biodiversity/screens/map_page/maps_show_selection_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -15,6 +16,7 @@ class MapsPage extends StatefulWidget {
 
 class _MapsPageState extends State<MapsPage> {
   GoogleMapController mapController;
+  LatLng _lastLocation;
 
   @override
   void initState() {
@@ -38,19 +40,34 @@ class _MapsPageState extends State<MapsPage> {
         rotateGesturesEnabled: false,
         mapType: MapType.hybrid,
         markers: Provider.of<MapMarkerService>(context).getMarkerSet(),
-        onTap: (pos) {
-          Provider.of<MapInteractionContainer>(context, listen: false)
-              .selectedLocation = pos;
+        onCameraIdle: () {
+          mapController.getVisibleRegion().then((bounds) {
+            final double lat =
+                (bounds.southwest.latitude + bounds.northeast.latitude) / 2;
+            final double long =
+                (bounds.southwest.longitude + bounds.northeast.longitude) / 2;
+            _lastLocation = LatLng(lat, long);
+          });
         },
+        onTap: (pos) =>
+            Provider.of<MapInteractionContainer>(context, listen: false)
+                .selectedLocation = pos,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          Provider
+              .of<MapInteractionContainer>(context, listen: false)
+              .selectedLocation ??= _lastLocation;
+          logging.log(_lastLocation.toString());
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AddBiodiversityMeasure()),
+            MaterialPageRoute(builder: (context) => ShowSelectionList()),
           );
         },
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: Theme
+            .of(context)
+            .colorScheme
+            .primary,
         child: const Icon(Icons.add),
       ),
     );
