@@ -56,8 +56,8 @@ class MapMarkerService extends ChangeNotifier {
     return _markers;
   }
 
-  List<Marker> getMarkerList() {
-    final List<Marker> list = <Marker>[];
+  Set<Marker> getMarkerSet() {
+    final Set<Marker> list = <Marker>{};
     for (final AddressObject object in _markers) {
       for (final String element in object.elements.keys) {
         list.add(Marker(

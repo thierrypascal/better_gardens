@@ -1,14 +1,13 @@
 import 'dart:async';
-import 'package:biodiversity/models/map_marker_service.dart';
-import 'package:provider/provider.dart';
+
 import 'package:biodiversity/components/drawer.dart';
-import 'package:biodiversity/models/address_object.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
+import 'package:biodiversity/models/map_marker_service.dart';
 import 'package:biodiversity/screens/map_page/maps_add_biodiversity_measure_widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 
 class MapsPage extends StatefulWidget {
   @override
@@ -60,11 +59,10 @@ class _MapsPageState extends State<MapsPage> {
         zoomControlsEnabled: false,
         rotateGesturesEnabled: false,
         mapType: MapType.hybrid,
-        markers: Set.from(Provider.of<MapMarkerService>(context).getMarkerList()),
+        markers: Provider.of<MapMarkerService>(context).getMarkerSet(),
         onTap: (pos) {
-          Provider
-            .of<MapInteractionContainer>(context, listen: false)
-            .selectedLocation = pos;
+          Provider.of<MapInteractionContainer>(context, listen: false)
+              .selectedLocation = pos;
         },
       ),
       floatingActionButton: FloatingActionButton(
