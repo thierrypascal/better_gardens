@@ -61,7 +61,7 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
                 children: <Widget>[
                   ElevatedButton(
                     onPressed: () {
-                      Provider.of<MapInteractionContainer>(context).reset();
+                      Provider.of<MapInteractionContainer>(context, listen: false).reset();
                       Navigator.pop(context);
                     },
                     child: const Text('Abbrechen'),
@@ -81,7 +81,7 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
                                       listen: false)
                                   .selectedLocation !=
                               null) {
-                        //TODO: save to database
+
                         Provider.of<MapMarkerService>(context).addMarker(
                             Provider.of<MapInteractionContainer>(context).name,
                             1,
