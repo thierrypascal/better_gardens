@@ -1,6 +1,7 @@
 import 'dart:developer' as logging;
 
 import 'package:biodiversity/components/drawer.dart';
+import 'package:biodiversity/fonts/icons_biodiversity_icons.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/map_marker_service.dart';
 import 'package:biodiversity/screens/map_page/maps_show_selection_list.dart';
@@ -19,8 +20,8 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   GoogleMapController mapController;
   LatLng _lastLocation;
   AnimationController _controller;
-  static const List<IconData> icons = const [
-    Icons.dashboard_customize,
+  static const List<IconData> icons = [
+    IconsBiodiversity.wish,
     Icons.playlist_add,
   ];
 
@@ -28,7 +29,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _controller = new AnimationController(
+    _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
@@ -95,7 +96,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     );
   }
 
-  List<Widget> getWidgetListForAdvFab(){    //TODO: discuss which icons should be used
+  List<Widget> getWidgetListForAdvFab(){
     List<Widget> result = [
       Container(
         height: 56.0,
