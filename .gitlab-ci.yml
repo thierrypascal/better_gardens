@@ -1,0 +1,29 @@
+stages:
+  - test
+  - build
+flutter_test:
+  stage: test
+  before_script:
+    - export PATH="$PATH:/home/centos/flutter/bin"
+    - export ANDROID_HOME=/home/centos/android-sdk/
+    - export ANDROID_SDK_ROOT=/home/centos/android-sdk/
+    - export PATH=$PATH:$ANDROID_HOME/tools/bin
+    - export JAVA_HOME=/usr/lib/jvm/jre-1.8.0-openjdk/
+  script:
+    - whoami
+    #- flutter test
+flutter_build_android:
+  stage: build
+  before_script:
+    - export PATH="$PATH:/home/centos/flutter/bin"
+    - export ANDROID_HOME=/home/centos/android-sdk/
+    - export ANDROID_SDK_ROOT=/home/centos/android-sdk/
+    - export PATH=$PATH:$ANDROID_HOME/tools/bin
+    - export JAVA_HOME=/usr/lib/jvm/jre-1.8.0-openjdk/
+    - flutter packages get
+    - flutter clean
+  script:
+    - flutter build apk
+  artifacts:
+    paths:
+      - build/app/outputs/apk/release/app-release.apk
