@@ -6,7 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapMarkerService extends ChangeNotifier {
   final Map<String, BitmapDescriptor> _icons = <String, BitmapDescriptor>{};
-  List<AddressObject> _markers;
+  final List<AddressObject> _markers = [];
 
   MapMarkerService() {
     FirebaseFirestore.instance
