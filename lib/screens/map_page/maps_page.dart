@@ -50,7 +50,7 @@ class _MapsPageState extends State<MapsPage> {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) =>
-                AddBiodiversityMeasure()),).then(onGoBack);
+                AddBiodiversityMeasure()),);
         },
         backgroundColor: Theme
             .of(context)

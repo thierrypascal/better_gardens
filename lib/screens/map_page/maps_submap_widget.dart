@@ -6,7 +6,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 class SubMap extends StatefulWidget {
-
   @override
   _SubMapState createState() => _SubMapState();
 }
@@ -20,19 +19,25 @@ class _SubMapState extends State<SubMap> {
 
     tempMarkerList.add(Marker(
       markerId: MarkerId('temp'),
-      position: LatLng(Provider.of<MapInteractionContainer>(context).selectedLocation.latitude, Provider.of<MapInteractionContainer>(context).selectedLocation.longitude),
-      onTap: (){},
+      position: LatLng(
+          Provider.of<MapInteractionContainer>(context)
+              .selectedLocation
+              .latitude,
+          Provider.of<MapInteractionContainer>(context)
+              .selectedLocation
+              .longitude),
+      onTap: () {},
     ));
     setState(() {});
   }
 
   void _setPosition(LatLng tapPos) {
     setState(() {
-      tempMarkerList=[];
+      tempMarkerList = [];
       tempMarkerList.add(Marker(
         markerId: MarkerId('temp'),
         position: tapPos,
-        onTap: (){},
+        onTap: () {},
         draggable: true,
       ));
       Provider.of<MapInteractionContainer>(context).selectedLocation = tapPos;
@@ -46,12 +51,18 @@ class _SubMapState extends State<SubMap> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           FutureBuilder<String>(
-            future: getAddressByLocation(Provider.of<MapInteractionContainer>(context).selectedLocation.latitude, Provider.of<MapInteractionContainer>(context).selectedLocation.longitude),
+            future: getAddressByLocation(
+                Provider.of<MapInteractionContainer>(context)
+                    .selectedLocation
+                    .latitude,
+                Provider.of<MapInteractionContainer>(context)
+                    .selectedLocation
+                    .longitude),
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
               return Padding(
                 padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
                 child: Row(
-                  children: <Widget> [
+                  children: <Widget>[
                     const Flexible(
                       child: Padding(
                         padding: EdgeInsets.fromLTRB(20, 0, 40, 0),
@@ -72,11 +83,17 @@ class _SubMapState extends State<SubMap> {
           ),
           SizedBox(
             width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height/3,
+            height: MediaQuery.of(context).size.height / 3,
             child: GoogleMap(
               onMapCreated: _onMapCreated,
               initialCameraPosition: CameraPosition(
-                target: LatLng(Provider.of<MapInteractionContainer>(context).selectedLocation.latitude, Provider.of<MapInteractionContainer>(context).selectedLocation.longitude),
+                target: LatLng(
+                    Provider.of<MapInteractionContainer>(context)
+                        .selectedLocation
+                        .latitude,
+                    Provider.of<MapInteractionContainer>(context)
+                        .selectedLocation
+                        .longitude),
                 zoom: 18.0,
               ),
               zoomControlsEnabled: false,
@@ -90,7 +107,7 @@ class _SubMapState extends State<SubMap> {
     );
   }
 
-  Future<String> getAddressByLocation(double lat, double lng) async{
+  Future<String> getAddressByLocation(double lat, double lng) async {
     final List<Placemark> placemark = await placemarkFromCoordinates(lat, lng);
 
     return Future.value("${placemark[0].street}, ${placemark[0].locality}");

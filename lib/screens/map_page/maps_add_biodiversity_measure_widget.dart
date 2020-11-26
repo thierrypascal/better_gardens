@@ -60,7 +60,7 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
                 children: <Widget>[
                   ElevatedButton(
                     onPressed: () {
-                      Provider.of<MapInteractionContainer>(context).reset();
+                      Provider.of<MapInteractionContainer>(context, listen: false).reset();
                       Navigator.pop(context);
                     },
                     child: const Text('Abbrechen'),
@@ -71,7 +71,7 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
                       if (Provider.of<MapInteractionContainer>(context).name != '' &&
                           Provider.of<MapInteractionContainer>(context).type != '' &&
                           Provider.of<MapInteractionContainer>(context).selectedLocation != null) {
-                        //TODO: save to database
+
                         Provider.of<MapMarkerService>(context).addMarker(Provider.of<MapInteractionContainer>(context).name, 1, Provider.of<MapInteractionContainer>(context).selectedLocation);
 
                         //reset statics
@@ -156,7 +156,7 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
               .collection('biodiversityMeasures')
               .where('type',
                   isEqualTo:
-                    Provider.of<MapInteractionContainer>(context).type.toLowerCase())
+                    Provider.of<MapInteractionContainer>(context).type)
               .where('name', isEqualTo: Provider.of<MapInteractionContainer>(context).name)
               .snapshots(),
           builder: (context, snapshot) {
