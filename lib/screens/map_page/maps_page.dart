@@ -1,7 +1,8 @@
 import 'dart:async';
-
+import 'package:provider/provider.dart';
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/models/address_object.dart';
+import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/screens/map_page/maps_add_biodiversity_measure_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -70,19 +71,32 @@ class _MapsPageState extends State<MapsPage> {
         mapType: MapType.hybrid,
         markers: Set.from(MapsPage.markerList),
         onTap: (pos) {
-          MapsPage.tappedPoint = pos;
+          Provider
+              .of<MapInteractionContainer>(context, listen: false)
+              .selectedLocation = pos;
+          //MapsPage.tappedPoint = pos;
+
+
         },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AddBiodiversityMeasure()),        //change to .fromMap
+            MaterialPageRoute(builder: (context) =>
+                AddBiodiversityMeasure()), //change to .fromMap
           ).then(onGoBack);
         },
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        child: const Icon(Icons.add),
-      ),
+        backgroundColor: Theme
+            .of(context)
+            .colorScheme
+            .primary,
+        child: const Icon(Icons.
+        add
+        )
+        ,
+      )
+      ,
     );
   }
 

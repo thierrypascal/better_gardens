@@ -1,3 +1,4 @@
+import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -30,6 +31,8 @@ class MyApp extends StatelessWidget {
                   return User.loadUser('users/testuser');
                 },
               ),
+              ChangeNotifierProvider<MapInteractionContainer>(
+                  create: (context) => MapInteractionContainer.empty())
             ],
             child: MaterialApp(
               title: 'Better Gardens',
