@@ -73,29 +73,7 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     showSelectionOrShowSelected(),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: OutlineButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ShowSelectionList()),
-                            ).then(onGoBack); //updates chosenElement
-                          },
-                          child: Text(
-                            'Auswahl: ${AddBiodiversityMeasure.chosenElement}',
-                            textAlign: TextAlign.left,
-                            textScaleFactor: 1.1,
-                          ),
-                        ),
-                      ),
-                    ),
-                    getSelectedElementAsCard(),
                     showSubMapOrLargeSubMap(),
-                    SubMap(),
                   ],
                 ),
               ),
@@ -108,7 +86,7 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
                   ElevatedButton(
                     onPressed: () {
                       AddBiodiversityMeasure.chosenElement =
-                      'wähle ein Element';
+                          'wähle ein Element';
                       AddBiodiversityMeasure.chosenElementType = '';
                       Navigator.pop(context);
                     },
@@ -131,7 +109,7 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
 
                         //reset statics
                         AddBiodiversityMeasure.chosenElement =
-                        'wähle ein Element';
+                            'wähle ein Element';
                         AddBiodiversityMeasure.chosenElementType = '';
                         Navigator.pop(context);
                       } else {
@@ -204,8 +182,8 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
           stream: FirebaseFirestore.instance
               .collection('biodiversityMeasures')
               .where('type',
-              isEqualTo:
-              AddBiodiversityMeasure.chosenElementType.toLowerCase())
+                  isEqualTo:
+                      AddBiodiversityMeasure.chosenElementType.toLowerCase())
               .where('name', isEqualTo: AddBiodiversityMeasure.chosenElement)
               .snapshots(),
           builder: (context, snapshot) {
