@@ -60,27 +60,8 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure>{
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget> [
-
                     showSelectionOrShowSelected(),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: OutlineButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => ShowSelectionList()),
-                            ).then(onGoBack);                                         //updates chosenElement
-                          },
-                          child: Text('Auswahl: ${AddBiodiversityMeasure.chosenElement}', textAlign: TextAlign.left, textScaleFactor: 1.1,),
-                        ),
-                      ),
-                    ),
-                    getSelectedElementAsCard(),
-
                     showSubMapOrLargeSubMap(),
-                    SubMap(),
                   ],
                 ),
               ),
@@ -170,7 +151,7 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure>{
 
   Widget showSubMapOrLargeSubMap(){
     if (widget.location == null){
-      //show big SubMap to set location
+      //show big SubMap to set locationa
     }
     return SubMap();
   }
