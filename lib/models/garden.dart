@@ -9,7 +9,7 @@ class Garden {
   int numberOfStructureElements;
   int numberOfPlants;
   int numberOfMethods;
-  DocumentReference reference;
+  final DocumentReference reference;
   Map<String, int> ownedObjects;
 
   Garden(
