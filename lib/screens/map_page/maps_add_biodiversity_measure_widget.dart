@@ -5,13 +5,10 @@ import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/map_marker_service.dart';
 import 'package:biodiversity/screens/map_page/maps_large_submap_widget.dart';
-import 'package:biodiversity/screens/map_page/maps_page.dart';
-import 'package:biodiversity/screens/map_page/maps_show_selection_list.dart';
 import 'package:biodiversity/screens/map_page/maps_submap_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 class AddBiodiversityMeasure extends StatefulWidget {
@@ -24,6 +21,7 @@ class AddBiodiversityMeasure extends StatefulWidget {
 }
 
 class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
+  bool _itemIsSelected = false;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +31,8 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Provider.of<MapInteractionContainer>(context).reset();
+            Provider.of<MapInteractionContainer>(context, listen: false)
+                .reset();
             Navigator.pop(context);
           },
         ),
@@ -46,9 +45,11 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    showSelectionOrShowSelected(),
-                    showSubMapOrLargeSubMap(),
+                  children: [
+                    if (_itemIsSelected)
+                      getSelectedElementAsCard()
+                    else
+                      showSubMapOrLargeSubMap(),
                   ],
                 ),
               ),
@@ -68,11 +69,24 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
                   ElevatedButton(
                     onPressed: () {
                       //check if location and element is set
-                      if (Provider.of<MapInteractionContainer>(context).name != '' &&
-                          Provider.of<MapInteractionContainer>(context).type != '' &&
-                          Provider.of<MapInteractionContainer>(context).selectedLocation != null) {
+                      if (Provider.of<MapInteractionContainer>(context,
+                                      listen: false)
+                                  .name !=
+                              '' &&
+                          Provider.of<MapInteractionContainer>(context,
+                                      listen: false)
+                                  .type !=
+                              '' &&
+                          Provider.of<MapInteractionContainer>(context,
+                                      listen: false)
+                                  .selectedLocation !=
+                              null) {
 
-                        Provider.of<MapMarkerService>(context).addMarker(Provider.of<MapInteractionContainer>(context).name, 1, Provider.of<MapInteractionContainer>(context).selectedLocation);
+                        Provider.of<MapMarkerService>(context).addMarker(
+                            Provider.of<MapInteractionContainer>(context).name,
+                            1,
+                            Provider.of<MapInteractionContainer>(context)
+                                .selectedLocation);
 
                         //reset statics
                         Provider.of<MapInteractionContainer>(context).reset();
@@ -90,7 +104,7 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
     );
   }
 
-  Future<void> _showAlertNotSet() async {
+  Future<void> _showAlertNotSet() {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -119,30 +133,17 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
     );
   }
 
-  Widget showSelectionOrShowSelected() {
-    if (Provider.of<MapInteractionContainer>(context).type == '') {
-      //redirect to Selection
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => ShowSelectionList()),
-        ).then(onGoBack);
-      });
-      if (Provider.of<MapInteractionContainer>(context).name == ''){
-        Navigator.pop(context);   //TODO: TEST IF WORKING
-      }
-    }
-    return getSelectedElementAsCard();
-  }
-
   Widget showSubMapOrLargeSubMap() {
-    if (Provider.of<MapInteractionContainer>(context).selectedLocation == null) {
+    if (Provider
+        .of<MapInteractionContainer>(context)
+        .selectedLocation ==
+        null) {
       //show big SubMap to set location
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => LargeSubMap()),
-        ).then(onGoBack);
+        );
       });
     }
     return SubMap();
@@ -155,9 +156,13 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
           stream: FirebaseFirestore.instance
               .collection('biodiversityMeasures')
               .where('type',
-                  isEqualTo:
-                    Provider.of<MapInteractionContainer>(context).type)
-              .where('name', isEqualTo: Provider.of<MapInteractionContainer>(context).name)
+              isEqualTo: Provider
+                  .of<MapInteractionContainer>(context)
+                  .type)
+              .where('name',
+              isEqualTo: Provider
+                  .of<MapInteractionContainer>(context)
+                  .name)
               .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
@@ -182,9 +187,5 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
     } else {
       return const Text('');
     }
-  }
-
-  FutureOr onGoBack(dynamic value) {
-    setState(() {});
   }
 }

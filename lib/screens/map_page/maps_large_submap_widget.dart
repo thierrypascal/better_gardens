@@ -1,12 +1,10 @@
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 class LargeSubMap extends StatefulWidget {
-
   @override
   _LargeSubMapState createState() => _LargeSubMapState();
 }
@@ -18,26 +16,33 @@ class _LargeSubMapState extends State<LargeSubMap> {
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
 
-    Provider.of<MapInteractionContainer>(context).selectedLocation = (LatLng(46, 7));   //set middle of screen as selectedLocation
+    Provider
+        .of<MapInteractionContainer>(context)
+        .selectedLocation =
+    (LatLng(46, 7)); //set middle of screen as selectedLocation
 
     tempMarkerList.add(Marker(
       markerId: MarkerId('temp'),
-      position: Provider.of<MapInteractionContainer>(context).selectedLocation,
-      onTap: (){},
+      position: Provider
+          .of<MapInteractionContainer>(context)
+          .selectedLocation,
+      onTap: () {},
     ));
     setState(() {});
   }
 
   void _setPosition(LatLng tapPos) {
     setState(() {
-      tempMarkerList=[];
+      tempMarkerList = [];
       tempMarkerList.add(Marker(
         markerId: MarkerId('temp'),
         position: tapPos,
-        onTap: (){},
+        onTap: () {},
         draggable: true,
       ));
-      Provider.of<MapInteractionContainer>(context).selectedLocation = tapPos;
+      Provider
+          .of<MapInteractionContainer>(context)
+          .selectedLocation = tapPos;
     });
   }
 
@@ -50,12 +55,13 @@ class _LargeSubMapState extends State<LargeSubMap> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             FutureBuilder<String>(
-              future: getAddressByLocation(Provider.of<MapInteractionContainer>(context).selectedLocation.latitude, Provider.of<MapInteractionContainer>(context).selectedLocation.longitude),
+              future: Provider.of<MapInteractionContainer>(context)
+                  .getAddressOfSelectedLocation(),
               builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
                 return Padding(
                   padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
                   child: Row(
-                    children: <Widget> [
+                    children: <Widget>[
                       const Flexible(
                         child: Padding(
                           padding: EdgeInsets.fromLTRB(20, 0, 40, 0),
@@ -75,12 +81,21 @@ class _LargeSubMapState extends State<LargeSubMap> {
               },
             ),
             SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height/3,
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width,
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height / 3,
               child: GoogleMap(
                 onMapCreated: _onMapCreated,
                 initialCameraPosition: CameraPosition(
-                  target: LatLng(Provider.of<MapInteractionContainer>(context).selectedLocation.latitude, Provider.of<MapInteractionContainer>(context).selectedLocation.longitude),
+                  target:
+                  Provider
+                      .of<MapInteractionContainer>(context)
+                      .selectedLocation,
                   zoom: 18.0,
                 ),
                 zoomControlsEnabled: false,
@@ -105,8 +120,8 @@ class _LargeSubMapState extends State<LargeSubMap> {
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: Text('Speichern'),
-                  ),
+                    child: const Text('Speichern'),
+                  )
                 ],
               ),
             ),
@@ -114,11 +129,5 @@ class _LargeSubMapState extends State<LargeSubMap> {
         ),
       ),
     );
-  }
-
-  Future<String> getAddressByLocation(double lat, double lng) async{
-    final List<Placemark> placemark = await placemarkFromCoordinates(lat, lng);
-
-    return Future.value("${placemark[0].street}, ${placemark[0].locality}");
   }
 }
