@@ -1,8 +1,10 @@
+import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 
 class SubMap extends StatefulWidget {
 
@@ -19,7 +21,7 @@ class _SubMapState extends State<SubMap> {
 
     tempMarkerList.add(Marker(
       markerId: MarkerId('temp'),
-      position: LatLng(MapsPage.tappedPoint.latitude, MapsPage.tappedPoint.longitude),
+      position: LatLng(Provider.of<MapInteractionContainer>(context).selectedLocation.latitude, Provider.of<MapInteractionContainer>(context).selectedLocation.longitude),
       onTap: (){},
     ));
     setState(() {});
@@ -34,7 +36,7 @@ class _SubMapState extends State<SubMap> {
         onTap: (){},
         draggable: true,
       ));
-      MapsPage.tappedPoint = tapPos;
+      Provider.of<MapInteractionContainer>(context).selectedLocation = tapPos;
     });
   }
 
@@ -45,7 +47,7 @@ class _SubMapState extends State<SubMap> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           FutureBuilder<String>(
-            future: getAddressByLocation(MapsPage.tappedPoint.latitude, MapsPage.tappedPoint.longitude),
+            future: getAddressByLocation(Provider.of<MapInteractionContainer>(context).selectedLocation.latitude, Provider.of<MapInteractionContainer>(context).selectedLocation.longitude),
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
               return Padding(
                 padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
@@ -75,7 +77,7 @@ class _SubMapState extends State<SubMap> {
             child: GoogleMap(
               onMapCreated: _onMapCreated,
               initialCameraPosition: CameraPosition(
-                target: LatLng(MapsPage.tappedPoint.latitude, MapsPage.tappedPoint.longitude),
+                target: LatLng(Provider.of<MapInteractionContainer>(context).selectedLocation.latitude, Provider.of<MapInteractionContainer>(context).selectedLocation.longitude),
                 zoom: 18.0,
               ),
               zoomControlsEnabled: false,
