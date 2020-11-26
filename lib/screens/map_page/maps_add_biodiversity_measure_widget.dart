@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:biodiversity/components/simple_element_card_widget.dart';
 import 'package:biodiversity/models/biodiversity_measure.dart';
+import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:biodiversity/screens/map_page/maps_show_selection_list.dart';
 import 'package:biodiversity/screens/map_page/maps_submap_widget.dart';
@@ -9,44 +10,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 
 class AddBiodiversityMeasure extends StatefulWidget {
   AddBiodiversityMeasure({
     Key key,
   }) : super(key: key);
 
-  AddBiodiversityMeasure.fromMap(
-    this.location, {
-    Key key,
-  }) : super(key: key);
-
-  AddBiodiversityMeasure.fromList(
-    this.name,
-    this.type, {
-    Key key,
-  }) : super(key: key);
-
-  LatLng location;
-  String name;
-  String type;
-
   @override
   _AddBiodiversityMeasureState createState() => _AddBiodiversityMeasureState();
 
-  static String chosenElement = 'wähle ein Element';
-  static String chosenElementType = '';
+//  static String chosenElement = 'wähle ein Element';
+//  static String chosenElementType = '';
 }
 
 class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
-  void setStatics() {
-    if (widget.name != null && widget.type != null) {
-      AddBiodiversityMeasure.chosenElement = widget.name;
-      AddBiodiversityMeasure.chosenElementType = widget.type;
-    } else {
-      widget.name = AddBiodiversityMeasure.chosenElement;
-      widget.name = AddBiodiversityMeasure.chosenElementType;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,9 +34,7 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            AddBiodiversityMeasure.chosenElement =
-                'wähle ein Element'; //reset statics if popup closed
-            AddBiodiversityMeasure.chosenElementType = '';
+            Provider.of<MapInteractionContainer>(context).reset();
             Navigator.pop(context);
           },
         ),
@@ -85,9 +61,7 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
                 children: <Widget>[
                   ElevatedButton(
                     onPressed: () {
-                      AddBiodiversityMeasure.chosenElement =
-                          'wähle ein Element';
-                      AddBiodiversityMeasure.chosenElementType = '';
+                      Provider.of<MapInteractionContainer>(context).reset();
                       Navigator.pop(context);
                     },
                     child: const Text('Abbrechen'),
@@ -95,22 +69,18 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
                   ElevatedButton(
                     onPressed: () {
                       //check if location and element is set
-                      if (AddBiodiversityMeasure.chosenElementType != null &&
-                          AddBiodiversityMeasure.chosenElementType != '' &&
-                          MapsPage.tappedPoint != null) {
+                      if (Provider.of<MapInteractionContainer>(context).name != '' &&
+                          Provider.of<MapInteractionContainer>(context).type != '' &&
+                          Provider.of<MapInteractionContainer>(context).selectedLocation != null) {
                         //TODO: save to database
                         Marker marker = Marker(
-                            markerId: MarkerId(MapsPage.tappedPoint.toString()),
-                            position: MapsPage.tappedPoint,
-                            icon: MapsPage.icons[AddBiodiversityMeasure
-                                .chosenElementType
-                                .toLowerCase()]);
-                        MapsPage.markerList.add(marker);
+                            markerId: MarkerId(Provider.of<MapInteractionContainer>(context).selectedLocation.toString()),
+                            position: Provider.of<MapInteractionContainer>(context).selectedLocation,
+                            icon: MapsPage.icons[Provider.of<MapInteractionContainer>(context).type.toLowerCase()]);
+                        MapsPage.markerList.add(marker);    //Provider.add Marker
 
                         //reset statics
-                        AddBiodiversityMeasure.chosenElement =
-                            'wähle ein Element';
-                        AddBiodiversityMeasure.chosenElementType = '';
+                        Provider.of<MapInteractionContainer>(context).reset();
                         Navigator.pop(context);
                       } else {
                         _showAlertNotSet();
@@ -155,8 +125,7 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
   }
 
   Widget showSelectionOrShowSelected() {
-    if (AddBiodiversityMeasure.chosenElementType == '') {
-      //is not set
+    if (Provider.of<MapInteractionContainer>(context).type == '') {
       //redirect to Selection
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         Navigator.push(
@@ -169,7 +138,7 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
   }
 
   Widget showSubMapOrLargeSubMap() {
-    if (widget.location == null) {
+    if (Provider.of<MapInteractionContainer>(context).selectedLocation == null) {
       //show big SubMap to set location
     }
     return SubMap();
@@ -177,14 +146,14 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
 
   Widget getSelectedElementAsCard() {
     //return a structuralElementCard with the selected card
-    if (AddBiodiversityMeasure.chosenElementType != '') {
+    if (Provider.of<MapInteractionContainer>(context).type != '') {
       return StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
               .collection('biodiversityMeasures')
               .where('type',
                   isEqualTo:
-                      AddBiodiversityMeasure.chosenElementType.toLowerCase())
-              .where('name', isEqualTo: AddBiodiversityMeasure.chosenElement)
+                    Provider.of<MapInteractionContainer>(context).type.toLowerCase())
+              .where('name', isEqualTo: Provider.of<MapInteractionContainer>(context).name)
               .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {

@@ -13,17 +13,13 @@ class MapsPage extends StatefulWidget {
   @override
   _MapsPageState createState() => _MapsPageState();
 
-  static LatLng tappedPoint = const LatLng(46.948915, 7.445423);
-  static List<Marker> markerList = new List<Marker>();
+//  static LatLng tappedPoint = const LatLng(46.948915, 7.445423);
+//  static List<Marker> markerList = new List<Marker>();
   static Map<String, BitmapDescriptor> icons = <String, BitmapDescriptor>{};
 }
 
 class _MapsPageState extends State<MapsPage> {
   GoogleMapController mapController;
-
-  void addToMarkerList(Marker marker) {
-    MapsPage.markerList.add(marker);
-  }
 
   @override
   void initState() {
@@ -69,14 +65,11 @@ class _MapsPageState extends State<MapsPage> {
         zoomControlsEnabled: false,
         rotateGesturesEnabled: false,
         mapType: MapType.hybrid,
-        markers: Set.from(MapsPage.markerList),
+        markers: Set.from(//Provider MarkerList),
         onTap: (pos) {
           Provider
-              .of<MapInteractionContainer>(context, listen: false)
-              .selectedLocation = pos;
-          //MapsPage.tappedPoint = pos;
-
-
+            .of<MapInteractionContainer>(context, listen: false)
+            .selectedLocation = pos;
         },
       ),
       floatingActionButton: FloatingActionButton(
