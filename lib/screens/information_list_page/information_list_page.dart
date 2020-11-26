@@ -1,16 +1,15 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/strucural_element_card_widget.dart';
 import 'package:biodiversity/models/biodiversity_measure.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
-class InventarPage extends StatefulWidget {
+class InformationListPage extends StatefulWidget {
   @override
-  _InventarPageState createState() => _InventarPageState();
+  _InformationListPageState createState() => _InformationListPageState();
 }
 
-class _InventarPageState extends State<InventarPage> {
+class _InformationListPageState extends State<InformationListPage> {
   final _pageList = ["Element", "Plant", "Method"];
   final PageController _controller = PageController();
   int _currentPage = 0;

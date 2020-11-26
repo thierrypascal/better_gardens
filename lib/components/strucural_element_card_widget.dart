@@ -1,7 +1,10 @@
+
 import 'package:biodiversity/models/biodiversity_measure.dart';
+import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/detailview_page/detailview_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class StructuralElementCard extends StatefulWidget {
   final String name;
@@ -19,7 +22,7 @@ class StructuralElementCard extends StatefulWidget {
 }
 
 class _StructuralElementCardState extends State<StructuralElementCard> {
-  bool expanded = false;
+  bool _expanded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +40,7 @@ class _StructuralElementCardState extends State<StructuralElementCard> {
                 topLeft: Radius.circular(5), topRight: Radius.circular(4)),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              height: expanded ? 100 : 0,
+              height: _expanded ? 100 : 0,
               foregroundDecoration: BoxDecoration(
                   image: DecorationImage(
                       image: widget.image, fit: BoxFit.fitWidth)),
@@ -46,12 +49,12 @@ class _StructuralElementCardState extends State<StructuralElementCard> {
           ExpansionTile(
             onExpansionChanged: (value) {
               setState(() {
-                expanded = value;
+                _expanded = value;
               });
             },
             title: AnimatedCrossFade(
               duration: const Duration(milliseconds: 200),
-              crossFadeState: expanded
+              crossFadeState: _expanded
                   ? CrossFadeState.showSecond
                   : CrossFadeState.showFirst,
               firstChild: Row(
@@ -84,26 +87,40 @@ class _StructuralElementCardState extends State<StructuralElementCard> {
                   if (widget.element != null)
                     FlatButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  DetailViewPage(widget.element)),
-                        );
+                        if (_expanded) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    DetailViewPage(widget.element)),
+                          ).then((value) {
+                            setState(() {});
+                          });
+                        }
                       },
                       child: const Text(
                         "Weitere infos",
                         style: TextStyle(decoration: TextDecoration.underline),
                       ),
                     ),
-                  //TODO implement like functionality
-                  IconButton(
-                    icon: const Icon(
-                      Icons.favorite,
-                      color: Colors.white24,
-                    ),
-                    onPressed: () {},
-                  )
+                  Consumer<User>(builder: (context, user, child) {
+                    if (user == null) {
+                      return const Text("");
+                    }
+                    return IconButton(
+                      icon: Icon(
+                        Icons.favorite,
+                        color: user.doesLikeElement(widget.name)
+                            ? Colors.red
+                            : Colors.black38,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          user.likeUnlikeElement(widget.name);
+                        });
+                      },
+                    );
+                  }),
                 ],
               ),
             ),
