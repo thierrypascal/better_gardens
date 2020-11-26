@@ -1,11 +1,10 @@
+import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/screens/map_page/maps_select_from_selection_list.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:biodiversity/models/biodiversity_measure.dart';
 
-
-class ShowSelectionList extends StatelessWidget{
+class ShowSelectionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -15,36 +14,24 @@ class ShowSelectionList extends StatelessWidget{
           title: const Text('Element auswählen'),
           bottom: const TabBar(
             tabs: [
-              Tab(
-                text: 'STRUKTUR',
-              ),
-              Tab(
-                text: 'PLANT',
-              ),
-              Tab(
-                text: 'METHOD',
-              ),
+              Tab(text: 'STRUKTUR'),
+              Tab(text: 'PLANT'),
+              Tab(text: 'METHOD'),
             ],
           ),
         ),
         body: TabBarView(
           children: <Widget>[
-            SubList(
-              elementType: 'Element',     //Important: if elementType is changed, MapsPage.icons keys need to be changed accordingly
-            ),
-            SubList(
-              elementType: 'Plant',
-            ),
-            SubList(
-              elementType: 'Method',
-            )
+            //Important: if elementType is changed, MapsPage.icons keys need to be changed accordingly
+            SubList(elementType: 'Element'),
+            SubList(elementType: 'Plant'),
+            SubList(elementType: 'Method')
           ],
         ),
       ),
     );
   }
 }
-
 
 class SubList extends StatefulWidget {
   SubList({Key key, this.elementType}) : super(key: key);
@@ -77,19 +64,19 @@ class _SubListState extends State<SubList> {
               if (list.isEmpty) {
                 return Center(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Text(
-                          "Leider keine Einträge vorhanden",
-                          textScaleFactor: 2,
-                          textAlign: TextAlign.center,
-                        ),
-                        Icon(
-                          Icons.emoji_nature,
-                          size: 80,
-                        )
-                      ],
-                    ));
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Text(
+                      "Leider keine Einträge vorhanden",
+                      textScaleFactor: 2,
+                      textAlign: TextAlign.center,
+                    ),
+                    Icon(
+                      Icons.emoji_nature,
+                      size: 80,
+                    )
+                  ],
+                ));
               }
               return ListView.separated(
                 itemCount: list.length,
@@ -100,7 +87,8 @@ class _SubListState extends State<SubList> {
                     beneficialFor.write('$item ');
                   }
 
-                  return SelectElementCard(         //TODO: refactor to use simple_element_card_widget.dart but remain selectable (For current implementation the widget.name/title of SelectElementCard is needed)
+                  return SelectElementCard(
+                    //TODO: refactor to use simple_element_card_widget.dart but remain selectable (For current implementation the widget.name/title of SelectElementCard is needed)
                       element.name,
                       beneficialFor.toString().trim(),
                       AssetImage(element.imageSource),
