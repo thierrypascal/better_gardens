@@ -4,6 +4,7 @@ import 'package:biodiversity/components/simple_element_card_widget.dart';
 import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/map_marker_service.dart';
+import 'package:biodiversity/screens/map_page/maps_large_submap_widget.dart';
 import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:biodiversity/screens/map_page/maps_show_selection_list.dart';
 import 'package:biodiversity/screens/map_page/maps_submap_widget.dart';
@@ -71,11 +72,7 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
                           Provider.of<MapInteractionContainer>(context).type != '' &&
                           Provider.of<MapInteractionContainer>(context).selectedLocation != null) {
                         //TODO: save to database
-                        Marker marker = Marker(
-                            markerId: MarkerId(Provider.of<MapInteractionContainer>(context).selectedLocation.toString()),
-                            position: Provider.of<MapInteractionContainer>(context).selectedLocation,
-                            icon: MapsPage.icons[Provider.of<MapInteractionContainer>(context).type.toLowerCase()]);
-                        Provider.of<MapMarkerService>(context).addMarker(marker);
+                        Provider.of<MapMarkerService>(context).addMarker(Provider.of<MapInteractionContainer>(context).name, 1, Provider.of<MapInteractionContainer>(context).selectedLocation);
 
                         //reset statics
                         Provider.of<MapInteractionContainer>(context).reset();
@@ -141,7 +138,12 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
   Widget showSubMapOrLargeSubMap() {
     if (Provider.of<MapInteractionContainer>(context).selectedLocation == null) {
       //show big SubMap to set location
-
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LargeSubMap()),
+        ).then(onGoBack);
+      });
     }
     return SubMap();
   }

@@ -12,9 +12,6 @@ import 'package:provider/provider.dart';
 class MapsPage extends StatefulWidget {
   @override
   _MapsPageState createState() => _MapsPageState();
-
-
-  static Map<String, BitmapDescriptor> icons = <String, BitmapDescriptor>{};
 }
 
 class _MapsPageState extends State<MapsPage> {
@@ -23,25 +20,8 @@ class _MapsPageState extends State<MapsPage> {
   @override
   void initState() {
     super.initState();
-    initCustomIconMap();
   }
 
-  Future<void> initCustomIconMap() async {
-    final BitmapDescriptor structureIcon =
-        await BitmapDescriptor.fromAssetImage(
-            const ImageConfiguration(), 'res/structureIcon.png');
-    final BitmapDescriptor plantIcon = await BitmapDescriptor.fromAssetImage(
-        const ImageConfiguration(), 'res/plantIcon.png');
-    final BitmapDescriptor methodIcon = await BitmapDescriptor.fromAssetImage(
-        const ImageConfiguration(), 'res/methodIcon.png');
-    final BitmapDescriptor wishIcon = await BitmapDescriptor.fromAssetImage(
-        const ImageConfiguration(), 'res/wishIcon.png');
-
-    MapsPage.icons.putIfAbsent('element', () => structureIcon);
-    MapsPage.icons.putIfAbsent('plant', () => plantIcon);
-    MapsPage.icons.putIfAbsent('method', () => methodIcon);
-    MapsPage.icons.putIfAbsent('wish', () => wishIcon);
-  }
 
   @override
   Widget build(BuildContext context) {
