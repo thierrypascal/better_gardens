@@ -25,11 +25,6 @@ class _MapsPageState extends State<MapsPage> {
   void initState() {
     super.initState();
     initCustomIconMap();
-
-    AddressObject o = AddressObject(
-        DateTime.now(), <String, int>{"Steinwand": 7}, const GeoPoint(72, 38));
-    o.addElement("Blumenbeet", 5);
-    o.saveAddressObject();
   }
 
   Future<void> initCustomIconMap() async {
