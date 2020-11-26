@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
@@ -21,7 +20,6 @@ class _MapsPageState extends State<MapsPage> {
   void initState() {
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -49,23 +47,12 @@ class _MapsPageState extends State<MapsPage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) =>
-                AddBiodiversityMeasure()),).then(onGoBack);
+            MaterialPageRoute(builder: (context) => AddBiodiversityMeasure()),
+          );
         },
-        backgroundColor: Theme
-            .of(context)
-            .colorScheme
-            .primary,
-        child: const Icon(Icons.
-        add
-        )
-        ,
-      )
-      ,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        child: const Icon(Icons.add),
+      ),
     );
-  }
-
-  FutureOr onGoBack(dynamic value) {
-    setState(() {});
   }
 }

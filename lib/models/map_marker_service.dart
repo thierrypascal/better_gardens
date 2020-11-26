@@ -1,3 +1,5 @@
+import 'dart:developer' as logging;
+
 import 'package:biodiversity/models/address_object.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,7 +21,7 @@ class MapMarkerService extends ChangeNotifier {
 
   Future<List<AddressObject>> _loadList() async {
     final QuerySnapshot query =
-        await FirebaseFirestore.instance.collection('locations').get();
+    await FirebaseFirestore.instance.collection('locations').get();
 
     for (final DocumentSnapshot snapshot in query.docs) {
       _markers.add(AddressObject.fromSnapshot(snapshot));
@@ -37,8 +39,8 @@ class MapMarkerService extends ChangeNotifier {
 
   Future<void> _loadIcons() async {
     final BitmapDescriptor structureIcon =
-        await BitmapDescriptor.fromAssetImage(
-            const ImageConfiguration(), 'res/structureIcon.png');
+    await BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(), 'res/structureIcon.png');
     final BitmapDescriptor plantIcon = await BitmapDescriptor.fromAssetImage(
         const ImageConfiguration(), 'res/plantIcon.png');
     final BitmapDescriptor methodIcon = await BitmapDescriptor.fromAssetImage(
@@ -60,6 +62,8 @@ class MapMarkerService extends ChangeNotifier {
     final Set<Marker> list = <Marker>{};
     for (final AddressObject object in _markers) {
       for (final String element in object.elements.keys) {
+        logging.log(
+            "add marker of type $element to ${object.coordinates.latitude}");
         list.add(Marker(
           markerId: MarkerId(
               object.getLatLng().toString() + object.creationDate.toString()),
