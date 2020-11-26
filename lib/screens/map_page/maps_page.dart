@@ -26,6 +26,7 @@ class _MapsPageState extends State<MapsPage> {
 
   @override
   Widget build(BuildContext context) {
+    //TODO fix loading of markers
     if (_markers == null) {
       Provider.of<MapMarkerService>(context, listen: false)
           .getMarkerSet()
