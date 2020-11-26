@@ -19,7 +19,7 @@ class MapMarkerService extends ChangeNotifier {
 
   Future<List<AddressObject>> _loadList() async {
     final QuerySnapshot query =
-    await FirebaseFirestore.instance.collection('locations').get();
+        await FirebaseFirestore.instance.collection('locations').get();
 
     for (final DocumentSnapshot snapshot in query.docs) {
       _markers.add(AddressObject.fromSnapshot(snapshot));
@@ -28,6 +28,7 @@ class MapMarkerService extends ChangeNotifier {
   }
 
   void _updateElements(QuerySnapshot snapshots) {
+    _markers.clear();
     for (final DocumentSnapshot snapshot in snapshots.docs) {
       _markers.add(AddressObject.fromSnapshot(snapshot));
     }
@@ -56,7 +57,7 @@ class MapMarkerService extends ChangeNotifier {
   }
 
   List<Marker> getMarkerList() {
-    List<Marker> list = new List<Marker>();
+    final List<Marker> list = <Marker>[];
     for (final AddressObject object in _markers) {
       for (final String element in object.elements.keys) {
         list.add(Marker(
@@ -70,11 +71,21 @@ class MapMarkerService extends ChangeNotifier {
     return list;
   }
 
-  void addMarker(Marker marker) {
-    final AddressObject addressObject = AddressObject(DateTime.now(), {},
-        GeoPoint(marker.position.latitude, marker.position.longitude));
-    _markers.add(addressObject);
-    notifyListeners();
-    addressObject.saveAddressObject();
+  void addMarker(String element, int amount, LatLng coordinate) {
+    AddressObject addressObject;
+    for (final AddressObject object in _markers) {
+      if (object.isSameLocation(coordinate)) {
+        object.addElement(element, amount);
+        addressObject = object;
+      }
+
+      if (addressObject == null) {
+        addressObject = AddressObject(DateTime.now(), {element: amount},
+            GeoPoint(coordinate.latitude, coordinate.longitude));
+        _markers.add(addressObject);
+      }
+      notifyListeners();
+      addressObject.saveAddressObject();
+    }
   }
 }
