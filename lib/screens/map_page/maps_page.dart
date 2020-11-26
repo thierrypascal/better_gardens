@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:biodiversity/components/drawer.dart';
-import 'package:biodiversity/screens/map_page/maps_add_map_icon_widget.dart';
+import 'package:biodiversity/screens/map_page/maps_add_biodiversity_measure_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -75,7 +75,7 @@ class _MapsPageState extends State<MapsPage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AddMapIcon()),
+            MaterialPageRoute(builder: (context) => AddBiodiversityMeasure()),
           ).then(onGoBack);
         },
         backgroundColor: Colors.green,
