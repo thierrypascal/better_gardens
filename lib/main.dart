@@ -1,7 +1,6 @@
+import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
-import 'package:biodiversity/screens/login_page/login_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -32,7 +31,7 @@ class MyApp extends StatelessWidget {
               // closer together (more dense) than on mobile platforms.
               visualDensity: VisualDensity.adaptivePlatformDensity,
             ),
-            home: LoginPage(),
+            home: MapsPage(),
           );
         }
 

@@ -1,18 +1,17 @@
 import 'dart:async';
 
+import 'package:biodiversity/components/simple_element_card_widget.dart';
+import 'package:biodiversity/models/biodiversity_measure.dart';
+import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:biodiversity/screens/map_page/maps_show_selection_list.dart';
 import 'package:biodiversity/screens/map_page/maps_submap_widget.dart';
-import 'package:biodiversity/components/simple_element_card_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:biodiversity/screens/map_page/maps_page.dart';
-import 'package:biodiversity/models/biodiversity_measure.dart';
 
 class AddMapIcon extends StatefulWidget {
-  AddMapIcon(
-    {
+  AddMapIcon({
     Key key,
   }) : super(key: key);
 
@@ -117,12 +116,13 @@ class _AddMapIconState extends State<AddMapIcon>{
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Achtung'),
+          title: const Text('Achtung'),
           content: SingleChildScrollView(
             child: ListBody(
-              children: <Widget>[
-                const Text('Der Standort oder das Element wurde noch nicht erfasst.'),
-                const Text('Beides muss erfasst sein, um einen neuen Karteneintrag zu machen.'),
+              children: const <Widget>[
+                Text('Der Standort oder das Element wurde noch nicht erfasst.'),
+                Text(
+                    'Beides muss erfasst sein, um einen neuen Karteneintrag zu machen.'),
               ],
             ),
           ),

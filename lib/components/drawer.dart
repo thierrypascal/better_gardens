@@ -29,8 +29,8 @@ class MyDrawer extends StatelessWidget {
             title: const Text('Map'),
             onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MapsPage(46.948915, 7.445423),)
+                context,
+                MaterialPageRoute(builder: (context) => MapsPage()),
               );
             },
           ),
