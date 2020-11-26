@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:biodiversity/models/map_marker_service.dart';
 import 'package:provider/provider.dart';
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/models/address_object.dart';
@@ -13,8 +14,7 @@ class MapsPage extends StatefulWidget {
   @override
   _MapsPageState createState() => _MapsPageState();
 
-//  static LatLng tappedPoint = const LatLng(46.948915, 7.445423);
-//  static List<Marker> markerList = new List<Marker>();
+
   static Map<String, BitmapDescriptor> icons = <String, BitmapDescriptor>{};
 }
 
@@ -60,7 +60,7 @@ class _MapsPageState extends State<MapsPage> {
         zoomControlsEnabled: false,
         rotateGesturesEnabled: false,
         mapType: MapType.hybrid,
-        markers: Set.from(//Provider MarkerList),
+        markers: Set.from(Provider.of<MapMarkerService>(context).getMarkerList()),
         onTap: (pos) {
           Provider
             .of<MapInteractionContainer>(context, listen: false)
@@ -72,8 +72,7 @@ class _MapsPageState extends State<MapsPage> {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) =>
-                AddBiodiversityMeasure()), //change to .fromMap
-          ).then(onGoBack);
+                AddBiodiversityMeasure()),).then(onGoBack);
         },
         backgroundColor: Theme
             .of(context)

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:biodiversity/components/simple_element_card_widget.dart';
 import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
+import 'package:biodiversity/models/map_marker_service.dart';
 import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:biodiversity/screens/map_page/maps_show_selection_list.dart';
 import 'package:biodiversity/screens/map_page/maps_submap_widget.dart';
@@ -19,9 +20,6 @@ class AddBiodiversityMeasure extends StatefulWidget {
 
   @override
   _AddBiodiversityMeasureState createState() => _AddBiodiversityMeasureState();
-
-//  static String chosenElement = 'wähle ein Element';
-//  static String chosenElementType = '';
 }
 
 class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
@@ -77,7 +75,7 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
                             markerId: MarkerId(Provider.of<MapInteractionContainer>(context).selectedLocation.toString()),
                             position: Provider.of<MapInteractionContainer>(context).selectedLocation,
                             icon: MapsPage.icons[Provider.of<MapInteractionContainer>(context).type.toLowerCase()]);
-                        MapsPage.markerList.add(marker);    //Provider.add Marker
+                        Provider.of<MapMarkerService>(context).addMarker(marker);
 
                         //reset statics
                         Provider.of<MapInteractionContainer>(context).reset();
@@ -133,6 +131,9 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
           MaterialPageRoute(builder: (context) => ShowSelectionList()),
         ).then(onGoBack);
       });
+      if (Provider.of<MapInteractionContainer>(context).name == ''){
+        Navigator.pop(context);   //TODO: TEST IF WORKING
+      }
     }
     return getSelectedElementAsCard();
   }
@@ -140,6 +141,7 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
   Widget showSubMapOrLargeSubMap() {
     if (Provider.of<MapInteractionContainer>(context).selectedLocation == null) {
       //show big SubMap to set location
+
     }
     return SubMap();
   }

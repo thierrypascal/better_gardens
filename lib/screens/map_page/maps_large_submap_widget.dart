@@ -5,13 +5,13 @@ import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
-class SubMap extends StatefulWidget {
+class LargeSubMap extends StatefulWidget {
 
   @override
-  _SubMapState createState() => _SubMapState();
+  _LargeSubMapState createState() => _LargeSubMapState();
 }
 
-class _SubMapState extends State<SubMap> {
+class _LargeSubMapState extends State<LargeSubMap> {
   GoogleMapController mapController;
   List<Marker> tempMarkerList = <Marker>[];
 
@@ -20,7 +20,7 @@ class _SubMapState extends State<SubMap> {
 
     tempMarkerList.add(Marker(
       markerId: MarkerId('temp'),
-      position: LatLng(Provider.of<MapInteractionContainer>(context).selectedLocation.latitude, Provider.of<MapInteractionContainer>(context).selectedLocation.longitude),
+      position: LatLng(46, 7),          //TODO: location api, show Mitte des Screens
       onTap: (){},
     ));
     setState(() {});
