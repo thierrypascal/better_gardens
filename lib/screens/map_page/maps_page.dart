@@ -1,57 +1,56 @@
 import 'dart:async';
 
 import 'package:biodiversity/components/drawer.dart';
+import 'package:biodiversity/models/address_object.dart';
 import 'package:biodiversity/screens/map_page/maps_add_biodiversity_measure_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapsPage extends StatefulWidget {
-  const MapsPage(
-    this.latitude,
-    this.longitude, {
-    Key key,
-  }) : super(key: key);
-  final double latitude;
-  final double longitude;
-
   @override
   _MapsPageState createState() => _MapsPageState();
 
-  static LatLng tappedPoint = LatLng(46.948915, 7.445423);
+  static LatLng tappedPoint = const LatLng(46.948915, 7.445423);
   static List<Marker> markerList = new List<Marker>();
-  static Map<String, BitmapDescriptor> icons = new Map<String, BitmapDescriptor>();
+  static Map<String, BitmapDescriptor> icons = <String, BitmapDescriptor>{};
 }
 
 class _MapsPageState extends State<MapsPage> {
   GoogleMapController mapController;
 
-  void addToMarkerList(Marker marker){
+  void addToMarkerList(Marker marker) {
     MapsPage.markerList.add(marker);
   }
-  
+
   @override
   void initState() {
     super.initState();
     initCustomIconMap();
+
+    AddressObject o = AddressObject(
+        DateTime.now(), <String, int>{"Steinwand": 7}, const GeoPoint(72, 38));
+    o.addElement("Blumenbeet", 5);
+    o.saveAddressObject();
   }
-  
-  void initCustomIconMap() async{
-    final BitmapDescriptor structureIcon = await BitmapDescriptor.fromAssetImage(const ImageConfiguration(), 'res/structureIcon.png');
-    final BitmapDescriptor plantIcon = await BitmapDescriptor.fromAssetImage(const ImageConfiguration(), 'res/plantIcon.png');
-    final BitmapDescriptor methodIcon = await BitmapDescriptor.fromAssetImage(const ImageConfiguration(), 'res/methodIcon.png');
-    final BitmapDescriptor wishIcon = await BitmapDescriptor.fromAssetImage(const ImageConfiguration(), 'res/wishIcon.png');
+
+  Future<void> initCustomIconMap() async {
+    final BitmapDescriptor structureIcon =
+        await BitmapDescriptor.fromAssetImage(
+            const ImageConfiguration(), 'res/structureIcon.png');
+    final BitmapDescriptor plantIcon = await BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(), 'res/plantIcon.png');
+    final BitmapDescriptor methodIcon = await BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(), 'res/methodIcon.png');
+    final BitmapDescriptor wishIcon = await BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(), 'res/wishIcon.png');
 
     MapsPage.icons.putIfAbsent('element', () => structureIcon);
     MapsPage.icons.putIfAbsent('plant', () => plantIcon);
     MapsPage.icons.putIfAbsent('method', () => methodIcon);
     MapsPage.icons.putIfAbsent('wish', () => wishIcon);
   }
-
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -61,15 +60,18 @@ class _MapsPageState extends State<MapsPage> {
       ),
       drawer: MyDrawer(),
       body: GoogleMap(
-        onMapCreated: _onMapCreated,
-        initialCameraPosition: CameraPosition(
-          target: LatLng(widget.latitude, widget.longitude),
+        onMapCreated: (controller) => mapController = controller,
+        initialCameraPosition: const CameraPosition(
+          target: LatLng(46.948915, 7.445423),
           zoom: 14.0,
         ),
         zoomControlsEnabled: false,
+        rotateGesturesEnabled: false,
         mapType: MapType.hybrid,
         markers: Set.from(MapsPage.markerList),
-        onTap: (pos) {MapsPage.tappedPoint = pos;},
+        onTap: (pos) {
+          MapsPage.tappedPoint = pos;
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -84,7 +86,7 @@ class _MapsPageState extends State<MapsPage> {
     );
   }
 
-  FutureOr onGoBack(dynamic value){
-    setState((){});
+  FutureOr onGoBack(dynamic value) {
+    setState(() {});
   }
 }
