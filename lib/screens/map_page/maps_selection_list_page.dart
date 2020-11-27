@@ -64,24 +64,30 @@ class _SubListState extends State<SubList> {
               if (list.isEmpty) {
                 return Center(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Text(
-                          "Leider keine Einträge vorhanden",
-                          textScaleFactor: 2,
-                          textAlign: TextAlign.center,
-                        ),
-                        Icon(
-                          Icons.emoji_nature,
-                          size: 80,
-                        )
-                      ],
-                    ));
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Text(
+                      "Leider keine Einträge vorhanden",
+                      textScaleFactor: 2,
+                      textAlign: TextAlign.center,
+                    ),
+                    Icon(
+                      Icons.emoji_nature,
+                      size: 80,
+                    )
+                  ],
+                ));
               }
               return ListView.separated(
                 itemCount: list.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return SimpleElementCard(list.elementAt(index));
+                  return GestureDetector(
+                      onTap: () =>
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SelectionList())),
+                      child: SimpleElementCard(list.elementAt(index)));
                 },
                 separatorBuilder: (BuildContext context, int index) {
                   return const SizedBox(height: 5);
