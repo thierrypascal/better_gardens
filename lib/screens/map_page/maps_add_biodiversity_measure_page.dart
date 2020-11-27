@@ -9,7 +9,6 @@ import 'package:biodiversity/screens/map_page/maps_submap_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'dart:developer' as logging;
 
 class AddBiodiversityMeasure extends StatefulWidget {
   AddBiodiversityMeasure({
@@ -73,7 +72,10 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
                       Provider.of<MapInteractionContainer>(context,
                               listen: false)
                           .reset();
-                      Navigator.pop(context);
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => MapsPage()),
+                          (route) => false);
                     },
                     child: const Text('Abbrechen'),
                   ),
