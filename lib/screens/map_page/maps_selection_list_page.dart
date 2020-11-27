@@ -1,10 +1,10 @@
+import 'package:biodiversity/components/simple_element_card_widget.dart';
 import 'package:biodiversity/models/biodiversity_measure.dart';
-import 'package:biodiversity/screens/map_page/maps_select_from_selection_list.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class ShowSelectionList extends StatelessWidget {
+class SelectionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -64,35 +64,24 @@ class _SubListState extends State<SubList> {
               if (list.isEmpty) {
                 return Center(
                     child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text(
-                      "Leider keine Einträge vorhanden",
-                      textScaleFactor: 2,
-                      textAlign: TextAlign.center,
-                    ),
-                    Icon(
-                      Icons.emoji_nature,
-                      size: 80,
-                    )
-                  ],
-                ));
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Text(
+                          "Leider keine Einträge vorhanden",
+                          textScaleFactor: 2,
+                          textAlign: TextAlign.center,
+                        ),
+                        Icon(
+                          Icons.emoji_nature,
+                          size: 80,
+                        )
+                      ],
+                    ));
               }
               return ListView.separated(
                 itemCount: list.length,
                 itemBuilder: (BuildContext context, int index) {
-                  final element = list.elementAt(index);
-                  final beneficialFor = StringBuffer();
-                  for (final String item in element.beneficialFor.keys) {
-                    beneficialFor.write('$item ');
-                  }
-
-                  return SelectElementCard(
-                    //TODO: refactor to use simple_element_card_widget.dart but remain selectable (For current implementation the widget.name/title of SelectElementCard is needed)
-                      element.name,
-                      beneficialFor.toString().trim(),
-                      AssetImage(element.imageSource),
-                      widget.elementType);
+                  return SimpleElementCard(list.elementAt(index));
                 },
                 separatorBuilder: (BuildContext context, int index) {
                   return const SizedBox(height: 5);

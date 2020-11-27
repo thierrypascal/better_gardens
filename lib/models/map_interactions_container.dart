@@ -1,29 +1,24 @@
+import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapInteractionContainer extends ChangeNotifier {
-  String _name;
-  String _type;
+  BiodiversityMeasure _element;
   LatLng _selectedLocation;
 
-  MapInteractionContainer(this._name, this._type, this._selectedLocation);
+  MapInteractionContainer(this._element, this._selectedLocation);
 
   MapInteractionContainer.empty();
 
-  String get name => _name;
-
-  String get type => _type;
+  BiodiversityMeasure get element => _element;
 
   LatLng get selectedLocation => _selectedLocation;
 
-  set name(String value) {
-    _name = value;
-    notifyListeners();
-  }
+  String get type => _element != null ? _element.type : "";
 
-  set type(String value) {
-    _type = value;
+  set element(BiodiversityMeasure element) {
+    _element = element;
     notifyListeners();
   }
 
@@ -33,8 +28,7 @@ class MapInteractionContainer extends ChangeNotifier {
   }
 
   void reset() {
-    _name = "";
-    _type = "";
+    _element = null;
     _selectedLocation = null;
     notifyListeners();
   }

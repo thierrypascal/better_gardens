@@ -4,7 +4,7 @@ import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/fonts/icons_biodiversity_icons.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/map_marker_service.dart';
-import 'package:biodiversity/screens/map_page/maps_show_selection_list.dart';
+import 'package:biodiversity/screens/map_page/maps_selection_list_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -25,6 +25,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     Icons.playlist_add,
   ];
 
+  Set<Marker> _markers;
 
   @override
   void initState() {
@@ -37,6 +38,16 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    //TODO fix loading of markers
+    if (_markers == null) {
+      Provider.of<MapMarkerService>(context, listen: false)
+          .getMarkerSet()
+          .then((markers) {
+        setState(() {
+          _markers = markers;
+        });
+      });
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('Map'),
@@ -51,7 +62,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         zoomControlsEnabled: false,
         rotateGesturesEnabled: false,
         mapType: MapType.hybrid,
-        markers: Provider.of<MapMarkerService>(context).getMarkerSet(),
+        markers: _markers,
         onCameraIdle: () {
           mapController.getVisibleRegion().then((bounds) {
             final double lat =
@@ -63,7 +74,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         },
         onTap: (pos) =>
             Provider.of<MapInteractionContainer>(context, listen: false)
-                .selectedLocation = pos,
+            .selectedLocation = pos,
       ),
       floatingActionButton: Row(
         mainAxisSize: MainAxisSize.min,
@@ -138,7 +149,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               logging.log(_lastLocation.toString());
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ShowSelectionList()),
+                MaterialPageRoute(builder: (context) => SelectionList()),
               );
             },
             child: Icon(icons[1], color: Theme.of(context).accentColor),

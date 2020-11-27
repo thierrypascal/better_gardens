@@ -6,22 +6,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class StructuralElementCard extends StatefulWidget {
+class ExpandableElementCard extends StatefulWidget {
   final String name;
   final String beneficialFor;
   final AssetImage image;
   final String description;
   final BiodiversityMeasure element;
 
-  const StructuralElementCard(
+  const ExpandableElementCard(
       this.name, this.beneficialFor, this.image, this.description,
       {this.element});
 
   @override
-  _StructuralElementCardState createState() => _StructuralElementCardState();
+  _ExpandableElementCardState createState() => _ExpandableElementCardState();
 }
 
-class _StructuralElementCardState extends State<StructuralElementCard> {
+class _ExpandableElementCardState extends State<ExpandableElementCard> {
   bool _expanded = false;
 
   @override
