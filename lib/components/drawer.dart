@@ -27,78 +27,80 @@ class MyDrawer extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 30, 0, 0),
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    ListTile(
-                      title: const Text('Karte'),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => MapsPage()),
-                        );
-                      },
-                    ),
-                    ListTile(
-                      title: const Text('Account'),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AccountPage()),
-                        );
-                      },
-                    ),
-                    ListTile(
-                      title: const Text('Mein Garten'),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => MyGarden()),
-                        );
-                        // ...
-                      },
-                    ),
-                    ListTile(
-                      title: const Text('Nachrichten'),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      title: const Text('Biodiversität Massnahmen'),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => InformationListPage()),
-                        );
-                      },
-                    ),
-                    ListTile(
-                      title: const Text('Tiere'),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      title: const Text('Merkliste'),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      leading: Icon(
-                        Icons.arrow_forward,
-                        color: Colors.white.withOpacity(0.8),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      ListTile(
+                        title: const Text('Karte'),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => MapsPage()),
+                          );
+                        },
                       ),
-                      title: const Text('Stadtwildtiere'),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      title: const Text('Login'),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => LoginPage()),
-                        );
-                      },
-                    ),
-                  ],
+                      ListTile(
+                        title: const Text('Account'),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AccountPage()),
+                          );
+                        },
+                      ),
+                      ListTile(
+                        title: const Text('Mein Garten'),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => MyGarden()),
+                          );
+                          // ...
+                        },
+                      ),
+                      ListTile(
+                        title: const Text('Nachrichten'),
+                        onTap: () {},
+                      ),
+                      ListTile(
+                        title: const Text('Biodiversität Massnahmen'),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => InformationListPage()),
+                          );
+                        },
+                      ),
+                      ListTile(
+                        title: const Text('Tiere'),
+                        onTap: () {},
+                      ),
+                      ListTile(
+                        title: const Text('Merkliste'),
+                        onTap: () {},
+                      ),
+                      ListTile(
+                        leading: Icon(
+                          Icons.arrow_forward,
+                          color: Colors.white.withOpacity(0.8),
+                        ),
+                        title: const Text('Stadtwildtiere'),
+                        onTap: () {},
+                      ),
+                      ListTile(
+                        title: const Text('Login'),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginPage()),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const Image(
