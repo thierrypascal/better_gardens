@@ -46,7 +46,10 @@ class LoginPage extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: (){},
-                      child: Text('Login', textScaleFactor: 1.6,)
+                      child: const Padding(
+                        padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
+                        child: Text('Login', textScaleFactor: 1.6,),
+                      )
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
