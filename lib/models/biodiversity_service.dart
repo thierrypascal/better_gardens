@@ -12,7 +12,6 @@ class BiodiversityService extends ChangeNotifier {
         .collection('biodiversityMeasures')
         .snapshots()
         .listen((snapshots) => _updateElements(snapshots));
-    _initialized = true;
   }
 
   void _updateElements(QuerySnapshot snapshots) {
@@ -21,6 +20,7 @@ class BiodiversityService extends ChangeNotifier {
       _measures.add(BiodiversityMeasure.fromSnapshot(snapshot));
     }
     notifyListeners();
+    _initialized = true;
   }
 
   List<BiodiversityMeasure> getBiodiversityObjectList(String type) {

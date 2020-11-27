@@ -1,4 +1,3 @@
-import 'dart:developer' as logging;
 
 import 'package:biodiversity/models/address_object.dart';
 import 'package:biodiversity/models/biodiversity_service.dart';
@@ -12,6 +11,7 @@ class MapMarkerService extends ChangeNotifier {
   final Map<String, BitmapDescriptor> _icons = <String, BitmapDescriptor>{};
   final List<AddressObject> _markers = [];
   final BuildContext _context;
+  bool _initialized = false;
 
   MapMarkerService(this._context) {
     FirebaseFirestore.instance
@@ -26,6 +26,7 @@ class MapMarkerService extends ChangeNotifier {
     for (final DocumentSnapshot snapshot in snapshots.docs) {
       _markers.add(AddressObject.fromSnapshot(snapshot));
     }
+    _initialized = true;
     notifyListeners();
   }
 
@@ -51,14 +52,16 @@ class MapMarkerService extends ChangeNotifier {
   }
 
   Future<Set<Marker>> getMarkerSet() async {
+    while (!_initialized) {
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+
     final Set<Marker> list = <Marker>{};
     for (final AddressObject object in _markers) {
       for (final String element in object.elements.keys) {
-        logging.log(
-            "add marker of type $element to ${object.coordinates.latitude}");
         final String type =
-        await Provider.of<BiodiversityService>(_context, listen: false)
-            .getTypeOfObject(element);
+            await Provider.of<BiodiversityService>(_context, listen: false)
+                .getTypeOfObject(element);
         list.add(Marker(
           markerId: MarkerId(
               object.getLatLng().toString() + object.creationDate.toString()),

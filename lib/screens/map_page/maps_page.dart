@@ -1,4 +1,5 @@
 import 'dart:developer' as logging;
+import 'dart:math' as math;
 
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/fonts/icons_biodiversity_icons.dart';
@@ -9,7 +10,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'dart:math' as math;
 
 class MapsPage extends StatefulWidget {
   @override
@@ -25,11 +25,20 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     Icons.playlist_add,
   ];
 
-  Set<Marker> _markers;
+  Set<Marker> _markers = {};
 
   @override
   void initState() {
     super.initState();
+    Provider.of<MapMarkerService>(context, listen: false)
+        .getMarkerSet()
+        .then((markers) {
+      setState(() {
+        logging.log("setstate");
+        _markers = markers;
+        logging.log(_markers.length.toString());
+      });
+    });
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
@@ -39,15 +48,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     //TODO fix loading of markers
-    if (_markers == null) {
-      Provider.of<MapMarkerService>(context, listen: false)
-          .getMarkerSet()
-          .then((markers) {
-        setState(() {
-          _markers = markers;
-        });
-      });
-    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Map'),
@@ -108,7 +109,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   }
 
   List<Widget> getWidgetListForAdvFab(){
-    List<Widget> result = [
+    return [
       Container(
         height: 56.0,
         width: 75.0,
@@ -123,6 +124,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             heroTag: null,
             tooltip: 'Wunsch hinzufügen',
             backgroundColor: Theme.of(context).cardColor,
+            //TODO add onPressed functionality
             onPressed: () {},
             child: Icon(icons[0], color: Theme.of(context).accentColor),
           ),
@@ -157,7 +159,5 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         ),
       ),
     ];
-
-    return result;
   }
 }
