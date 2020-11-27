@@ -34,9 +34,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         .getMarkerSet()
         .then((markers) {
       setState(() {
-        logging.log("setstate");
         _markers = markers;
-        logging.log(_markers.length.toString());
       });
     });
     _controller = AnimationController(
@@ -47,8 +45,6 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    //TODO fix loading of markers
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Map'),
@@ -62,6 +58,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         ),
         zoomControlsEnabled: false,
         rotateGesturesEnabled: false,
+        mapToolbarEnabled: false,
         mapType: MapType.hybrid,
         markers: _markers,
         onCameraIdle: () {
