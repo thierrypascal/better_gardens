@@ -1,32 +1,29 @@
-import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-class SelectElementCard extends StatefulWidget {  //same as structural_element_card_widget.dart, but with less infos, not expandable and selectable
+class SelectElementCard extends StatelessWidget {
+  //same as structural_element_card_widget.dart, but with less infos, not expandable and selectable
   final String name;
   final String beneficialFor;
   final AssetImage image;
   final String type;
 
-  const SelectElementCard(
-      this.name, this.beneficialFor, this.image, this.type);
-
-  @override
-  _SelectElementCardState createState() => _SelectElementCardState();
-}
-
-class _SelectElementCardState extends State<SelectElementCard> {
+  const SelectElementCard(this.name, this.beneficialFor, this.image, this.type);
 
   @override
   Widget build(BuildContext context) {
+    return const Text("DEPRICATED");
+/*
     return InkWell(
       onTap: () {
-        Provider.of<MapInteractionContainer>(context).name = widget.name;
-        Provider.of<MapInteractionContainer>(context).type = widget.type;
-        Navigator.pop(context);
+        Provider.of<MapInteractionContainer>(context, listen: false).name =
+            name;
+        Provider.of<MapInteractionContainer>(context, listen: false).type =
+            type;
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => AddBiodiversityMeasure()));
       },
-      child:     Container(
+      child: Container(
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(3)),
           border: Border.all(
@@ -41,22 +38,23 @@ class _SelectElementCardState extends State<SelectElementCard> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(widget.name,
+                  Text(name,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 16)),
-                  Text('Gut für: ${widget.beneficialFor}'),
+                  Text('Gut für: $beneficialFor'),
                 ],
               ),
               Image(
                 width: 60,
                 height: 60,
                 fit: BoxFit.cover,
-                image: widget.image,
+                image: image,
               ),
             ],
           ),
         ),
       ),
     );
+*/
   }
 }

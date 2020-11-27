@@ -1,3 +1,4 @@
+import 'package:biodiversity/models/biodiversity_service.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/map_marker_service.dart';
 import 'package:biodiversity/models/user.dart';
@@ -32,10 +33,12 @@ class MyApp extends StatelessWidget {
                   return User.loadUser('users/testuser');
                 },
               ),
+              ChangeNotifierProvider<BiodiversityService>(
+                  create: (context) => BiodiversityService()),
               ChangeNotifierProvider<MapInteractionContainer>(
                   create: (context) => MapInteractionContainer.empty()),
               ChangeNotifierProvider<MapMarkerService>(
-                create: (context) => MapMarkerService(),
+                create: (context) => MapMarkerService(context),
               ),
             ],
             child: MaterialApp(

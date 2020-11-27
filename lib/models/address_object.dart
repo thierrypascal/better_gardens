@@ -71,7 +71,7 @@ class AddressObject {
   }
 
   void addElement(String element, int amount) {
-    elements.putIfAbsent(element, () => amount);
+    elements.update(element, (old) => amount);
   }
 
   bool isSameLocation(LatLng other) {

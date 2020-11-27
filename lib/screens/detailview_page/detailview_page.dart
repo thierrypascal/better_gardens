@@ -69,11 +69,11 @@ class _DetailViewPageState extends State<DetailViewPage> {
                               Navigator.canPop(context)
                                   ? Navigator.pop(context)
                                   : Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        InformationListPage()),
-                              );
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              InformationListPage()),
+                                    );
                             }),
                       ])
                     ],
@@ -97,17 +97,7 @@ class _DetailViewPageState extends State<DetailViewPage> {
                     "Gut für die folgenden Tiere:",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   ),
-                  Container(
-                    height: 80,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: widget.element.beneficialFor.length,
-                      itemBuilder: (context, index) =>
-                          Text(
-                              "${widget.element.beneficialFor.keys.elementAt(
-                                  index)} "),
-                    ),
-                  ),
+                  Text(widget.element.beneficialFor()),
                 ],
               ),
             ),
