@@ -3,6 +3,7 @@ import 'package:biodiversity/components/strucural_element_card_widget.dart';
 import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:biodiversity/fonts/icons_biodiversity_icons.dart';
 
 class InformationListPage extends StatefulWidget {
   @override
@@ -40,9 +41,9 @@ class _InformationListPageState extends State<InformationListPage> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.nature), label: "Struktur"),
-          BottomNavigationBarItem(icon: Icon(Icons.people), label: "Pflanzen"),
-          BottomNavigationBarItem(icon: Icon(Icons.save), label: "Methoden"),
+          BottomNavigationBarItem(icon: Icon(IconsBiodiversity.structure), label: "Struktur"),
+          BottomNavigationBarItem(icon: Icon(IconsBiodiversity.plant), label: "Pflanzen"),
+          BottomNavigationBarItem(icon: Icon(IconsBiodiversity.method), label: "Methoden"),
         ],
         onTap: _onTap,
         currentIndex: _currentPage,
