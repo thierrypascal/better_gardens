@@ -53,20 +53,19 @@ class _SubMapState extends State<SubMap> {
             child: GoogleMap(
               onMapCreated: (controller) => mapController = controller,
               initialCameraPosition:
-              Provider.of<MapInteractionContainer>(context)
-                  .getCameraPosition(),
+                  Provider.of<MapInteractionContainer>(context)
+                      .getCameraPosition(),
               zoomControlsEnabled: false,
+              mapToolbarEnabled: false,
               mapType: MapType.hybrid,
-              markers: Provider
-                  .of<MapInteractionContainer>(context)
-                  .selectedLocation !=
-                  null
+              markers: Provider.of<MapInteractionContainer>(context)
+                          .selectedLocation !=
+                      null
                   ? <Marker>{
-                Marker(
-                  position: Provider
-                      .of<MapInteractionContainer>(context)
-                      .selectedLocation,
-                  markerId: MarkerId("subMapMarker"),
+                      Marker(
+                        position: Provider.of<MapInteractionContainer>(context)
+                            .selectedLocation,
+                        markerId: MarkerId("subMapMarker"),
                       )
                     }
                   : <Marker>{},

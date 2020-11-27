@@ -9,6 +9,7 @@ import 'package:biodiversity/screens/map_page/maps_submap_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:developer' as logging;
 
 class AddBiodiversityMeasure extends StatefulWidget {
   AddBiodiversityMeasure({
@@ -54,7 +55,10 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
                           child: const Text("Element auswählen"),
                         );
                       } else {
-                        return SimpleElementCard(selection.element);
+                        return SimpleElementCard(
+                          selection.element,
+                          goToSelectionList: true,
+                        );
                       }
                     },
                   ),
@@ -114,18 +118,14 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
   }
 
   void _onSaveButton() {
-    if (Provider
-        .of<MapInteractionContainer>(context, listen: false)
-        .element !=
+    if (Provider.of<MapInteractionContainer>(context, listen: false).element !=
         null) {
       Provider.of<MapMarkerService>(context, listen: false).addMarker(
-          Provider
-              .of<MapInteractionContainer>(context, listen: false)
+          Provider.of<MapInteractionContainer>(context, listen: false)
               .element
               .name,
           1,
-          Provider
-              .of<MapInteractionContainer>(context, listen: false)
+          Provider.of<MapInteractionContainer>(context, listen: false)
               .selectedLocation);
 
       //reset statics

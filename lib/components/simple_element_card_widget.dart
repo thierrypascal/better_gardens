@@ -1,6 +1,7 @@
 import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/screens/map_page/maps_add_biodiversity_measure_page.dart';
+import 'package:biodiversity/screens/map_page/maps_selection_list_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,8 +9,9 @@ import 'package:provider/provider.dart';
 class SimpleElementCard extends StatelessWidget {
   //same as structural_element_card_widget.dart, but with less infos, not expandable
   final BiodiversityMeasure element;
+  final bool goToSelectionList;
 
-  const SimpleElementCard(this.element);
+  const SimpleElementCard(this.element, {this.goToSelectionList = false});
 
   @override
   Widget build(BuildContext context) {
@@ -17,8 +19,12 @@ class SimpleElementCard extends StatelessWidget {
       onTap: () {
         Provider.of<MapInteractionContainer>(context, listen: false).element =
             element;
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => AddBiodiversityMeasure()));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => goToSelectionList
+                    ? SelectionList()
+                    : AddBiodiversityMeasure()));
       },
       child: Container(
         decoration: BoxDecoration(

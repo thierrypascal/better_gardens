@@ -81,13 +81,7 @@ class _SubListState extends State<SubList> {
               return ListView.separated(
                 itemCount: list.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return GestureDetector(
-                      onTap: () =>
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SelectionList())),
-                      child: SimpleElementCard(list.elementAt(index)));
+                  return SimpleElementCard(list.elementAt(index));
                 },
                 separatorBuilder: (BuildContext context, int index) {
                   return const SizedBox(height: 5);
