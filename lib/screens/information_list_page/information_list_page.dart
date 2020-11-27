@@ -19,7 +19,7 @@ class _InformationListPageState extends State<InformationListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Inventar")),
+      appBar: AppBar(title: const Text("Biodiversität Massnahmen")),
       drawer: MyDrawer(),
       body: PageView.builder(
         controller: _controller,
