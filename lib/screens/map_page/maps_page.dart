@@ -92,10 +92,10 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                 builder: (BuildContext context, Widget child) {
                   return Transform(
                     transform:
-                        Matrix4.rotationZ(_controller.value * 0.5 * math.pi),
+                        Matrix4.rotationZ(_controller.value * 0.75 * math.pi),
                     alignment: FractionalOffset.center,
                     child: Icon(
-                        _controller.isDismissed ? Icons.add : Icons.close),
+                        _controller.isDismissed ? Icons.add : Icons.add, size: 30,),
                   );
                 },
               ),
