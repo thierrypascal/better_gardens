@@ -61,7 +61,7 @@ class _ExpandableElementCardState extends State<ExpandableElementCard> {
                       Text(widget.element.name,
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 16)),
-                      Text("Gut für: ${widget.element.beneficialFor}"),
+                      Text("Gut für: ${widget.element.beneficialFor()}"),
                     ],
                   ),
                   Image(
