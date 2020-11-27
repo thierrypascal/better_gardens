@@ -21,7 +21,7 @@ class IconsBiodiversity {
   static const _kFontFam = 'IconsBiodiversity';
 
   static const IconData plant = IconData(0xe800, fontFamily: _kFontFam);
-  static const IconData structure = IconData(0xe801, fontFamily: _kFontFam);
   static const IconData wish = IconData(0xe802, fontFamily: _kFontFam);
   static const IconData method = IconData(0xe803, fontFamily: _kFontFam);
+  static const IconData structure = IconData(0xe805, fontFamily: _kFontFam);
 }
