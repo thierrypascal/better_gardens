@@ -1,4 +1,3 @@
-
 import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/detailview_page/detailview_page.dart';
@@ -7,15 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ExpandableElementCard extends StatefulWidget {
-  final String name;
-  final String beneficialFor;
-  final AssetImage image;
-  final String description;
   final BiodiversityMeasure element;
 
-  const ExpandableElementCard(
-      this.name, this.beneficialFor, this.image, this.description,
-      {this.element});
+  const ExpandableElementCard(this.element);
 
   @override
   _ExpandableElementCardState createState() => _ExpandableElementCardState();
@@ -43,7 +36,8 @@ class _ExpandableElementCardState extends State<ExpandableElementCard> {
               height: _expanded ? 100 : 0,
               foregroundDecoration: BoxDecoration(
                   image: DecorationImage(
-                      image: widget.image, fit: BoxFit.fitWidth)),
+                      image: AssetImage(widget.element.imageSource),
+                      fit: BoxFit.fitWidth)),
             ),
           ),
           ExpansionTile(
@@ -64,24 +58,24 @@ class _ExpandableElementCardState extends State<ExpandableElementCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(widget.name,
+                      Text(widget.element.name,
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 16)),
-                      Text("Gut für: ${widget.beneficialFor}"),
+                      Text("Gut für: ${widget.element.beneficialFor}"),
                     ],
                   ),
                   Image(
                     width: 60,
                     height: 60,
                     fit: BoxFit.cover,
-                    image: widget.image,
+                    image: AssetImage(widget.element.imageSource),
                   ),
                 ],
               ),
               secondChild: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(widget.name,
+                  Text(widget.element.name,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 16)),
                   if (widget.element != null)
@@ -110,13 +104,13 @@ class _ExpandableElementCardState extends State<ExpandableElementCard> {
                     return IconButton(
                       icon: Icon(
                         Icons.favorite,
-                        color: user.doesLikeElement(widget.name)
+                        color: user.doesLikeElement(widget.element.name)
                             ? Colors.red
                             : Colors.black38,
                       ),
                       onPressed: () {
                         setState(() {
-                          user.likeUnlikeElement(widget.name);
+                          user.likeUnlikeElement(widget.element.name);
                         });
                       },
                     );
@@ -128,7 +122,7 @@ class _ExpandableElementCardState extends State<ExpandableElementCard> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 5, 5, 50),
                 child: Text(
-                  widget.description,
+                  widget.element.description,
                   textAlign: TextAlign.left,
                 ),
               ),

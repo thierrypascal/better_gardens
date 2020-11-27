@@ -1,7 +1,7 @@
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/user.dart';
-import 'package:biodiversity/screens/information_list_page/information_list_page.dart';
+import 'package:biodiversity/screens/information_list_page/biodiversity_measures_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
