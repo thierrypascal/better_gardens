@@ -22,12 +22,12 @@ class MyDrawer extends StatelessWidget {
             )),
         child: Scaffold(
           appBar: AppBar(),
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 30, 0, 0),
-                child: SingleChildScrollView(
+          body: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 30, 0, 0),
                   child: Column(
                     children: [
                       ListTile(
@@ -102,11 +102,11 @@ class MyDrawer extends StatelessWidget {
                     ],
                   ),
                 ),
-              ),
-              const Image(
-                image: AssetImage('res/gardenDrawer.png'),
-              ),
-            ],
+                const Image(
+                  image: AssetImage('res/gardenDrawer.png'),
+                ),
+              ],
+            ),
           ),
         ),
       ),
