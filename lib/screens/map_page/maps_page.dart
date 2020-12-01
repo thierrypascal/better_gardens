@@ -1,6 +1,7 @@
 import 'dart:developer' as logging;
 import 'dart:math' as math;
 
+import 'package:biodiversity/components/bottom_sheet_widget.dart';
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/fonts/icons_biodiversity_icons.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
@@ -30,9 +31,10 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    Provider.of<MapMarkerService>(context, listen: false)
-        .getMarkerSet()
-        .then((markers) {
+    Provider.of<MapMarkerService>(context, listen: false).getMarkerSet(
+        onTap: () {
+          AnimatedBottomSheet.of(context).expand();
+    }).then((markers) {
       setState(() {
         _markers = markers;
       });
@@ -50,29 +52,48 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         title: const Text('Map'),
       ),
       drawer: MyDrawer(),
-      body: GoogleMap(
-        onMapCreated: (controller) => mapController = controller,
-        initialCameraPosition: const CameraPosition(
-          target: LatLng(46.948915, 7.445423),
-          zoom: 14.0,
-        ),
-        zoomControlsEnabled: false,
-        rotateGesturesEnabled: false,
-        mapToolbarEnabled: false,
-        mapType: MapType.hybrid,
-        markers: _markers,
-        onCameraIdle: () {
-          mapController.getVisibleRegion().then((bounds) {
-            final double lat =
-                (bounds.southwest.latitude + bounds.northeast.latitude) / 2;
-            final double long =
-                (bounds.southwest.longitude + bounds.northeast.longitude) / 2;
-            _lastLocation = LatLng(lat, long);
-          });
-        },
-        onTap: (pos) =>
-            Provider.of<MapInteractionContainer>(context, listen: false)
-            .selectedLocation = pos,
+      body: Stack(
+        children: [
+          GoogleMap(
+            onMapCreated: (controller) => mapController = controller,
+            initialCameraPosition: const CameraPosition(
+              target: LatLng(46.948915, 7.445423),
+              zoom: 14.0,
+            ),
+            zoomControlsEnabled: false,
+            rotateGesturesEnabled: false,
+            mapToolbarEnabled: false,
+            mapType: MapType.hybrid,
+            markers: _markers,
+            onCameraIdle: () {
+              mapController.getVisibleRegion().then((bounds) {
+                final double lat =
+                    (bounds.southwest.latitude + bounds.northeast.latitude) / 2;
+                final double long =
+                    (bounds.southwest.longitude + bounds.northeast.longitude) /
+                        2;
+                _lastLocation = LatLng(lat, long);
+              });
+            },
+            onTap: (pos) {
+              Provider.of<MapInteractionContainer>(context, listen: false)
+                  .selectedLocation = pos;
+              setState(() {
+                AnimatedBottomSheet.of(context).collapse();
+              });
+            },
+          ),
+          AnimatedBottomSheet(
+            child: ListView.builder(
+              itemCount: 3,
+              itemBuilder: (BuildContext context, int index) {
+                return ListTile(
+                  title: Text('Item $index'),
+                );
+              },
+            ),
+          ),
+        ],
       ),
       floatingActionButton: Row(
         mainAxisSize: MainAxisSize.min,
@@ -95,7 +116,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                         Matrix4.rotationZ(_controller.value * 0.75 * math.pi),
                     alignment: FractionalOffset.center,
                     child: Icon(
-                        _controller.isDismissed ? Icons.add : Icons.add, size: 30,),
+                      _controller.isDismissed ? Icons.add : Icons.add,
+                      size: 30,
+                    ),
                   );
                 },
               ),
@@ -105,7 +128,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     );
   }
 
-  List<Widget> getWidgetListForAdvFab(){
+  List<Widget> getWidgetListForAdvFab() {
     return [
       Container(
         height: 56.0,
@@ -142,8 +165,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             tooltip: 'Element hinzufügen',
             backgroundColor: Theme.of(context).cardColor,
             onPressed: () {
-              Provider
-                  .of<MapInteractionContainer>(context, listen: false)
+              Provider.of<MapInteractionContainer>(context, listen: false)
                   .selectedLocation ??= _lastLocation;
               logging.log(_lastLocation.toString());
               Navigator.push(
