@@ -1,4 +1,3 @@
-
 import 'package:biodiversity/models/address_object.dart';
 import 'package:biodiversity/models/biodiversity_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -51,7 +50,8 @@ class MapMarkerService extends ChangeNotifier {
     return _markers;
   }
 
-  Future<Set<Marker>> getMarkerSet({Function() onTap}) async {
+  Future<Set<Marker>> getMarkerSet(
+      {Function(String element) onTapCallback}) async {
     while (!_initialized) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
@@ -67,7 +67,9 @@ class MapMarkerService extends ChangeNotifier {
               object.getLatLng().toString() + object.creationDate.toString()),
           position: object.getLatLng(),
           icon: _icons.containsKey(type) ? _icons[type] : _icons['wish'],
-          onTap: onTap,
+          onTap: () {
+            onTapCallback(element);
+          },
         ));
       }
     }

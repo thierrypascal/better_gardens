@@ -1,7 +1,7 @@
 import 'dart:developer' as logging;
 import 'dart:math' as math;
 
-import 'package:biodiversity/components/bottom_sheet_widget.dart';
+import 'package:biodiversity/components/animated_bottom_sheet_widget.dart';
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/fonts/icons_biodiversity_icons.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
@@ -21,6 +21,8 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   GoogleMapController mapController;
   LatLng _lastLocation;
   AnimationController _controller;
+  AnimationController _bottomSheetController;
+  String _biodiversityMeasure = "none";
   static const List<IconData> icons = [
     IconsBiodiversity.wish,
     Icons.playlist_add,
@@ -32,14 +34,21 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     Provider.of<MapMarkerService>(context, listen: false).getMarkerSet(
-        onTap: () {
-          AnimatedBottomSheet.of(context).expand();
+        onTapCallback: (String element) {
+      setState(() {
+        _biodiversityMeasure = element;
+      });
+      _bottomSheetController.forward();
     }).then((markers) {
       setState(() {
         _markers = markers;
       });
     });
     _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+    _bottomSheetController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
@@ -76,23 +85,21 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               });
             },
             onTap: (pos) {
-              Provider.of<MapInteractionContainer>(context, listen: false)
+              Provider
+                  .of<MapInteractionContainer>(context, listen: false)
                   .selectedLocation = pos;
-              setState(() {
-                AnimatedBottomSheet.of(context).collapse();
-              });
+              _bottomSheetController.reverse();
             },
           ),
-          AnimatedBottomSheet(
-            child: ListView.builder(
-              itemCount: 3,
-              itemBuilder: (BuildContext context, int index) {
-                return ListTile(
-                  title: Text('Item $index'),
-                );
-              },
+          if (_biodiversityMeasure != null)
+            AnimatedBottomSheet(
+              controller: _bottomSheetController,
+              children: [
+                const Text("Element"),
+                const Divider(height: 2,),
+                Text(_biodiversityMeasure),
+              ],
             ),
-          ),
         ],
       ),
       floatingActionButton: Row(

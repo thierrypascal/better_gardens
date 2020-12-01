@@ -41,4 +41,9 @@ class BiodiversityService extends ChangeNotifier {
       return "unknown";
     }
   }
+
+  BiodiversityMeasure getBiodiversityMeasureByReference(
+      DocumentReference reference) {
+    return _measures.where((element) => element.reference == reference).first;
+  }
 }
