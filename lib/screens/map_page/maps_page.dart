@@ -85,8 +85,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               });
             },
             onTap: (pos) {
-              Provider
-                  .of<MapInteractionContainer>(context, listen: false)
+              Provider.of<MapInteractionContainer>(context, listen: false)
                   .selectedLocation = pos;
               _bottomSheetController.reverse();
             },
@@ -95,9 +94,26 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             AnimatedBottomSheet(
               controller: _bottomSheetController,
               children: [
-                const Text("Element"),
-                const Divider(height: 2,),
-                Text(_biodiversityMeasure),
+                _TitleDividerCard(
+                  title: "Element",
+                  detail: _biodiversityMeasure,
+                ),
+                _TitleDividerCard(
+                  title: "Garten Spitzname",
+                  detail: "Spitzname",
+                ),
+                _TitleDividerCard(
+                  title: "Garten Typ",
+                  detail: "Normaler Garten",
+                ),
+                _TitleDividerCard(
+                  title: "Adresse",
+                  detail: "Adresse",
+                ),
+                _TitleDividerCard(
+                  title: "Besitzer",
+                  detail: "Greenday",
+                ),
               ],
             ),
         ],
@@ -180,10 +196,46 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                 MaterialPageRoute(builder: (context) => SelectionList()),
               );
             },
-            child: Icon(icons[1], color: Theme.of(context).accentColor),
+            child: Icon(icons[1], color: Theme
+                .of(context)
+                .accentColor),
           ),
         ),
       ),
     ];
+  }
+}
+
+class _TitleDividerCard extends StatelessWidget {
+  const _TitleDividerCard({
+    Key key,
+    this.title,
+    this.detail,
+  }) : super(key: key);
+
+  final String title;
+  final String detail;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(fontWeight: FontWeight.w200),
+        ),
+        const Divider(
+          height: 2,
+        ),
+        Text(
+          detail,
+          style: const TextStyle(fontWeight: FontWeight.w400),
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+      ],
+    );
   }
 }

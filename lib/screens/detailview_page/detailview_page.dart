@@ -18,7 +18,7 @@ class _DetailViewPageState extends State<DetailViewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Inventar")),
+      appBar: AppBar(title: Text("Details: ${widget.element.name}")),
       drawer: MyDrawer(),
       body: SingleChildScrollView(
         child: Column(
