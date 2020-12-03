@@ -1,7 +1,7 @@
 import 'dart:ui';
 
-import 'package:biodiversity/drawer.dart';
-import 'package:biodiversity/garden.dart';
+import 'package:biodiversity/components/drawer.dart';
+import 'package:biodiversity/models/garden.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -21,13 +21,13 @@ class _MyGardenState extends State<MyGarden> {
       appBar: AppBar(title: const Text("Mein Garten")),
       drawer: MyDrawer(),
       body: StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('gardens').snapshots(),
+        stream: FirebaseFirestore.instance.collection('gardens').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const CircularProgressIndicator();
           }
 
-          return _buildBody(context, snapshot.data.documents);
+          return _buildBody(context, snapshot.data.docs);
         },
       ),
     );
@@ -67,7 +67,7 @@ Widget _buildBody(BuildContext context, List<DocumentSnapshot> snapshot) {
                 softWrap: true,
                 textScaleFactor: 2,
                 style:
-                    const TextStyle(color: Color.fromRGBO(255, 255, 255, 0.8)),
+                    const TextStyle(color: Color.fromRGBO(255, 255, 255, 0.8)), //TODO Color might depend on the kind of picture, thus maybe not the best idea
               ),
             ),
           ],

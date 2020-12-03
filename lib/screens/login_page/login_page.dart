@@ -1,9 +1,11 @@
-import 'package:biodiversity/drawer.dart';
+import 'package:biodiversity/components/drawer.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({Key key}) : super(key: key);
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _controllerPW = TextEditingController();
+  final TextEditingController _controllerEM = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -30,19 +32,25 @@ class LoginPage extends StatelessWidget {
                       width: 180,
                     ),
                     TextField(
-                      controller: _controller,
+                      controller: _controllerEM,
                       decoration: const InputDecoration(
                         labelText: 'Email',
                         hintText: 'john.doe@mail.com',
                       ),
                     ),
                     TextField(
-                      controller: _controller,
+                      controller: _controllerPW,
                       obscureText: true,
                       decoration: const InputDecoration(
                           labelText: 'Password', hintText: 'Enter password'),
                     ),
-                    const RaisedButton( onPressed: null,child: Text('Login')),
+                    ElevatedButton(
+                      onPressed: (){},
+                      child: const Padding(
+                        padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
+                        child: Text('Login', textScaleFactor: 1.6,),
+                      )
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [Text('Sign-Up'), Text('Forgot Password?')],
