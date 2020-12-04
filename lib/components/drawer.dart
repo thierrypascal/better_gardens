@@ -3,6 +3,7 @@ import 'package:biodiversity/screens/information_list_page/biodiversity_measures
 import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
+import 'package:biodiversity/screens/species_list_page/species_list_page.dart';
 import 'package:flutter/material.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -84,8 +85,14 @@ class MyDrawer extends StatelessWidget {
                           },
                         ),
                         ListTile(
-                          title: const Text('Tiere'),
-                          onTap: () {},
+                          title: const Text('Spezien'),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SpeciesListPage()),
+                            );
+                          },
                         ),
                         ListTile(
                           title: const Text('Merkliste'),
