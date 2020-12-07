@@ -47,10 +47,19 @@ class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
           return ItemList(elementType, widget.useSimpleCard);
         },
       ),
-      //TODO: replace FAB by single clickable bottom bar
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => displayBottomSheet(context),
-        child: const Icon(Icons.add),
+      bottomNavigationBar: BottomAppBar(
+        child: Container(
+          color: Colors.green,
+          height: 57,
+          child: Center(
+            child: SizedBox.expand(
+              child: FlatButton(
+                onPressed: () => displayBottomSheet(context),
+                child: Text(_pageList[_currentPage], style: const TextStyle(color: Colors.white), textScaleFactor: 1.2,),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
