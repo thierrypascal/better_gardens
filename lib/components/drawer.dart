@@ -15,116 +15,124 @@ class MyDrawer extends StatelessWidget {
         data: ThemeData(
             primarySwatch: Colors.green,
             primaryColor: Colors.green[700],
-            scaffoldBackgroundColor: Theme.of(context).colorScheme.primary,
+            scaffoldBackgroundColor: Theme
+                .of(context)
+                .colorScheme
+                .primary,
             textTheme: TextTheme(
               bodyText1: TextStyle(
                   color:
-                      Theme.of(context).colorScheme.onPrimary.withOpacity(0.8),
+                  Theme
+                      .of(context)
+                      .colorScheme
+                      .onPrimary
+                      .withOpacity(0.8),
                   fontSize: 16),
             )),
         child: Scaffold(
           appBar: appbar = AppBar(),
-          body: SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                  minHeight: MediaQuery
-                      .of(context)
-                      .size
-                      .height -
-                      appbar.preferredSize.height),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 30, 0, 0),
-                    child: Column(
-                      children: [
-                        ListTile(
-                          title: const Text('Karte'),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => MapsPage()),
-                            );
-                          },
-                        ),
-                        ListTile(
-                          title: const Text('Account'),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AccountPage()),
-                            );
-                          },
-                        ),
-                        ListTile(
-                          title: const Text('Mein Garten'),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => MyGarden()),
-                            );
-                            // ...
-                          },
-                        ),
-                        ListTile(
-                          title: const Text('Nachrichten'),
-                          onTap: () {},
-                        ),
-                        ListTile(
-                          title: const Text('Biodiversität Massnahmen'),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => InformationListPage()),
-                            );
-                          },
-                        ),
-                        ListTile(
-                          title: const Text('Spezien'),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SpeciesListPage()),
-                            );
-                          },
-                        ),
-                        ListTile(
-                          title: const Text('Merkliste'),
-                          onTap: () {},
-                        ),
-                        ListTile(
-                          leading: Icon(
-                            Icons.arrow_forward,
-                            color: Colors.white.withOpacity(0.8),
+          body: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                return SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: constraints.copyWith(
+                      minHeight: constraints.maxHeight,
+                      maxHeight: double.infinity,
+                    ),
+                    child: IntrinsicHeight(
+                      child: Column(
+                        children: <Widget>[
+                          ListTile(
+                            title: const Text('Karte'),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MapsPage()),
+                              );
+                            },
                           ),
-                          title: const Text('Stadtwildtiere'),
-                          onTap: () {},
-                        ),
-                        ListTile(
-                          title: const Text('Login'),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => LoginPage()),
-                            );
-                          },
-                        ),
-                      ],
+                          ListTile(
+                            title: const Text('Account'),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AccountPage()),
+                              );
+                            },
+                          ),
+                          ListTile(
+                            title: const Text('Mein Garten'),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MyGarden()),
+                              );
+                              // ...
+                            },
+                          ),
+                          ListTile(
+                            title: const Text('Nachrichten'),
+                            onTap: () {},
+                          ),
+                          ListTile(
+                            title: const Text('Biodiversität Massnahmen'),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => InformationListPage()),
+                              );
+                            },
+                          ),
+                          ListTile(
+                            title: const Text('Spezien'),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SpeciesListPage()),
+                              );
+                            },
+                          ),
+                          ListTile(
+                            title: const Text('Merkliste'),
+                            onTap: () {},
+                          ),
+                          ListTile(
+                            leading: Icon(
+                              Icons.arrow_forward,
+                              color: Colors.white.withOpacity(0.8),
+                            ),
+                            title: const Text('Stadtwildtiere'),
+                            onTap: () {},
+                          ),
+                          ListTile(
+                            title: const Text('Login'),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginPage()),
+                              );
+                            },
+                          ),
+                          const Expanded(
+                            child: Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Image(
+                                  image: AssetImage('res/gardenDrawer.png'),
+                                ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  const Image(
-                    image: AssetImage('res/gardenDrawer.png'),
-                  ),
-                ],
-              ),
-            ),
+                );
+              }
           ),
         ),
       ),
