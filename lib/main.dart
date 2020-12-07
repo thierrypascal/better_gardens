@@ -3,7 +3,7 @@ import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/map_marker_service.dart';
 import 'package:biodiversity/models/species_service.dart';
 import 'package:biodiversity/models/user.dart';
-import 'package:biodiversity/screens/map_page/maps_page.dart';
+import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -52,7 +52,9 @@ class MyApp extends StatelessWidget {
                 disabledColor:
                     Theme.of(context).colorScheme.onPrimary.withOpacity(0.5),
                 dividerColor: Colors.grey,
-                bottomSheetTheme: BottomSheetThemeData(backgroundColor: Colors.green, modalBackgroundColor: Colors.green),
+                bottomSheetTheme: BottomSheetThemeData(
+                    backgroundColor: Colors.green,
+                    modalBackgroundColor: Colors.green),
 
                 // This makes the visual density adapt to the platform that you run
                 // the app on. For desktop platforms, the controls will be smaller and
@@ -60,7 +62,7 @@ class MyApp extends StatelessWidget {
                 visualDensity: VisualDensity.adaptivePlatformDensity,
               ),
               //home: LoginPage(),
-              home: MapsPage(),
+              home: LoginPage(),
             ),
           );
         }
