@@ -91,8 +91,7 @@ class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
   }
 
   void _onTap(int index) {
-    _controller.animateToPage(index,
-        duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
+    _controller.jumpToPage(index);
     setState(() {
       _currentPage = index;
     });
