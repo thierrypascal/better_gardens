@@ -1,7 +1,6 @@
 import 'dart:developer' as logging;
 import 'dart:math' as math;
 
-import 'package:biodiversity/components/animated_bottom_sheet_widget.dart';
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/fonts/icons_biodiversity_icons.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
@@ -11,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class MapsPage extends StatefulWidget {
   @override
@@ -19,9 +19,8 @@ class MapsPage extends StatefulWidget {
 
 class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   GoogleMapController mapController;
-  LatLng _lastLocation;
-  AnimationController _controller;
-  AnimationController _bottomSheetController;
+  LatLng _focusedLocation;
+  AnimationController _fabController;
   String _biodiversityMeasure = "none";
   static const List<IconData> icons = [
     IconsBiodiversity.wish,
@@ -38,17 +37,14 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       setState(() {
         _biodiversityMeasure = element;
       });
-      _bottomSheetController.forward();
+      displayModalBottomSheet(context);
+
     }).then((markers) {
       setState(() {
         _markers = markers;
       });
     });
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    );
-    _bottomSheetController = AnimationController(
+    _fabController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
@@ -81,19 +77,59 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                 final double long =
                     (bounds.southwest.longitude + bounds.northeast.longitude) /
                         2;
-                _lastLocation = LatLng(lat, long);
+                _focusedLocation = LatLng(lat, long);
               });
             },
             onTap: (pos) {
               Provider.of<MapInteractionContainer>(context, listen: false)
                   .selectedLocation = pos;
-              _bottomSheetController.reverse();
             },
           ),
-          if (_biodiversityMeasure != null)
-            AnimatedBottomSheet(
-              controller: _bottomSheetController,
-              children: [
+        ],
+      ),
+      floatingActionButton: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: getWidgetListForAdvFab()
+          ..add(
+            FloatingActionButton(
+              heroTag: null,
+              onPressed: () {
+                if (_fabController.isDismissed) {
+                  _fabController.forward();
+                } else {
+                  _fabController.reverse();
+                }
+              },
+              child: AnimatedBuilder(
+                animation: _fabController,
+                builder: (BuildContext context, Widget child) {
+                  return Transform(
+                    transform:
+                        Matrix4.rotationZ(_fabController.value * 0.75 * math.pi),
+                    alignment: FractionalOffset.center,
+                    child: Icon(
+                      _fabController.isDismissed ? Icons.add : Icons.add,
+                      size: 30,
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+      ),
+    );
+  }
+
+  void displayModalBottomSheet(BuildContext context) {
+    showBarModalBottomSheet(
+        barrierColor: Colors.transparent,
+        context: context,
+        builder: (ctx) {
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(8.0, 20, 8.0, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
                 _TitleDividerCard(
                   title: "Element",
                   detail: _biodiversityMeasure,
@@ -116,39 +152,8 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                 ),
               ],
             ),
-        ],
-      ),
-      floatingActionButton: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: getWidgetListForAdvFab()
-          ..add(
-            FloatingActionButton(
-              heroTag: null,
-              onPressed: () {
-                if (_controller.isDismissed) {
-                  _controller.forward();
-                } else {
-                  _controller.reverse();
-                }
-              },
-              child: AnimatedBuilder(
-                animation: _controller,
-                builder: (BuildContext context, Widget child) {
-                  return Transform(
-                    transform:
-                        Matrix4.rotationZ(_controller.value * 0.75 * math.pi),
-                    alignment: FractionalOffset.center,
-                    child: Icon(
-                      _controller.isDismissed ? Icons.add : Icons.add,
-                      size: 30,
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-      ),
-    );
+          );
+        });
   }
 
   List<Widget> getWidgetListForAdvFab() {
@@ -159,7 +164,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         alignment: FractionalOffset.centerLeft,
         child: ScaleTransition(
           scale: CurvedAnimation(
-            parent: _controller,
+            parent: _fabController,
             curve: Interval(0.0, 1.0 - 0 / icons.length / 2.0,
                 curve: Curves.easeOut),
           ),
@@ -179,7 +184,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         alignment: FractionalOffset.centerLeft,
         child: ScaleTransition(
           scale: CurvedAnimation(
-            parent: _controller,
+            parent: _fabController,
             curve: Interval(0.0, 1.0 - 1 / icons.length / 2.0,
                 curve: Curves.easeOut),
           ),
@@ -189,16 +194,14 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             backgroundColor: Theme.of(context).cardColor,
             onPressed: () {
               Provider.of<MapInteractionContainer>(context, listen: false)
-                  .selectedLocation ??= _lastLocation;
-              logging.log(_lastLocation.toString());
+                  .selectedLocation = _focusedLocation;
+              logging.log(_focusedLocation.toString());
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => SelectionList()),
               );
             },
-            child: Icon(icons[1], color: Theme
-                .of(context)
-                .accentColor),
+            child: Icon(icons[1], color: Theme.of(context).accentColor),
           ),
         ),
       ),
