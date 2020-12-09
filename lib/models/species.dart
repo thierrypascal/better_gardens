@@ -51,7 +51,7 @@ class Species {
     for (final String s in _supportedBy.keys) {
       string.write("$s, ");
     }
-    String s = string.toString();
+    final String s = string.toString();
     if (s.length > 1) {
       return "${s.substring(0, s.length - 2)})";
     } else {

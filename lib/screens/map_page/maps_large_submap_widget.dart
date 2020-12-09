@@ -16,16 +16,12 @@ class _LargeSubMapState extends State<LargeSubMap> {
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
 
-    Provider
-        .of<MapInteractionContainer>(context)
-        .selectedLocation =
-    (LatLng(46, 7)); //set middle of screen as selectedLocation
+    Provider.of<MapInteractionContainer>(context).selectedLocation =
+        const LatLng(46, 7); //set middle of screen as selectedLocation
 
     tempMarkerList.add(Marker(
       markerId: MarkerId('temp'),
-      position: Provider
-          .of<MapInteractionContainer>(context)
-          .selectedLocation,
+      position: Provider.of<MapInteractionContainer>(context).selectedLocation,
       onTap: () {},
     ));
     setState(() {});
@@ -92,8 +88,7 @@ class _LargeSubMapState extends State<LargeSubMap> {
               child: GoogleMap(
                 onMapCreated: _onMapCreated,
                 initialCameraPosition: CameraPosition(
-                  target:
-                  Provider
+                  target: Provider
                       .of<MapInteractionContainer>(context)
                       .selectedLocation,
                   zoom: 18.0,

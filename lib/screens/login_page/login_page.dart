@@ -49,7 +49,7 @@ class LoginPage extends StatelessWidget {
                                               RegisterPage()));
                                 },
                                 child: const Text('Sign-Up')),
-                            Text('Forgot Password?')
+                            const Text('Forgot Password?')
                           ],
                         ),
                       ],
@@ -146,7 +146,7 @@ class _EmailFormState extends State<_EmailForm> {
 
   Future _loginWithEmail(BuildContext context) async {
     try {
-      final _user = await _auth.signInWithEmailAndPassword(
+      await _auth.signInWithEmailAndPassword(
           email: _email, password: _password);
       Provider.of<biodiversity_user.User>(context, listen: false)
           .loadDetailsFromLoggedInUser();

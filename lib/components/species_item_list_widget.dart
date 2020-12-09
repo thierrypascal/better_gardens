@@ -1,10 +1,10 @@
+import 'package:biodiversity/components/expandable_species_element_card_widget.dart';
 import 'package:biodiversity/components/simple_species_element_card_widget.dart';
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/species_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:biodiversity/components/expandable_species_element_card_widget.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:provider/provider.dart';
 
 class SpeciesItemListWidget extends StatefulWidget {
   final bool useSimpleCard;
@@ -66,17 +66,19 @@ class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
 
   void displayBottomSheet(BuildContext context){
     showMaterialModalBottomSheet(
-      expand: true,
-      context: context,
-      builder: (ctx){
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          child: Container(
+        expand: true,
+        context: context,
+        builder: (ctx){
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
             child: ListView.builder(
               itemCount: _pageList.length,
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
-                  title: Text(_pageList[index], style: const TextStyle(color: Colors.white),),
+                  title: Text(
+                    _pageList[index],
+                    style: const TextStyle(color: Colors.white),
+                  ),
                   onTap: () {
                     _onTap(index);
                     Navigator.of(context).pop();
@@ -84,9 +86,8 @@ class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
                 );
               },
             ),
-          ),
-        );
-      }
+          );
+        }
     );
   }
 
@@ -109,39 +110,39 @@ class ItemList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<Species> list =
-        Provider.of<SpeciesService>(context).getSpeciesObjectList(elementType);
+    Provider.of<SpeciesService>(context).getSpeciesObjectList(elementType);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: list.isEmpty
             ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text(
-                      "Leider keine Einträge vorhanden",
-                      textScaleFactor: 2,
-                      textAlign: TextAlign.center,
-                    ),
-                    Icon(
-                      Icons.emoji_nature,
-                      size: 80,
-                    )
-                  ],
-                ),
-              )
-            : ListView.separated(
-                itemCount: list.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final element = list.elementAt(index);
-                  return _useSimpleCard
-                      ? SimpleSpeciesElementCard(element)
-                      : ExpandableSpeciesElementCard(element);
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return const SizedBox(height: 5);
-                },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Text(
+                "Leider keine Einträge vorhanden",
+                textScaleFactor: 2,
+                textAlign: TextAlign.center,
               ),
+              Icon(
+                Icons.emoji_nature,
+                size: 80,
+              )
+            ],
+          ),
+        )
+            : ListView.separated(
+          itemCount: list.length,
+          itemBuilder: (BuildContext context, int index) {
+            final element = list.elementAt(index);
+            return _useSimpleCard
+                ? SimpleSpeciesElementCard(element)
+                : ExpandableSpeciesElementCard(element);
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return const SizedBox(height: 5);
+          },
+        ),
       ),
     );
   }

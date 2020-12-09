@@ -1,7 +1,5 @@
-import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/user.dart';
-import 'package:biodiversity/screens/detailview_page/detailview_page_measure.dart';
 import 'package:biodiversity/screens/detailview_page/detailview_page_species.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
