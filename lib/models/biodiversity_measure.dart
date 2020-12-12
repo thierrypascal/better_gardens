@@ -48,7 +48,7 @@ class BiodiversityMeasure {
     for (final String s in _beneficialFor.keys) {
       string.write("$s, ");
     }
-    String s = string.toString();
+    final String s = string.toString();
     if (s.length > 1) {
       return "${s.substring(0, s.length - 2)})";
     } else {
@@ -61,7 +61,7 @@ class BiodiversityMeasure {
     for (final String s in _badFor.keys) {
       string.write("$s, ");
     }
-    String s = string.toString();
+    final String s = string.toString();
     if (s.length > 1) {
       return "${s.substring(0, s.length - 2)})";
     } else {
