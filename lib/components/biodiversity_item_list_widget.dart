@@ -1,5 +1,5 @@
-import 'package:biodiversity/components/expandable_element_card_widget.dart';
-import 'package:biodiversity/components/simple_element_card_widget.dart';
+import 'package:biodiversity/components/expandable_measure_element_card_widget.dart';
+import 'package:biodiversity/components/simple_measure_element_card_widget.dart';
 import 'package:biodiversity/fonts/icons_biodiversity_icons.dart';
 import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/biodiversity_service.dart';
@@ -103,8 +103,8 @@ class ItemList extends StatelessWidget {
                 itemBuilder: (BuildContext context, int index) {
                   final element = list.elementAt(index);
                   return _useSimpleCard
-                      ? SimpleElementCard(element)
-                      : ExpandableElementCard(element);
+                      ? SimpleMeasureElementCard(element)
+                      : ExpandableMeasureElementCard(element);
                 },
                 separatorBuilder: (BuildContext context, int index) {
                   return const SizedBox(height: 5);

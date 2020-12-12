@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:biodiversity/components/simple_element_card_widget.dart';
+import 'package:biodiversity/components/simple_measure_element_card_widget.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/map_marker_service.dart';
 import 'package:biodiversity/screens/map_page/maps_page.dart';
@@ -54,7 +54,7 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
                           child: const Text("Element auswählen"),
                         );
                       } else {
-                        return SimpleElementCard(
+                        return SimpleMeasureElementCard(
                           selection.element,
                           goToSelectionList: true,
                         );

@@ -1,75 +1,95 @@
 import 'dart:core';
+import 'dart:developer' as logging;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/foundation.dart';
 
 class User with ChangeNotifier {
   Set<DocumentReference> _gardens;
   Set<String> _favoredObjects;
-  DocumentReference _reference;
   DocumentReference _addressID;
   String nickname;
   String name;
   String surname;
-  String passwordHash;
-  String email;
   String phone;
-  bool hasConfirmedEmail;
 
   User.empty()
-      : _reference = null,
-        _gardens = <DocumentReference>{},
+      : _gardens = <DocumentReference>{},
         _favoredObjects = <String>{},
         _addressID = null,
         nickname = "",
         name = "",
         surname = "",
-        passwordHash = "",
-        email = "",
-        phone = "",
-        hasConfirmedEmail = false;
+        phone = "" {
+    firebase_auth.FirebaseAuth.instance.userChanges().listen((event) {
+      loadDetailsFromLoggedInUser();
+    });
+    loadDetailsFromLoggedInUser();
+  }
 
-  User.fromMap(Map<String, dynamic> map, this._reference)
-      : nickname = map.containsKey('nickname') ? map['nickname'] as String : "",
-        name = map.containsKey('name') ? map['name'] as String : "",
-        surname = map.containsKey('surname') ? map['surname'] as String : "",
-        passwordHash = map.containsKey('passwordHash')
-            ? map['passwordHash'] as String
-            : "",
-        _addressID = map.containsKey('addressID')
-            ? map['addressID'] as DocumentReference
-            : null,
-        email = map.containsKey('email') ? map['email'] as String : "",
-        phone = map.containsKey('phone') ? map['phone'] as String : "",
-        _gardens = map.containsKey('gardens')
-            ? Set<DocumentReference>.from(map['gardens'] as List)
-            : <DocumentReference>{},
-        _favoredObjects = map.containsKey('favoredObjects')
-            ? Set.from(map['favoredObjects'] as List)
-            : <String>{},
-        hasConfirmedEmail = map.containsKey('hasConfirmedEmail') &&
-            map['hasConfirmedEmail'] as bool;
+  Future<bool> loadDetailsFromLoggedInUser() async {
+    logging.log("load details");
+    if (!isLoggedIn()) {
+      return false;
+    }
+    final doc = await FirebaseFirestore.instance.doc(documentPath).get();
+    if (!doc.exists) {
+      logging.log("Loading failed, no doc found");
+      return false;
+    }
+    final Map<String, dynamic> map = doc.data();
+    nickname = map.containsKey('nickname') ? map['nickname'] as String : "";
+    name = map.containsKey('name') ? map['name'] as String : "";
+    surname = map.containsKey('surname') ? map['surname'] as String : "";
+    _addressID = map.containsKey('addressID')
+        ? map['addressID'] as DocumentReference
+        : null;
+    phone = map.containsKey('phone') ? map['phone'] as String : "";
+    _gardens = map.containsKey('gardens')
+        ? Set<DocumentReference>.from(map['gardens'] as List)
+        : <DocumentReference>{};
+    _favoredObjects = map.containsKey('favoredObjects')
+        ? Set.from(map['favoredObjects'] as List)
+        : <String>{};
+    notifyListeners();
+    return true;
+  }
 
-  User.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data(), snapshot.reference);
-
-  Future<void> saveUser() async {
-    _reference ??= await FirebaseFirestore.instance
-        .collection('users')
-        .add({'nickname': 'temp'});
-
-    return FirebaseFirestore.instance.doc(_reference.path).set({
+  Future<bool> saveUser() async {
+    if (!isLoggedIn()) {
+      return false;
+    }
+    await FirebaseFirestore.instance.doc(documentPath).set({
       'nickname': nickname,
       'name': name,
       'surname': surname,
-      'passwordHash': passwordHash,
       'addressID': _addressID,
-      'email': email,
       'phone': phone,
       'gardens': _gardens.toList(),
       'favoredObjects': _favoredObjects.toList(),
-      'hasConfirmedEmail': hasConfirmedEmail,
     });
+    return true;
+  }
+
+  void updateUserData(
+      {String newName,
+      String newSurname,
+      String newNickname,
+      String newPhone,
+      String newAddress}) {
+    if (newName != null) name = newName;
+    if (newSurname != null) surname = newSurname;
+    if (newNickname != null) {
+      nickname = newNickname;
+      firebase_auth.FirebaseAuth.instance.currentUser
+          .updateProfile(displayName: nickname);
+    }
+    if (newPhone != null) phone = newPhone;
+    if (newAddress != null) {
+      //TODO search for address objects
+    }
+    saveUser();
   }
 
   void likeUnlikeElement(String element) {
@@ -86,14 +106,30 @@ class User with ChangeNotifier {
     return _favoredObjects.contains(element);
   }
 
-  @override
-  String toString() {
-    return "{Nickname: $nickname, Name: $name, Surname: $surname, Email: $email, Reference: $_reference}";
+  bool isLoggedIn() {
+    return firebase_auth.FirebaseAuth.instance.currentUser != null &&
+        !firebase_auth.FirebaseAuth.instance.currentUser.isAnonymous;
   }
 
-  static Future<User> loadUser(String path) async {
-    final DocumentSnapshot snapshot =
-        await FirebaseFirestore.instance.doc(path).get();
-    return User.fromSnapshot(snapshot);
+  String get documentPath => isLoggedIn()
+      ? "users/${firebase_auth.FirebaseAuth.instance.currentUser.uid}"
+      : "users/anonymous";
+
+  void signOut() {
+    saveUser();
+    firebase_auth.FirebaseAuth.instance.signOut();
+    nickname = "";
+    name = "";
+    surname = "";
+    phone = "";
+    _addressID = null;
+    _gardens = <DocumentReference>{};
+    _favoredObjects = <String>{};
+    notifyListeners();
+  }
+
+  @override
+  String toString() {
+    return "{Nickname: $nickname, Name: $name, Surname: $surname}";
   }
 }
