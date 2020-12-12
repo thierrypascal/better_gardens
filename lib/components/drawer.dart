@@ -1,14 +1,16 @@
+import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/account_page/account_page.dart';
 import 'package:biodiversity/screens/information_list_page/biodiversity_measures_page.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
+import 'package:biodiversity/screens/species_list_page/species_list_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MyDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    AppBar appbar;
     return Drawer(
       child: Theme(
         data: ThemeData(
@@ -22,22 +24,17 @@ class MyDrawer extends StatelessWidget {
                   fontSize: 16),
             )),
         child: Scaffold(
-          appBar: appbar = AppBar(),
-          body: SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                  minHeight: MediaQuery
-                      .of(context)
-                      .size
-                      .height -
-                      appbar.preferredSize.height),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 30, 0, 0),
+          appBar: AppBar(),
+          body: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                return SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
+                    ),
                     child: Column(
-                      children: [
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
                         ListTile(
                           title: const Text('Karte'),
                           onTap: () {
@@ -84,8 +81,14 @@ class MyDrawer extends StatelessWidget {
                           },
                         ),
                         ListTile(
-                          title: const Text('Tiere'),
-                          onTap: () {},
+                          title: const Text('Spezien'),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SpeciesListPage()),
+                            );
+                          },
                         ),
                         ListTile(
                           title: const Text('Merkliste'),
@@ -99,7 +102,16 @@ class MyDrawer extends StatelessWidget {
                           title: const Text('Stadtwildtiere'),
                           onTap: () {},
                         ),
-                        ListTile(
+                        // ignore: prefer_if_elements_to_conditional_expressions
+                        Provider.of<User>(context).isLoggedIn()
+                            ? ListTile(
+                          title: const Text('Logout'),
+                          onTap: () {
+                            Provider.of<User>(context, listen: false)
+                                .signOut();
+                          },
+                        )
+                            : ListTile(
                           title: const Text('Login'),
                           onTap: () {
                             Navigator.push(
@@ -109,16 +121,16 @@ class MyDrawer extends StatelessWidget {
                             );
                           },
                         ),
+                        const Image(
+                          image: AssetImage('res/gardenDrawer.png'),
+                          width: double.infinity,
+                          fit: BoxFit.fitWidth,
+                        ),
                       ],
                     ),
                   ),
-                  const Image(
-                    image: AssetImage('res/gardenDrawer.png'),
-                  ),
-                ],
-              ),
-            ),
-          ),
+                );
+              }),
         ),
       ),
     );
