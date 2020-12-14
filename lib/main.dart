@@ -51,6 +51,7 @@ class MyApp extends StatelessWidget {
                 bottomSheetTheme: const BottomSheetThemeData(
                     backgroundColor: Colors.green,
                     modalBackgroundColor: Colors.green),
+                errorColor: Colors.redAccent,
 
                 // This makes the visual density adapt to the platform that you run
                 // the app on. For desktop platforms, the controls will be smaller and

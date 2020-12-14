@@ -5,6 +5,8 @@ import 'package:biodiversity/models/user.dart' as biodiversity_user;
 import 'package:biodiversity/screens/login_page/welcome_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
 
 class RegisterEmailPage extends StatefulWidget {
@@ -20,6 +22,7 @@ class _RegisterEmailPageState extends State<RegisterEmailPage> {
   String _nickname;
   String _email;
   String _password;
+  bool _readPrivacyAgreement = false;
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +49,7 @@ class _RegisterEmailPageState extends State<RegisterEmailPage> {
                         Form(
                           key: _formKey,
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               TextFormField(
                                 decoration: const InputDecoration(
@@ -57,7 +61,7 @@ class _RegisterEmailPageState extends State<RegisterEmailPage> {
                               ),
                               TextFormField(
                                 decoration:
-                                    const InputDecoration(labelText: "Name"),
+                                const InputDecoration(labelText: "Name"),
                                 onSaved: (value) => _name = value,
                                 validator: (value) => value.isEmpty
                                     ? "Bitte ein Name eingeben"
@@ -73,7 +77,7 @@ class _RegisterEmailPageState extends State<RegisterEmailPage> {
                               ),
                               TextFormField(
                                   decoration:
-                                      const InputDecoration(labelText: "Email"),
+                                  const InputDecoration(labelText: "Email"),
                                   onSaved: (value) => _email = value,
                                   keyboardType: TextInputType.emailAddress,
                                   validator: (value) {
@@ -81,7 +85,7 @@ class _RegisterEmailPageState extends State<RegisterEmailPage> {
                                       return "Bitte geben Sie eine Email Adresse ein";
                                       //match valid email addresses https://stackoverflow.com/a/16888554
                                     } else if (!RegExp(
-                                            "^[a-zA-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*\$")
+                                        "^[a-zA-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*\$")
                                         .hasMatch(value)) {
                                       return "Bitte geben Sie eine gültige Email Adresse ein";
                                     } else {
@@ -116,12 +120,56 @@ class _RegisterEmailPageState extends State<RegisterEmailPage> {
                                       return null;
                                     }
                                   }),
+                              FormField<bool>(
+                                  key: Key(_readPrivacyAgreement.toString()),
+                                  initialValue: _readPrivacyAgreement,
+                                  onSaved: (value) =>
+                                  _readPrivacyAgreement = value,
+                                  builder: (FormFieldState<bool> field) {
+                                    return Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            FlatButton(
+                                              onPressed: () {
+                                                _showPrivacyAgreement();
+                                              },
+                                              child: const Text(
+                                                  "Ich habe das Privacy-Agreement gelesen."),
+                                            ),
+                                            Checkbox(
+                                              value: field.value,
+                                              onChanged: (bool value) {
+                                                field.didChange(value);
+                                              },
+                                            )
+                                          ],
+                                        ),
+                                        if (field.hasError)
+                                          Text(
+                                            field.errorText,
+                                            style: TextStyle(
+                                                color: Theme
+                                                    .of(context)
+                                                    .errorColor,
+                                                fontSize: 12),
+                                          )
+                                      ],
+                                    );
+                                  },
+                                  validator: (value) =>
+                                  value
+                                      ? null
+                                      : "Bitte lies das Privacy, agreement"),
                               const SizedBox(
                                 height: 40,
                               ),
                               ElevatedButton(
-                                onPressed: () => _registerWithEmail(context)
-                                    .then((value) => null),
+                                onPressed: () =>
+                                    _registerWithEmail(context)
+                                        .then((value) => null),
                                 child: const Text("Registrieren"),
                               ),
                             ],
@@ -153,12 +201,48 @@ class _RegisterEmailPageState extends State<RegisterEmailPage> {
         _user.user.updateProfile(displayName: _nickname);
         Provider.of<biodiversity_user.User>(context, listen: false)
             .updateUserData(
-                newName: _name, newSurname: _surname, newNickname: _nickname);
+            newName: _name, newSurname: _surname, newNickname: _nickname);
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => WelcomePage()));
       } on FirebaseAuthException catch (error) {
         logging.log("failed to register user", error: error);
       }
     }
+  }
+
+  Future<void> _showPrivacyAgreement() async {
+    final String _privacyAgreement =
+    await rootBundle.loadString('res/private-data-agreement.txt');
+    final _read = await showDialog(
+      context: context,
+      builder: (context) =>
+          AlertDialog(
+            insetPadding: const EdgeInsets.all(5),
+            content: SingleChildScrollView(
+              child: Column(
+                children: [
+                  MarkdownBody(data: _privacyAgreement),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () => Navigator.pop(context, "akzeptiert"),
+                        child: const Text("Akzeptieren"),
+                      ),
+                      ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text("Schliessen"),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
+    );
+    setState(() {
+      _readPrivacyAgreement = _read != null;
+    });
   }
 }
