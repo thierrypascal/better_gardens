@@ -18,7 +18,7 @@ flutter_build_android:
     - export PATH="$PATH:/usr/local/bin/flutter/bin"
     - export ANDROID_HOME=/usr/local/bin/android-sdk/
     - export ANDROID_SDK_ROOT=/usr/local/bin/android-sdk/
-    - export PATH=$PATH:$ANDROID_HOME/tools/bin
+    - export PATH=$PATH:$ANDROID_HOMEtools/bin
     - export JAVA_HOME=/usr/local/bin/jdk8u275-b01/
     - whoami
     - echo $PATH
