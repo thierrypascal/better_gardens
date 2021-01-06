@@ -92,6 +92,7 @@ class User with ChangeNotifier {
     saveUser();
   }
 
+  // toggle
   void likeUnlikeElement(String element) {
     if (_favoredObjects.contains(element)) {
       _favoredObjects.remove(element);
