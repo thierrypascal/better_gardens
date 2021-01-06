@@ -23,6 +23,8 @@ flutter_build_android:
     - flutter packages get
     - flutter clean
   script:
+    - whoami
+    - echo $PATH
     - flutter build apk
   artifacts:
     paths:
