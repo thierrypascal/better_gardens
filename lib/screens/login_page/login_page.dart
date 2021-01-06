@@ -1,13 +1,11 @@
 import 'dart:developer' as logging;
 
 import 'package:biodiversity/components/drawer.dart';
-import 'package:biodiversity/models/user.dart' as biodiversity_user;
 import 'package:biodiversity/screens/login_page/register_page.dart';
 import 'package:biodiversity/screens/login_page/welcome_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -148,8 +146,6 @@ class _EmailFormState extends State<_EmailForm> {
     try {
       await _auth.signInWithEmailAndPassword(
           email: _email, password: _password);
-      Provider.of<biodiversity_user.User>(context, listen: false)
-          .loadDetailsFromLoggedInUser();
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => WelcomePage()));
     } on FirebaseAuthException catch (error) {

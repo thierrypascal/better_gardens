@@ -26,7 +26,6 @@ void main() {
     testUser.likeUnlikeElement("plant");
     expect(testUser.doesLikeElement("plant"), true);
     expect(testUser.loadDetailsFromLoggedInUser(), false);
-
     // Tests to write
   });
 }

@@ -10,10 +10,26 @@
       "client_info": {
         "mobilesdk_app_id": "1:658901568912:android:79f3b509085c643fc5b715",
         "android_client_info": {
-          "package_name": "bettergardens.ch.biodiversity"
+          "package_name": "local.ch.biodiversity"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "658901568912-0soqvlqa9atc51iiqe8g3ggl6hsclgu1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "local.ch.biodiversity",
+            "certificate_hash": "456faddf5b12c513491248060807033ac7d13dea"
+          }
+        },
+        {
+          "client_id": "658901568912-6lt19u0ht04g9qin7v44girjjtsdktq5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "local.ch.biodiversity",
+            "certificate_hash": "ee85dd64d3c7a593f3827dadaeac4a7385e320be"
+          }
+        },
         {
           "client_id": "658901568912-fhrit6fu17840v4jj81bug55gnpbtbcl.apps.googleusercontent.com",
           "client_type": 3

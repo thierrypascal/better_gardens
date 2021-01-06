@@ -22,8 +22,10 @@ class User with ChangeNotifier {
         name = "",
         surname = "",
         phone = "" {
-    firebase_auth.FirebaseAuth.instance.userChanges().listen((event) {
-      loadDetailsFromLoggedInUser();
+    firebase_auth.FirebaseAuth.instance.idTokenChanges().listen((user) {
+      if (!user.isAnonymous) {
+        loadDetailsFromLoggedInUser();
+      }
     });
     loadDetailsFromLoggedInUser();
   }

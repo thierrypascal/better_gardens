@@ -44,7 +44,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "bettergardens.ch.biodiversity"
+        applicationId "local.ch.biodiversity"
         minSdkVersion 23
         targetSdkVersion 29
         versionCode flutterVersionCode.toInteger()
