@@ -26,7 +26,6 @@ dynamic setupFirebaseAuthMocks([Callback /*?*/ customHandlers]) {
         }
       ];
     }
-
     if (call.method == 'Firebase#initializeApp') {
       return {
         'name': call.arguments['appName'],
@@ -34,7 +33,11 @@ dynamic setupFirebaseAuthMocks([Callback /*?*/ customHandlers]) {
         'pluginConstants': {},
       };
     }
-
+/*    if (call.method == 'nuthing') {
+      return {
+        'name': call
+      }
+    }*/
     if (customHandlers != null) {
       customHandlers(call);
     }
