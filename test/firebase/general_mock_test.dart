@@ -16,7 +16,7 @@ void main() {
     await Firebase.initializeApp();
   });
 
-  testWidgets('Your Test', (WidgetTester tester) async {
+  testWidgets('User test', (WidgetTester tester) async {
     final MyApp authService = MyApp();
     User testUser = User.empty();
     testUser.updateUserData(newName: "Manu");
@@ -25,6 +25,8 @@ void main() {
     expect(testUser.doesLikeElement("plant"), false);
     testUser.likeUnlikeElement("plant");
     expect(testUser.doesLikeElement("plant"), true);
+    expect(testUser.loadDetailsFromLoggedInUser(), false);
+
     // Tests to write
   });
 }
