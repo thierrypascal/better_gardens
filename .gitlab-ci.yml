@@ -9,9 +9,10 @@ flutter_test:
     - export ANDROID_SDK_ROOT=/usr/local/bin/android-sdk/
     - export PATH=$PATH:$ANDROID_HOME/tools/bin
     - export JAVA_HOME=/usr/local/bin/jdk8u275-b01/
-  script:
     - whoami
-    #- flutter test
+    - echo $PATH
+  script:
+    - flutter test
 flutter_build_android:
   stage: build
   before_script:
