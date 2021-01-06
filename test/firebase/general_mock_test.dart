@@ -18,14 +18,16 @@ void main() {
 
   testWidgets('User test', (WidgetTester tester) async {
     final MyApp authService = MyApp();
-    User testUser = User.empty();
+    final User testUser = User.empty();
     testUser.updateUserData(newName: "Manu");
     expect(testUser.name, "Manu");
     expect(testUser.isLoggedIn(), false);
     expect(testUser.doesLikeElement("plant"), false);
     testUser.likeUnlikeElement("plant");
     expect(testUser.doesLikeElement("plant"), true);
-    expect(testUser.loadDetailsFromLoggedInUser(), false);
+    expect(await testUser.loadDetailsFromLoggedInUser(), false);
+
+
 
     // Tests to write
   });
