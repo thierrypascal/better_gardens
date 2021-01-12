@@ -2,10 +2,14 @@ import 'dart:core';
 import 'dart:developer' as logging;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class User with ChangeNotifier {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
   Set<DocumentReference> _gardens;
   Set<String> _favoredObjects;
   DocumentReference _addressID;
@@ -13,26 +17,20 @@ class User with ChangeNotifier {
   String name;
   String surname;
   String phone;
+  bool _loggedIn;
 
   User.empty()
-      : _gardens = <DocumentReference>{},
+      : _loggedIn = false,
+        _gardens = <DocumentReference>{},
         _favoredObjects = <String>{},
         _addressID = null,
         nickname = "",
         name = "",
         surname = "",
-        phone = "" {
-    firebase_auth.FirebaseAuth.instance.idTokenChanges().listen((user) {
-      if (!user.isAnonymous) {
-        loadDetailsFromLoggedInUser();
-      }
-    });
-    loadDetailsFromLoggedInUser();
-  }
+        phone = "";
 
   Future<bool> loadDetailsFromLoggedInUser() async {
-    logging.log("load details");
-    if (!isLoggedIn()) {
+    if (!_loggedIn) {
       return false;
     }
     final doc = await FirebaseFirestore.instance.doc(documentPath).get();
@@ -40,6 +38,7 @@ class User with ChangeNotifier {
       logging.log("Loading failed, no doc found");
       return false;
     }
+    logging.log("load details");
     final Map<String, dynamic> map = doc.data();
     nickname = map.containsKey('nickname') ? map['nickname'] as String : "";
     name = map.containsKey('name') ? map['name'] as String : "";
@@ -54,12 +53,13 @@ class User with ChangeNotifier {
     _favoredObjects = map.containsKey('favoredObjects')
         ? Set.from(map['favoredObjects'] as List)
         : <String>{};
+    logging.log("loaded User: ${toString()}");
     notifyListeners();
     return true;
   }
 
   Future<bool> saveUser() async {
-    if (!isLoggedIn()) {
+    if (!_loggedIn) {
       return false;
     }
     await FirebaseFirestore.instance.doc(documentPath).set({
@@ -74,24 +74,23 @@ class User with ChangeNotifier {
     return true;
   }
 
-  void updateUserData(
-      {String newName,
-      String newSurname,
-      String newNickname,
-      String newPhone,
-      String newAddress}) {
+  void updateUserData({String newName,
+    String newSurname,
+    String newNickname,
+    String newPhone,
+    String newAddress}) {
     if (newName != null) name = newName;
     if (newSurname != null) surname = newSurname;
     if (newNickname != null) {
       nickname = newNickname;
-      firebase_auth.FirebaseAuth.instance.currentUser
-          .updateProfile(displayName: nickname);
+      FirebaseAuth.instance.currentUser.updateProfile(displayName: nickname);
     }
     if (newPhone != null) phone = newPhone;
     if (newAddress != null) {
       //TODO search for address objects
     }
     saveUser();
+    notifyListeners();
   }
 
   void likeUnlikeElement(String element) {
@@ -108,18 +107,20 @@ class User with ChangeNotifier {
     return _favoredObjects.contains(element);
   }
 
-  bool isLoggedIn() {
-    return firebase_auth.FirebaseAuth.instance.currentUser != null &&
-        !firebase_auth.FirebaseAuth.instance.currentUser.isAnonymous;
-  }
+  bool get isLoggedIn => _loggedIn;
 
-  String get documentPath => isLoggedIn()
-      ? "users/${firebase_auth.FirebaseAuth.instance.currentUser.uid}"
-      : "users/anonymous";
+  String get documentPath =>
+      _loggedIn && FirebaseAuth.instance.currentUser != null
+          ? "users/${FirebaseAuth.instance.currentUser.uid}"
+          : "users/anonymous";
 
   void signOut() {
+    if (!_loggedIn) {
+      return;
+    }
+    logging.log("start logout");
     saveUser();
-    firebase_auth.FirebaseAuth.instance.signOut();
+    FirebaseAuth.instance.signOut();
     nickname = "";
     name = "";
     surname = "";
@@ -127,11 +128,47 @@ class User with ChangeNotifier {
     _addressID = null;
     _gardens = <DocumentReference>{};
     _favoredObjects = <String>{};
+    _loggedIn = false;
     notifyListeners();
+    logging.log("logout done");
   }
 
   @override
   String toString() {
     return "{Nickname: $nickname, Name: $name, Surname: $surname}";
+  }
+
+  Future<void> googleSignIn() async {
+    if (isLoggedIn) {
+      return;
+    }
+    final GoogleSignInAccount googleAccount = await _googleSignIn.signIn();
+    final token = await googleAccount.authentication;
+    final OAuthCredential credential =
+        GoogleAuthProvider.credential(idToken: token.idToken);
+    try {
+      final UserCredential authUser =
+          await _auth.signInWithCredential(credential);
+      authUser.user.updateProfile(displayName: googleAccount.displayName);
+      authUser.user.updateEmail(googleAccount.email);
+      updateUserData(newNickname: googleAccount.displayName);
+      _loggedIn = true;
+      await loadDetailsFromLoggedInUser();
+    } on FirebaseAuthException {
+      rethrow;
+    }
+  }
+
+  Future<void> signInWithEmail(String email, String password) async {
+    if (isLoggedIn) {
+      return;
+    }
+    try {
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      _loggedIn = true;
+      await loadDetailsFromLoggedInUser();
+    } on FirebaseAuthException {
+      rethrow;
+    }
   }
 }

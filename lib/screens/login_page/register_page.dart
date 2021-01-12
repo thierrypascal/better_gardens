@@ -63,7 +63,7 @@ class RegisterPage extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          GoogleRegister()));
+                                          RegisterGooglePage()));
                             },
                             child: const Text("Google"),
                           ),

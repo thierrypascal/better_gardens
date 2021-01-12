@@ -21,7 +21,7 @@ void main() {
     User testUser = User.empty();
     testUser.updateUserData(newName: "Manu");
     expect(testUser.name, "Manu");
-    expect(testUser.isLoggedIn(), false);
+    expect(testUser.isLoggedIn, false);
     expect(testUser.doesLikeElement("plant"), false);
     testUser.likeUnlikeElement("plant");
     expect(testUser.doesLikeElement("plant"), true);
