@@ -28,7 +28,6 @@ dependencies:
   geocoding:
   firebase_core:
 
-  firebase_auth:
   cloud_firestore:
 
   modal_bottom_sheet:
@@ -36,13 +35,18 @@ dependencies:
 
   provider:
 
+  http:
+
+  #Authentication
+  firebase_auth:
+  google_sign_in:
+
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons:
 
   material_design_icons_flutter:
-
-  http:
 
 dev_dependencies:
   lint:
@@ -50,6 +54,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   mockito:
+  cloud_firestore_mocks: ^0.5.2+1
 
 
 # For information on the generic Dart part of this file, see the

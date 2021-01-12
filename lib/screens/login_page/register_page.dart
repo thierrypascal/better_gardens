@@ -1,5 +1,6 @@
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/screens/login_page/register_email_page.dart';
+import 'package:biodiversity/screens/login_page/register_google.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -58,7 +59,11 @@ class RegisterPage extends StatelessWidget {
                           RaisedButton(
                             elevation: 5,
                             onPressed: () {
-                              //TODO add Google login
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          RegisterGooglePage()));
                             },
                             child: const Text("Google"),
                           ),

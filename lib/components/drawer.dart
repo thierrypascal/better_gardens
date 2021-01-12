@@ -101,21 +101,8 @@ class MyDrawer extends StatelessWidget {
                       onTap: () {},
                     ),
                     // ignore: prefer_if_elements_to_conditional_expressions
-                    Provider.of<User>(context).isLoggedIn()
-                        ? ListTile(
-                            title: const Text('Logout'),
-                            onTap: () => _signOut(context),
-                          )
-                        : ListTile(
-                            title: const Text('Login'),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => LoginPage()),
-                              );
-                            },
-                          ),
+                    _loginLogoutButton(),
+
                     const Image(
                       image: AssetImage('res/gardenDrawer.png'),
                       width: double.infinity,
@@ -129,6 +116,31 @@ class MyDrawer extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _loginLogoutButton extends StatefulWidget {
+  @override
+  _loginLogoutButtonState createState() => _loginLogoutButtonState();
+}
+
+class _loginLogoutButtonState extends State<_loginLogoutButton> {
+  @override
+  Widget build(BuildContext context) {
+    if (Provider.of<User>(context).isLoggedIn) {
+      return ListTile(
+        title: const Text('Logout'),
+        onTap: () => _signOut(context),
+      );
+    } else {
+      return ListTile(
+        title: const Text('Login'),
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+        ),
+      );
+    }
   }
 
   void _signOut(BuildContext context) {

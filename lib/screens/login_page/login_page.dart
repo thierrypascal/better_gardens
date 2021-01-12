@@ -1,15 +1,18 @@
-import 'dart:developer' as logging;
-
 import 'package:biodiversity/components/drawer.dart';
-import 'package:biodiversity/models/user.dart' as biodiversity_user;
+import 'package:biodiversity/models/user.dart';
+import 'package:biodiversity/screens/login_page/email_login_page.dart';
 import 'package:biodiversity/screens/login_page/register_page.dart';
-import 'package:biodiversity/screens/login_page/welcome_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
+  final ButtonStyle _buttonStyle = ButtonStyle(
+      backgroundColor: MaterialStateProperty.all(Colors.white),
+      foregroundColor: MaterialStateProperty.all(Colors.black),
+      textStyle: MaterialStateProperty.all(
+          const TextStyle(fontWeight: FontWeight.w500, fontSize: 22)));
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,30 +31,57 @@ class LoginPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.all(30.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Image.asset(
-                          'res/logo.png',
-                          width: 180,
+                        Center(
+                          child: Image.asset(
+                            'res/logo.png',
+                            width: 180,
+                          ),
                         ),
-                        _EmailForm(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            FlatButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              RegisterPage()));
-                                },
-                                child: const Text('Sign-Up')),
-                            const Text('Forgot Password?')
-                          ],
+                        const SizedBox(
+                          height: 20,
                         ),
+                        const Text(
+                          "Login mit",
+                          textScaleFactor: 1.5,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        ElevatedButton(
+                          onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EmailLoginPage())),
+                          style: _buttonStyle,
+                          child: const Text('E-mail'),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        ElevatedButton(
+                          onPressed: () =>
+                              Provider.of<User>(context, listen: false)
+                                  .googleSignIn(),
+                          style: _buttonStyle,
+                          child: const Padding(
+                            padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
+                            child: Text('Google'),
+                          ),
+                        ),
+                        FlatButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => RegisterPage()));
+                            },
+                            child: const Text('Sign-Up')),
                       ],
                     ),
                   ),
@@ -67,112 +97,5 @@ class LoginPage extends StatelessWidget {
         },
       ),
     );
-  }
-}
-
-class _EmailForm extends StatefulWidget {
-  @override
-  _EmailFormState createState() => _EmailFormState();
-}
-
-class _EmailFormState extends State<_EmailForm> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final _formKey = GlobalKey<FormState>();
-  String _email;
-  String _password;
-
-  @override
-  Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          TextFormField(
-            onSaved: (value) => _email = value,
-            validator: (value) {
-              if (value.isEmpty) {
-                return "Bitte geben Sie eine Email Adresse ein";
-                //match valid email addresses https://stackoverflow.com/a/16888554
-              } else if (!RegExp(
-                      "^[a-zA-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*\$")
-                  .hasMatch(value)) {
-                return "Bitte geben Sie eine gültige Email Adresse ein";
-              } else {
-                return null;
-              }
-            },
-            keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(
-              labelText: 'Email',
-              hintText: 'laura.muster@mail.ch',
-            ),
-          ),
-          TextFormField(
-            onSaved: (value) => _password = value,
-            validator: (value) {
-              if (value.isEmpty) {
-                return "Bitte geben Sie ein Passwort ein";
-              } else {
-                return null;
-              }
-            },
-            obscureText: true,
-            decoration: const InputDecoration(
-                labelText: 'Passwort', hintText: 'Ihr Passwort'),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          ElevatedButton(
-              onPressed: () async {
-                // save the fields..
-                final form = _formKey.currentState;
-                if (form.validate()) {
-                  form.save();
-                  await _loginWithEmail(context);
-                }
-              },
-              child: const Padding(
-                padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
-                child: Text(
-                  'Login',
-                  textScaleFactor: 1.6,
-                ),
-              )),
-        ],
-      ),
-    );
-  }
-
-  Future _loginWithEmail(BuildContext context) async {
-    try {
-      await _auth.signInWithEmailAndPassword(
-          email: _email, password: _password);
-      Provider.of<biodiversity_user.User>(context, listen: false)
-          .loadDetailsFromLoggedInUser();
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => WelcomePage()));
-    } on FirebaseAuthException catch (error) {
-      switch (error.code) {
-        case "invalid-email":
-          Scaffold.of(context).showSnackBar(const SnackBar(
-            content: Text("Die eingegebene Email Adresse ist ungültig."),
-          ));
-          break;
-        case "user-not-found":
-          Scaffold.of(context).showSnackBar(const SnackBar(
-              content:
-                  Text("Die eingegebene Email Adresse ist nicht registriert")));
-          break;
-        case "wrong-password":
-          Scaffold.of(context).showSnackBar(const SnackBar(
-              content: Text("Das eingegebene Passwort ist falsch")));
-          break;
-        default:
-          logging.log("error at login", error: error);
-      }
-    } on Exception catch (error) {
-      logging.log("general Exception", error: error);
-    }
   }
 }

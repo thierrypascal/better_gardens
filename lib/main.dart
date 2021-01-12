@@ -3,7 +3,7 @@ import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/map_marker_service.dart';
 import 'package:biodiversity/models/species_service.dart';
 import 'package:biodiversity/models/user.dart';
-import 'package:biodiversity/screens/map_page/maps_page.dart';
+import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,14 +29,16 @@ class MyApp extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.done) {
           return MultiProvider(
             providers: [
-              ChangeNotifierProvider(create: (context) => User.empty()),
-              ChangeNotifierProvider<BiodiversityService>(
+              ChangeNotifierProvider(
+                create: (context) => User.empty(),
+                lazy: false,
+              ),
+              ChangeNotifierProvider(
                   create: (context) => BiodiversityService()),
-              ChangeNotifierProvider<SpeciesService>(
-                  create: (context) => SpeciesService()),
-              ChangeNotifierProvider<MapInteractionContainer>(
+              ChangeNotifierProvider(create: (context) => SpeciesService()),
+              ChangeNotifierProvider(
                   create: (context) => MapInteractionContainer.empty()),
-              ChangeNotifierProvider<MapMarkerService>(
+              ChangeNotifierProvider(
                 create: (context) => MapMarkerService(context),
               ),
             ],
@@ -59,11 +61,10 @@ class MyApp extends StatelessWidget {
                 visualDensity: VisualDensity.adaptivePlatformDensity,
               ),
               //home: LoginPage(),
-              home: MapsPage(),
+              home: LoginPage(),
             ),
           );
         }
-
         return const Center(child: CircularProgressIndicator());
       },
     );
