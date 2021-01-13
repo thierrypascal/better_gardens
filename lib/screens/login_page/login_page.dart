@@ -67,7 +67,7 @@ class LoginPage extends StatelessWidget {
                         ElevatedButton(
                           onPressed: () =>
                               Provider.of<User>(context, listen: false)
-                                  .googleSignIn(),
+                                  .signInWithGoogle(),
                           style: _buttonStyle,
                           child: const Padding(
                             padding: EdgeInsets.fromLTRB(20, 5, 20, 5),

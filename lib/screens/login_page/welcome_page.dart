@@ -20,6 +20,9 @@ class WelcomePage extends StatelessWidget {
                 style: const TextStyle(fontSize: 30),
                 textAlign: TextAlign.center,
               ),
+              if (!Provider.of<User>(context).hasConfirmedEmail)
+                const Text("Bitte bestätige deine Email Adresse "
+                    "mit dem Link den du per Email bekommen hast."),
             ],
           ),
         ));

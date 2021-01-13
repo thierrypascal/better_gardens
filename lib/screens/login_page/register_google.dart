@@ -1,5 +1,4 @@
 import 'package:biodiversity/components/drawer.dart';
-import 'package:biodiversity/components/privacy_agreement.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/login_page/register_page.dart';
 import 'package:biodiversity/screens/login_page/welcome_page.dart';
@@ -12,9 +11,11 @@ class RegisterGooglePage extends StatelessWidget {
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => WelcomePage()));
     } else {
-      final _read = await showPrivacyAgreement(context);
-      if (_read) {
-        Provider.of<User>(context, listen: false).googleSignIn();
+      final signedIn = await Provider.of<User>(context, listen: false)
+          .registerWithGoogle(context);
+      if (signedIn) {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => WelcomePage()));
       } else {
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) => RegisterPage()));
@@ -31,9 +32,7 @@ class RegisterGooglePage extends StatelessWidget {
         title: const Text('Registrieren mit Google'),
       ),
       drawer: MyDrawer(),
-      body: !Provider.of<User>(context).isLoggedIn
-          ? const Center(child: CircularProgressIndicator())
-          : const Center(child: Text("Willkommen!")),
+      body: const Center(child: CircularProgressIndicator()),
     );
   }
 }

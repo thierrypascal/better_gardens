@@ -1,8 +1,10 @@
 import 'dart:core';
 import 'dart:developer' as logging;
 
+import 'package:biodiversity/components/privacy_agreement.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -74,11 +76,13 @@ class User with ChangeNotifier {
     return true;
   }
 
-  void updateUserData({String newName,
-    String newSurname,
-    String newNickname,
-    String newPhone,
-    String newAddress}) {
+  void updateUserData(
+      {String newName,
+      String newSurname,
+      String newNickname,
+      String newPhone,
+      String newAddress,
+      bool notify = true}) {
     if (newName != null) name = newName;
     if (newSurname != null) surname = newSurname;
     if (newNickname != null) {
@@ -90,7 +94,9 @@ class User with ChangeNotifier {
       //TODO search for address objects
     }
     saveUser();
-    notifyListeners();
+    if (notify) {
+      notifyListeners();
+    }
   }
 
   // toggle
@@ -107,6 +113,9 @@ class User with ChangeNotifier {
   bool doesLikeElement(String element) {
     return _favoredObjects.contains(element);
   }
+
+  bool get hasConfirmedEmail =>
+      _auth.currentUser != null && _auth.currentUser.emailVerified;
 
   bool get isLoggedIn => _loggedIn;
 
@@ -139,11 +148,44 @@ class User with ChangeNotifier {
     return "{Nickname: $nickname, Name: $name, Surname: $surname}";
   }
 
-  Future<void> googleSignIn() async {
+  Future<bool> signInWithGoogle({bool register = false}) async {
     if (isLoggedIn) {
-      return;
+      return false;
     }
     final GoogleSignInAccount googleAccount = await _googleSignIn.signIn();
+    if (googleAccount == null) {
+      return false;
+    }
+    final token = await googleAccount.authentication;
+    final OAuthCredential credential =
+        GoogleAuthProvider.credential(idToken: token.idToken);
+    try {
+      final UserCredential authUser =
+          await _auth.signInWithCredential(credential);
+      if (register) {
+        authUser.user.updateProfile(displayName: googleAccount.displayName);
+        authUser.user.updateEmail(googleAccount.email);
+        updateUserData(newNickname: googleAccount.displayName, notify: false);
+      }
+      _loggedIn = true;
+      await loadDetailsFromLoggedInUser();
+      return true;
+    } on FirebaseAuthException {
+      rethrow;
+    }
+  }
+
+  Future<bool> registerWithGoogle(BuildContext context) async {
+    if (isLoggedIn) {
+      return false;
+    }
+    final GoogleSignInAccount googleAccount = await _googleSignIn.signIn();
+    if (googleAccount == null) {
+      return false;
+    }
+    if (!await showPrivacyAgreement(context)) {
+      return false;
+    }
     final token = await googleAccount.authentication;
     final OAuthCredential credential =
         GoogleAuthProvider.credential(idToken: token.idToken);
@@ -152,9 +194,10 @@ class User with ChangeNotifier {
           await _auth.signInWithCredential(credential);
       authUser.user.updateProfile(displayName: googleAccount.displayName);
       authUser.user.updateEmail(googleAccount.email);
-      updateUserData(newNickname: googleAccount.displayName);
+      updateUserData(newNickname: googleAccount.displayName, notify: false);
       _loggedIn = true;
       await loadDetailsFromLoggedInUser();
+      return true;
     } on FirebaseAuthException {
       rethrow;
     }
@@ -168,6 +211,20 @@ class User with ChangeNotifier {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       _loggedIn = true;
       await loadDetailsFromLoggedInUser();
+    } on FirebaseAuthException {
+      rethrow;
+    }
+  }
+
+  Future<void> registerWithEmail(String email, String password,
+      {String nickname, String name, String surname}) async {
+    try {
+      final cred = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      cred.user.updateProfile(displayName: nickname);
+      _loggedIn = true;
+      updateUserData(newName: name, newSurname: surname, newNickname: nickname);
+      cred.user.sendEmailVerification();
     } on FirebaseAuthException {
       rethrow;
     }

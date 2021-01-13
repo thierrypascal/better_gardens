@@ -198,12 +198,9 @@ class _RegisterEmailPageState extends State<RegisterEmailPage> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       try {
-        final _user = await _auth.createUserWithEmailAndPassword(
-            email: _email, password: _password);
-        _user.user.updateProfile(displayName: _nickname);
         Provider.of<biodiversity_user.User>(context, listen: false)
-            .updateUserData(
-                newName: _name, newSurname: _surname, newNickname: _nickname);
+            .registerWithEmail(_email, _password,
+                name: _name, surname: _surname, nickname: _nickname);
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => WelcomePage()));
       } on FirebaseAuthException catch (error) {

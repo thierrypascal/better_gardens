@@ -2,7 +2,7 @@ import 'dart:developer' as logging;
 
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/models/user.dart';
-import 'package:biodiversity/screens/login_page/register_email_page.dart';
+import 'package:biodiversity/screens/login_page/register_page.dart';
 import 'package:biodiversity/screens/login_page/welcome_page.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebaseAuth;
 import 'package:flutter/material.dart';
@@ -116,7 +116,7 @@ class _EmailLoginPageState extends State<EmailLoginPage> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              RegisterEmailPage()));
+                                              RegisterPage()));
                                 },
                                 child: const Text('Sign-Up')),
                             FlatButton(
