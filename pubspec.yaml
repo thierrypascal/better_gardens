@@ -50,6 +50,7 @@ dependencies:
 
 dev_dependencies:
   lint:
+  effective_dart:
   test:
   flutter_test:
     sdk: flutter

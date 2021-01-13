@@ -203,14 +203,19 @@ class User with ChangeNotifier {
     }
   }
 
-  Future<void> signInWithEmail(String email, String password) async {
+  Future<String> signInWithEmail(String email, String password) async {
     if (isLoggedIn) {
-      return;
+      return null;
     }
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
+      if (!_auth.currentUser.emailVerified) {
+        _auth.signOut();
+        return "Die Email adresse ist noch nicht bestätigt";
+      }
       _loggedIn = true;
       await loadDetailsFromLoggedInUser();
+      return null;
     } on FirebaseAuthException {
       rethrow;
     }
