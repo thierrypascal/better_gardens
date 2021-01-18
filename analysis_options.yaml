@@ -1,8 +1,12 @@
-include: package:lint/analysis_options.yaml
+include: package:effective_dart/analysis_options.yaml
 
 linter:
   rules:
-    - always_use_package_imports
+    always_use_package_imports: true
+    prefer_relative_imports: false
+    package_api_docs: true
+    public_member_api_docs: true
+
 
 analyzer:
   errors:
@@ -37,6 +41,8 @@ analyzer:
     unsafe_html: error
     use_key_in_widget_constructors: error
     valid_regexps: error
+    package_api_docs: error
+    public_member_api_docs: warning
 
     type_annotate_public_apis: error
     overridden_fields: warning
@@ -47,3 +53,4 @@ analyzer:
 
     missing_required_param: error
     deprecated_member_use: error
+    missing_return: warning
