@@ -169,7 +169,6 @@ class User extends ChangeNotifier {
     if (!_loggedIn) {
       return;
     }
-    logging.log("start logout");
     saveUser();
     FirebaseAuth.instance.signOut();
     nickname = "";
@@ -181,7 +180,6 @@ class User extends ChangeNotifier {
     _favoredObjects = <String>{};
     _loggedIn = false;
     notifyListeners();
-    logging.log("logout done");
   }
 
   @override
@@ -196,6 +194,7 @@ class User extends ChangeNotifier {
   /// set to false if the user isn't registered
   Future<LoginResult> signInWithGoogle({bool register = false}) async {
     if (!isLoggedIn) {
+      _googleSignIn.signOut();
       final googleAccount = await _googleSignIn.signIn();
       if (googleAccount == null) {
         return LoginResult("Anmeldung abgebrochen.");
@@ -205,15 +204,17 @@ class User extends ChangeNotifier {
       try {
         final signInMethods =
             await _auth.fetchSignInMethodsForEmail(googleAccount.email);
-        if (!signInMethods.contains("google")) {
+        if (!signInMethods.contains("google.com")) {
+          logging.log(signInMethods.toString());
+          _googleSignIn.signOut();
           return LoginResult("Bitte registrieren Sie sich zuerst.",
-              isPrivacyAgreementAccepted: false);
+              isRegistered: false);
         }
         await _auth.signInWithCredential(credential);
         _loggedIn = true;
         await loadDetailsFromLoggedInUser();
-        return null;
       } on FirebaseAuthException catch (error) {
+        _googleSignIn.signOut();
         if (error.code == "invalid-email") {
           // This should not be possible,
           // since the email is fetched from the google account
@@ -221,6 +222,7 @@ class User extends ChangeNotifier {
         }
       }
     }
+    return null;
   }
 
   ///Signs the user in with the provided Email and password
@@ -256,15 +258,19 @@ class User extends ChangeNotifier {
 
   ///Displays the google account selection popup and the privacy agreement.<br>
   ///Afterwards the user is signed in automatically
-  Future<bool> registerWithGoogle(BuildContext context) async {
+  Future<String> registerWithGoogle(BuildContext context) async {
     if (!isLoggedIn) {
       final googleAccount = await _googleSignIn.signIn();
       if (googleAccount == null) {
-        return false;
+        return "Registrierung abgebrochen";
       }
       final token = await googleAccount.authentication;
-      if (!await showPrivacyAgreement(context)) {
-        return false;
+      final isNotRegistered =
+          !(await getSignInMethods(googleAccount.email)).contains("google.com");
+      if (isNotRegistered && !await showPrivacyAgreement(context)) {
+        _googleSignIn.signOut();
+        return "Damit du ein Konto erstellen kannst, "
+            "musst du das Privacy agreement annehmen.";
       }
       final credential = GoogleAuthProvider.credential(idToken: token.idToken);
       try {
@@ -275,11 +281,12 @@ class User extends ChangeNotifier {
             newNickname: googleAccount.displayName, informListeners: false);
         _loggedIn = true;
         await loadDetailsFromLoggedInUser();
-      } on FirebaseAuthException {
-        rethrow;
+      } on FirebaseAuthException catch (error) {
+        _googleSignIn.signOut();
+        return error.message;
       }
     }
-    return _loggedIn;
+    return null;
   }
 
   /// Registers a user with the provided email address and password.

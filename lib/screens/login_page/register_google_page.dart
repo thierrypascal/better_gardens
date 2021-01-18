@@ -6,37 +6,51 @@ import 'package:provider/provider.dart';
 
 /// Page that handles the registration with google.
 /// The page itself doesn't contain any content
-class RegisterGooglePage extends StatelessWidget {
-  Future<void> _handleRegistration(BuildContext context) async {
-    if (Provider.of<User>(context, listen: false).isLoggedIn) {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => WelcomePage()));
-    } else {
-      final registerSuccessful = await Provider.of<User>(context, listen: false)
-          .registerWithGoogle(context);
-      if (registerSuccessful) {
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => WelcomePage()));
-      } else {
-        Navigator.of(context).pop();
-      }
-    }
+class RegisterGooglePage extends StatefulWidget {
+  @override
+  _RegisterGooglePageState createState() => _RegisterGooglePageState();
+}
+
+class _RegisterGooglePageState extends State<RegisterGooglePage> {
+  String _errorText;
+
+  @override
+  void initState() {
+    super.initState();
+    _handleRegistration(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => _handleRegistration(context));
     return LogoAndWavesScreen(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: const Center(
-            child: CircularProgressIndicator(),
+        SizedBox(height: 20),
+        if (_errorText != null)
+          Text(
+            _errorText,
+            textScaleFactor: 1.2,
+            style: TextStyle(color: Colors.red),
           ),
-        )
+        if (_errorText != null) SizedBox(height: 10),
+        ElevatedButton(
+          child: Text("Registrieren"),
+          onPressed: () => _handleRegistration(context),
+        ),
       ],
       title: 'Registrieren mit Google',
     );
+  }
+
+  Future<void> _handleRegistration(BuildContext context) async {
+    final registerMessage = await Provider.of<User>(context, listen: false)
+        .registerWithGoogle(context);
+    if (registerMessage == null) {
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => WelcomePage()));
+    } else {
+      setState(() {
+        _errorText = registerMessage;
+      });
+    }
   }
 }

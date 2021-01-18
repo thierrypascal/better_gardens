@@ -6,14 +6,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+final ButtonStyle _buttonStyle = ButtonStyle(
+    backgroundColor: MaterialStateProperty.all(Colors.white),
+    foregroundColor: MaterialStateProperty.all(Colors.black),
+    textStyle: MaterialStateProperty.all(
+        const TextStyle(fontWeight: FontWeight.w500, fontSize: 22)));
+
 /// The screen where you can select which method you want to use to sign in
 class LoginPage extends StatelessWidget {
-  final ButtonStyle _buttonStyle = ButtonStyle(
-      backgroundColor: MaterialStateProperty.all(Colors.white),
-      foregroundColor: MaterialStateProperty.all(Colors.black),
-      textStyle: MaterialStateProperty.all(
-          const TextStyle(fontWeight: FontWeight.w500, fontSize: 22)));
-
   @override
   Widget build(BuildContext context) {
     return LogoAndWavesScreen(
@@ -39,15 +39,7 @@ class LoginPage extends StatelessWidget {
         const SizedBox(
           height: 10,
         ),
-        ElevatedButton(
-          onPressed: () =>
-              Provider.of<User>(context, listen: false).signInWithGoogle(),
-          style: _buttonStyle,
-          child: const Padding(
-            padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
-            child: Text('Google'),
-          ),
-        ),
+        GoogleSignInButton(),
         FlatButton(
             onPressed: () {
               Navigator.push(context,
@@ -56,5 +48,41 @@ class LoginPage extends StatelessWidget {
             child: const Text('Sign-Up')),
       ],
     );
+  }
+}
+
+/// Button which handls the google sign in process
+class GoogleSignInButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () => _handleGoogleSignIn(context),
+      style: _buttonStyle,
+      child: const Padding(
+        padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
+        child: Text('Google'),
+      ),
+    );
+  }
+
+  Future<void> _handleGoogleSignIn(BuildContext context) async {
+    final result =
+        await Provider.of<User>(context, listen: false).signInWithGoogle();
+    if (result == null) {
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text("Anmeldung erfolgreich"),
+      ));
+      return;
+    }
+    if (!result.isRegistered) {
+      Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text("Du bist noch nicht registriert mit deinem Google "
+              "account.\nBitte registriere dich zuerst, "
+              "bevor du dich einloggen kannst.")));
+    } else {
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text(result.message),
+      ));
+    }
   }
 }
