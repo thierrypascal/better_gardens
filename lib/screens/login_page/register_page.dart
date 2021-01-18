@@ -1,6 +1,6 @@
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/screens/login_page/register_email_page.dart';
-import 'package:biodiversity/screens/login_page/register_google.dart';
+import 'package:biodiversity/screens/login_page/register_google_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

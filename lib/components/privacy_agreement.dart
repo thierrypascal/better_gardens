@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
+/// shows a pop up with the privacy agreement.<br>
+/// Returns [true] if the agreement was accepted
 Future<bool> showPrivacyAgreement(BuildContext context) async {
-  final String _privacyAgreement =
+  final _privacyAgreement =
       await rootBundle.loadString('res/private-data-agreement.txt');
   final _read = await showDialog(
     context: context,
