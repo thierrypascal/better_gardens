@@ -48,6 +48,7 @@ dependencies:
 
   material_design_icons_flutter:
   font_awesome_flutter:
+  flutter_svg:
 
 dev_dependencies:
   lint:
