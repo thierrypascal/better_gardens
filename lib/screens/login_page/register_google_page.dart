@@ -23,6 +23,7 @@ class _RegisterGooglePageState extends State<RegisterGooglePage> {
   @override
   Widget build(BuildContext context) {
     return LogoAndWavesScreen(
+      title: 'Registrieren mit Google',
       children: [
         SizedBox(height: 20),
         if (_errorText != null)
@@ -37,7 +38,6 @@ class _RegisterGooglePageState extends State<RegisterGooglePage> {
           onPressed: () => _handleRegistration(context),
         ),
       ],
-      title: 'Registrieren mit Google',
     );
   }
 

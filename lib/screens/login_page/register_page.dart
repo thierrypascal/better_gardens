@@ -1,9 +1,11 @@
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/screens/login_page/register_email_page.dart';
+import 'package:biodiversity/screens/login_page/register_facebook_page.dart';
 import 'package:biodiversity/screens/login_page/register_google_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+/// On this page you can choose which provider you want to use to register
 class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -47,31 +49,28 @@ class RegisterPage extends StatelessWidget {
                           const SizedBox(height: 20),
                           RaisedButton(
                             elevation: 5,
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          RegisterEmailPage()));
-                            },
+                            onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => RegisterEmailPage())),
                             child: const Text("E-Mail"),
                           ),
                           RaisedButton(
                             elevation: 5,
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          RegisterGooglePage()));
-                            },
+                            onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        RegisterGooglePage())),
                             child: const Text("Google"),
                           ),
                           RaisedButton(
                             elevation: 5,
-                            onPressed: () {
-                              //TODO add Facebook login
-                            },
+                            onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        RegisterFacebookPage())),
                             child: const Text("Facbook"),
                           ),
                           RaisedButton(

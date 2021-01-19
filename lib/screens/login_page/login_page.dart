@@ -36,10 +36,14 @@ class LoginPage extends StatelessWidget {
           style: _buttonStyle,
           child: const Text('E-mail'),
         ),
-        const SizedBox(
-          height: 10,
-        ),
-        GoogleSignInButton(),
+        SignInButton(
+            name: "Google",
+            signInFunction:
+                Provider.of<User>(context, listen: false).signInWithGoogle),
+        SignInButton(
+            name: "Facebook",
+            signInFunction:
+                Provider.of<User>(context, listen: false).signInWithFacebook),
         FlatButton(
             onPressed: () {
               Navigator.push(context,
@@ -51,23 +55,33 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-/// Button which handls the google sign in process
-class GoogleSignInButton extends StatelessWidget {
+/// Button which handles the google sign in process
+class SignInButton extends StatelessWidget {
+  /// Displayed text on the button
+  final String name;
+
+  /// Function of User to sign-in with the appropriate provider
+  final Function() signInFunction;
+
+  /// creates a button with some simple text on it (bsp. Google)
+  /// which handles the sign in process for the given provider
+  SignInButton({@required this.name, @required this.signInFunction});
+
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () => _handleGoogleSignIn(context),
+      onPressed: () => _handleSignIn(context, signInFunction: signInFunction),
       style: _buttonStyle,
-      child: const Padding(
+      child: Padding(
         padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
-        child: Text('Google'),
+        child: Text(name),
       ),
     );
   }
 
-  Future<void> _handleGoogleSignIn(BuildContext context) async {
-    final result =
-        await Provider.of<User>(context, listen: false).signInWithGoogle();
+  Future<void> _handleSignIn(BuildContext context,
+      {@required Function() signInFunction}) async {
+    final result = await signInFunction();
     if (result == null) {
       Scaffold.of(context).showSnackBar(SnackBar(
         content: Text("Anmeldung erfolgreich"),
@@ -76,9 +90,8 @@ class GoogleSignInButton extends StatelessWidget {
     }
     if (!result.isRegistered) {
       Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text("Du bist noch nicht registriert mit deinem Google "
-              "account.\nBitte registriere dich zuerst, "
-              "bevor du dich einloggen kannst.")));
+          content: Text("Du bist noch nicht registriert mit deinem account.\n"
+              "Bitte registriere dich zuerst, bevor du dich anmeldest.")));
     } else {
       Scaffold.of(context).showSnackBar(SnackBar(
         content: Text(result.message),
