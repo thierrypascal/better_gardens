@@ -4,13 +4,14 @@ import 'package:biodiversity/screens/login_page/email_login_page.dart';
 import 'package:biodiversity/screens/login_page/register_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 final ButtonStyle _buttonStyle = ButtonStyle(
     backgroundColor: MaterialStateProperty.all(Colors.white),
     foregroundColor: MaterialStateProperty.all(Colors.black),
     textStyle: MaterialStateProperty.all(
-        const TextStyle(fontWeight: FontWeight.w500, fontSize: 22)));
+        TextStyle(fontWeight: FontWeight.w500, fontSize: 22)));
 
 /// The screen where you can select which method you want to use to sign in
 class LoginPage extends StatelessWidget {
@@ -34,12 +35,33 @@ class LoginPage extends StatelessWidget {
           onPressed: () => Navigator.push(context,
               MaterialPageRoute(builder: (context) => EmailLoginPage())),
           style: _buttonStyle,
-          child: const Text('E-mail'),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(flex: 1, child: Icon(FontAwesomeIcons.envelope)),
+              Expanded(
+                  flex: 9,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("E-mail"),
+                    ],
+                  )),
+            ],
+          ),
         ),
-        const SizedBox(
-          height: 10,
+        SignInButton(
+          name: "Google",
+          icon: FontAwesomeIcons.google,
+          signInFunction:
+              Provider.of<User>(context, listen: false).signInWithGoogle,
         ),
-        GoogleSignInButton(),
+        SignInButton(
+          name: "Facebook",
+          icon: FontAwesomeIcons.facebook,
+          signInFunction:
+              Provider.of<User>(context, listen: false).signInWithFacebook,
+        ),
         FlatButton(
             onPressed: () {
               Navigator.push(context,
@@ -51,23 +73,49 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-/// Button which handls the google sign in process
-class GoogleSignInButton extends StatelessWidget {
+/// Class to create simple Sign in Buttons.
+/// New context needed to work with Snackbar
+class SignInButton extends StatelessWidget {
+  /// Function which is used to sign in with the corresponding provider
+  final Function() signInFunction;
+
+  /// Label wich provider this button represents
+  final String name;
+
+  /// Icon of the provider
+  final IconData icon;
+
+  /// Creates a ElevatedButton With the provided icon and text
+  SignInButton(
+      {@required this.signInFunction,
+      @required this.name,
+      @required this.icon});
+
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () => _handleGoogleSignIn(context),
       style: _buttonStyle,
-      child: const Padding(
-        padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
-        child: Text('Google'),
+      onPressed: () => _handleSignIn(context, signInFunction: signInFunction),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(flex: 1, child: Icon(icon)),
+          Expanded(
+              flex: 9,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(name),
+                ],
+              )),
+        ],
       ),
     );
   }
 
-  Future<void> _handleGoogleSignIn(BuildContext context) async {
-    final result =
-        await Provider.of<User>(context, listen: false).signInWithGoogle();
+  Future<void> _handleSignIn(BuildContext context,
+      {@required Function() signInFunction}) async {
+    final result = await signInFunction();
     if (result == null) {
       Scaffold.of(context).showSnackBar(SnackBar(
         content: Text("Anmeldung erfolgreich"),
@@ -76,9 +124,8 @@ class GoogleSignInButton extends StatelessWidget {
     }
     if (!result.isRegistered) {
       Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text("Du bist noch nicht registriert mit deinem Google "
-              "account.\nBitte registriere dich zuerst, "
-              "bevor du dich einloggen kannst.")));
+          content: Text("Du bist noch nicht registriert mit deinem account.\n"
+              "Bitte registriere dich zuerst, bevor du dich anmeldest.")));
     } else {
       Scaffold.of(context).showSnackBar(SnackBar(
         content: Text(result.message),

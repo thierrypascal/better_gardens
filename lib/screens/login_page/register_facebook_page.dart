@@ -1,17 +1,17 @@
 import 'package:biodiversity/components/screen_with_logo_and_waves.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/login_page/welcome_page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-/// Page that handles the registration with google.
-/// The page itself doesn't contain any content
-class RegisterGooglePage extends StatefulWidget {
+/// The page where you can register with your facebook account
+class RegisterFacebookPage extends StatefulWidget {
   @override
-  _RegisterGooglePageState createState() => _RegisterGooglePageState();
+  _RegisterFacebookPageState createState() => _RegisterFacebookPageState();
 }
 
-class _RegisterGooglePageState extends State<RegisterGooglePage> {
+class _RegisterFacebookPageState extends State<RegisterFacebookPage> {
   String _errorText;
 
   @override
@@ -23,7 +23,7 @@ class _RegisterGooglePageState extends State<RegisterGooglePage> {
   @override
   Widget build(BuildContext context) {
     return LogoAndWavesScreen(
-      title: 'Registrieren mit Google',
+      title: "Registrieren mit Facebook",
       children: [
         SizedBox(height: 20),
         if (_errorText != null)
@@ -42,14 +42,14 @@ class _RegisterGooglePageState extends State<RegisterGooglePage> {
   }
 
   Future<void> _handleRegistration(BuildContext context) async {
-    final registerMessage = await Provider.of<User>(context, listen: false)
-        .registerWithGoogle(context);
-    if (registerMessage == null) {
+    final result = await Provider.of<User>(context, listen: false)
+        .registerWithFacebook(context);
+    if (result == null) {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => WelcomePage()));
     } else {
       setState(() {
-        _errorText = registerMessage;
+        _errorText = result;
       });
     }
   }

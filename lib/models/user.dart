@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 /// The User class holds all information about the User of the app
@@ -188,41 +189,55 @@ class User extends ChangeNotifier {
   }
 
   /// Signs the user in with a google account.<br>
-  /// The selection which User should be used will apear as a pop up
+  /// The selection which User should be used will appear as a pop up
   /// In case of success returns [null], otherwise a [LoginResult] object
   /// with the message set and additionally the flag isPrivacyAgreementAccepted
   /// set to false if the user isn't registered
   Future<LoginResult> signInWithGoogle({bool register = false}) async {
-    if (!isLoggedIn) {
-      _googleSignIn.signOut();
-      final googleAccount = await _googleSignIn.signIn();
-      if (googleAccount == null) {
-        return LoginResult("Anmeldung abgebrochen.");
-      }
-      final token = await googleAccount.authentication;
-      final credential = GoogleAuthProvider.credential(idToken: token.idToken);
-      try {
-        final signInMethods =
-            await _auth.fetchSignInMethodsForEmail(googleAccount.email);
-        if (!signInMethods.contains("google.com")) {
-          logging.log(signInMethods.toString());
-          _googleSignIn.signOut();
-          return LoginResult("Bitte registrieren Sie sich zuerst.",
-              isRegistered: false);
-        }
-        await _auth.signInWithCredential(credential);
-        _loggedIn = true;
-        await loadDetailsFromLoggedInUser();
-      } on FirebaseAuthException catch (error) {
-        _googleSignIn.signOut();
-        if (error.code == "invalid-email") {
-          // This should not be possible,
-          // since the email is fetched from the google account
-          return LoginResult("Deine Email adresse ist ungültig");
-        }
-      }
+    if (isLoggedIn) {
+      return null;
     }
-    return null;
+    _googleSignIn.signOut();
+    final googleAccount = await _googleSignIn.signIn();
+    if (googleAccount == null) {
+      return LoginResult("Anmeldung abgebrochen.");
+    }
+    final token = await googleAccount.authentication;
+    final credential = GoogleAuthProvider.credential(idToken: token.idToken);
+    final result = await _signInWithCredential(
+        credential: credential,
+        email: googleAccount.email,
+        signOutCallback: _googleSignIn.signOut);
+    return result;
+  }
+
+  /// Signs the user in with a Facebook account.<br>
+  /// In case of success returns [null], otherwise a [LoginResult] object
+  /// with the message set and additionally the flag isPrivacyAgreementAccepted
+  /// set to false if the user isn't registered
+  Future<LoginResult> signInWithFacebook({bool register = false}) async {
+    if (isLoggedIn) {
+      return null;
+    }
+    AccessToken token;
+    try {
+      token = await FacebookAuth.instance
+          .login(loginBehavior: "dialog", permissions: ["email"]);
+    } on FacebookAuthException {
+      return LoginResult("Anmeldung abgebrochen");
+    }
+    final data = await FacebookAuth.instance.getUserData(fields: "email");
+    if (!data.containsKey("email")) {
+      FacebookAuth.instance.logOut();
+      return LoginResult(
+          "Name oder Email konnte nicht von Facebook abgerufen werden");
+    }
+    final credential = FacebookAuthProvider.credential(token.token);
+    final result = await _signInWithCredential(
+        credential: credential,
+        email: data["email"],
+        signOutCallback: _googleSignIn.signOut);
+    return result;
   }
 
   ///Signs the user in with the provided Email and password
@@ -256,37 +271,59 @@ class User extends ChangeNotifier {
     return null;
   }
 
-  ///Displays the google account selection popup and the privacy agreement.<br>
-  ///Afterwards the user is signed in automatically
-  Future<String> registerWithGoogle(BuildContext context) async {
-    if (!isLoggedIn) {
-      final googleAccount = await _googleSignIn.signIn();
-      if (googleAccount == null) {
-        return "Registrierung abgebrochen";
+  Future<LoginResult> _signInWithCredential(
+      {@required OAuthCredential credential,
+      @required String email,
+      @required Function() signOutCallback}) async {
+    try {
+      final signInMethods = await _auth.fetchSignInMethodsForEmail(email);
+      if (signInMethods.isEmpty) {
+        signOutCallback();
+        return LoginResult("Bitte registrieren Sie sich zuerst.",
+            isRegistered: false);
+      } else if (!signInMethods.contains(credential.providerId)) {
+        signOutCallback();
+        return LoginResult("Sie haben sich bisher nicht mit einem "
+            "${credential.providerId} account registriert.<br>");
       }
-      final token = await googleAccount.authentication;
-      final isNotRegistered =
-          !(await getSignInMethods(googleAccount.email)).contains("google.com");
-      if (isNotRegistered && !await showPrivacyAgreement(context)) {
-        _googleSignIn.signOut();
-        return "Damit du ein Konto erstellen kannst, "
-            "musst du das Privacy agreement annehmen.";
+      await _auth.signInWithCredential(credential);
+      _loggedIn = true;
+      await loadDetailsFromLoggedInUser();
+    } on FirebaseAuthException catch (error) {
+      signOutCallback();
+      if (error.code == "account-exists-with-different-credential") {
+        return LoginResult("Sie haben sich bereits mit einem anderen Account"
+            "registriert.");
       }
-      final credential = GoogleAuthProvider.credential(idToken: token.idToken);
-      try {
-        final authUser = await _auth.signInWithCredential(credential);
-        authUser.user.updateProfile(displayName: googleAccount.displayName);
-        authUser.user.updateEmail(googleAccount.email);
-        updateUserData(
-            newNickname: googleAccount.displayName, informListeners: false);
-        _loggedIn = true;
-        await loadDetailsFromLoggedInUser();
-      } on FirebaseAuthException catch (error) {
-        _googleSignIn.signOut();
-        return error.message;
+      if (error.code == "invalid-email") {
+        // This should not be possible,
+        // since the email is fetched from the provider account
+        return LoginResult("Deine Email adresse ist ungültig");
       }
     }
     return null;
+  }
+
+  ///Displays the google account selection popup and the privacy agreement.<br>
+  ///Afterwards the user is signed in automatically
+  Future<String> registerWithGoogle(BuildContext context) async {
+    if (isLoggedIn) {
+      return null;
+    }
+    final googleAccount = await _googleSignIn.signIn();
+    if (googleAccount == null) {
+      return "Registrierung abgebrochen";
+    }
+    final token = await googleAccount.authentication;
+    final credential = GoogleAuthProvider.credential(idToken: token.idToken);
+    final result = await _registerWithCredential(
+      credential: credential,
+      context: context,
+      email: googleAccount.email,
+      displayName: googleAccount.displayName,
+      signOutCallback: _googleSignIn.signOut,
+    );
+    return result;
   }
 
   /// Registers a user with the provided email address and password.
@@ -319,13 +356,70 @@ class User extends ChangeNotifier {
     return null;
   }
 
+  /// Registers a user with a facebook account.
+  /// returns null if everything worked fine.
+  /// If something goes wrong, the returned String will explain what went wrong.
+  Future<String> registerWithFacebook(BuildContext context) async {
+    if (isLoggedIn) {
+      return null;
+    }
+    AccessToken token;
+    try {
+      token = await FacebookAuth.instance
+          .login(loginBehavior: "dialog", permissions: ["email"]);
+    } on FacebookAuthException catch (error) {
+      return "Registrierung abgebrochen";
+    }
+    final data = await FacebookAuth.instance.getUserData(fields: "name, email");
+    if (!data.containsKey("name") || !data.containsKey("email")) {
+      return "Name oder Email konnte nicht von Facebook abgerufen werden";
+    }
+    final credential = FacebookAuthProvider.credential(token.token);
+    final result = await _registerWithCredential(
+        context: context,
+        credential: credential,
+        displayName: data["name"],
+        email: data["email"],
+        signOutCallback: FacebookAuth.instance.logOut);
+    return result;
+  }
+
+  /// signs in a user with the provided credential and loads the User details.
+  /// <br>returns null if the registration is successful.
+  Future<String> _registerWithCredential(
+      {@required OAuthCredential credential,
+      @required String displayName,
+      @required String email,
+      @required Function() signOutCallback,
+      @required BuildContext context}) async {
+    final isNotRegistered =
+        !(await getSignInMethods(email)).contains(credential.providerId);
+    if (isNotRegistered && !await showPrivacyAgreement(context)) {
+      signOutCallback();
+      return "Damit du ein Konto erstellen kannst, "
+          "musst du das Privacy agreement annehmen.";
+    }
+    try {
+      final authUser = await _auth.signInWithCredential(credential);
+      authUser.user.updateProfile(displayName: displayName);
+      authUser.user.updateEmail(email);
+      updateUserData(newNickname: displayName, informListeners: false);
+      _loggedIn = true;
+      await loadDetailsFromLoggedInUser();
+      return null;
+    } on FirebaseAuthException catch (error) {
+      signOutCallback();
+      return error.message;
+    }
+  }
+
   /// sends the mail to confirm the email address again
   Future<String> sendEmailConfirmation(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       await _auth.currentUser.sendEmailVerification();
       _auth.signOut();
-    } on FirebaseAuthException catch (error) {
+    } on FirebaseAuthException {
       return "Something went wrong";
     }
     return null;
@@ -345,7 +439,7 @@ class User extends ChangeNotifier {
   Future<List<String>> getSignInMethods(String email) async {
     try {
       return _auth.fetchSignInMethodsForEmail(email);
-    } on FirebaseAuthException catch (error) {
+    } on FirebaseAuthException {
       return [];
     }
   }
