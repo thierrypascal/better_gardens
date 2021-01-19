@@ -4,13 +4,14 @@ import 'package:biodiversity/screens/login_page/email_login_page.dart';
 import 'package:biodiversity/screens/login_page/register_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 final ButtonStyle _buttonStyle = ButtonStyle(
     backgroundColor: MaterialStateProperty.all(Colors.white),
     foregroundColor: MaterialStateProperty.all(Colors.black),
     textStyle: MaterialStateProperty.all(
-        const TextStyle(fontWeight: FontWeight.w500, fontSize: 22)));
+        TextStyle(fontWeight: FontWeight.w500, fontSize: 22)));
 
 /// The screen where you can select which method you want to use to sign in
 class LoginPage extends StatelessWidget {
@@ -34,16 +35,33 @@ class LoginPage extends StatelessWidget {
           onPressed: () => Navigator.push(context,
               MaterialPageRoute(builder: (context) => EmailLoginPage())),
           style: _buttonStyle,
-          child: const Text('E-mail'),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(flex: 1, child: Icon(FontAwesomeIcons.envelope)),
+              Expanded(
+                  flex: 9,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("E-mail"),
+                    ],
+                  )),
+            ],
+          ),
         ),
         SignInButton(
-            name: "Google",
-            signInFunction:
-                Provider.of<User>(context, listen: false).signInWithGoogle),
+          name: "Google",
+          icon: FontAwesomeIcons.google,
+          signInFunction:
+              Provider.of<User>(context, listen: false).signInWithGoogle,
+        ),
         SignInButton(
-            name: "Facebook",
-            signInFunction:
-                Provider.of<User>(context, listen: false).signInWithFacebook),
+          name: "Facebook",
+          icon: FontAwesomeIcons.facebook,
+          signInFunction:
+              Provider.of<User>(context, listen: false).signInWithFacebook,
+        ),
         FlatButton(
             onPressed: () {
               Navigator.push(context,
@@ -55,26 +73,42 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-/// Button which handles the google sign in process
+/// Class to create simple Sign in Buttons.
+/// New context needed to work with Snackbar
 class SignInButton extends StatelessWidget {
-  /// Displayed text on the button
-  final String name;
-
-  /// Function of User to sign-in with the appropriate provider
+  /// Function which is used to sign in with the corresponding provider
   final Function() signInFunction;
 
-  /// creates a button with some simple text on it (bsp. Google)
-  /// which handles the sign in process for the given provider
-  SignInButton({@required this.name, @required this.signInFunction});
+  /// Label wich provider this button represents
+  final String name;
+
+  /// Icon of the provider
+  final IconData icon;
+
+  /// Creates a ElevatedButton With the provided icon and text
+  SignInButton(
+      {@required this.signInFunction,
+      @required this.name,
+      @required this.icon});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () => _handleSignIn(context, signInFunction: signInFunction),
       style: _buttonStyle,
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
-        child: Text(name),
+      onPressed: () => _handleSignIn(context, signInFunction: signInFunction),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(flex: 1, child: Icon(icon)),
+          Expanded(
+              flex: 9,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(name),
+                ],
+              )),
+        ],
       ),
     );
   }

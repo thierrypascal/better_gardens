@@ -47,6 +47,7 @@ dependencies:
   cupertino_icons:
 
   material_design_icons_flutter:
+  font_awesome_flutter:
 
 dev_dependencies:
   lint:
