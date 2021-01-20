@@ -66,8 +66,9 @@ Widget _buildBody(BuildContext context, List<DocumentSnapshot> snapshot) {
                 textAlign: TextAlign.center,
                 softWrap: true,
                 textScaleFactor: 2,
-                style:
-                    const TextStyle(color: Color.fromRGBO(255, 255, 255, 0.8)), //TODO Color might depend on the kind of picture, thus maybe not the best idea
+                style: const TextStyle(
+                    color: Color.fromRGBO(255, 255, 255,
+                        0.8)), //TODO Color might depend on the kind of picture, thus maybe not the best idea
               ),
             ),
           ],

@@ -9,8 +9,8 @@ import 'package:biodiversity/screens/map_page/maps_selection_list_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:provider/provider.dart';
 
 class MapsPage extends StatefulWidget {
   @override
@@ -38,7 +38,6 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         _biodiversityMeasure = element;
       });
       displayModalBottomSheet(context);
-
     }).then((markers) {
       setState(() {
         _markers = markers;
@@ -104,8 +103,8 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                 animation: _fabController,
                 builder: (BuildContext context, Widget child) {
                   return Transform(
-                    transform:
-                        Matrix4.rotationZ(_fabController.value * 0.75 * math.pi),
+                    transform: Matrix4.rotationZ(
+                        _fabController.value * 0.75 * math.pi),
                     alignment: FractionalOffset.center,
                     child: Icon(
                       _fabController.isDismissed ? Icons.add : Icons.add,

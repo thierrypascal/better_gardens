@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 class SpeciesItemListWidget extends StatefulWidget {
   final bool useSimpleCard;
 
-  const SpeciesItemListWidget({Key key, this.useSimpleCard}) : super(key: key);
+  SpeciesItemListWidget({Key key, this.useSimpleCard}) : super(key: key);
 
   @override
   _SpeciesItemListWidgetState createState() => _SpeciesItemListWidgetState();

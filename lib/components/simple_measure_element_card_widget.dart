@@ -45,7 +45,7 @@ class SimpleMeasureElementCard extends StatelessWidget {
                   Text(element.name,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 16)),
-                  Text('Gut für: ${element.beneficialFor()}'),
+                  Text('Gut für: ${element.beneficialFor}'),
                 ],
               ),
             ),

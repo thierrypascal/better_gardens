@@ -5,16 +5,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// A Card which shows an animal. If you tap on the card it extends.
+/// And shows more information about the animal
 class ExpandableSpeciesElementCard extends StatefulWidget {
-  final Species element;
+  ///which species will be displayed
+  final Species species;
 
-  const ExpandableSpeciesElementCard(this.element);
+  /// display a expandable card with the provided species
+  ExpandableSpeciesElementCard(this.species);
 
   @override
-  _ExpandableSpeciesElementCardState createState() => _ExpandableSpeciesElementCardState();
+  _ExpandableSpeciesElementCardState createState() =>
+      _ExpandableSpeciesElementCardState();
 }
 
-class _ExpandableSpeciesElementCardState extends State<ExpandableSpeciesElementCard> {
+class _ExpandableSpeciesElementCardState
+    extends State<ExpandableSpeciesElementCard> {
   bool _expanded = false;
 
   @override
@@ -36,7 +42,7 @@ class _ExpandableSpeciesElementCardState extends State<ExpandableSpeciesElementC
               height: _expanded ? 100 : 0,
               foregroundDecoration: BoxDecoration(
                   image: DecorationImage(
-                      image: AssetImage(widget.element.imageSource),
+                      image: AssetImage(widget.species.imageSource),
                       fit: BoxFit.fitWidth)),
             ),
           ),
@@ -59,11 +65,11 @@ class _ExpandableSpeciesElementCardState extends State<ExpandableSpeciesElementC
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(widget.element.name,
+                        Text(widget.species.name,
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 16)),
                         Text(
-                          "Mag: ${widget.element.supportedBy()}",
+                          "Mag: ${widget.species.supportedBy()}",
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],
@@ -73,17 +79,17 @@ class _ExpandableSpeciesElementCardState extends State<ExpandableSpeciesElementC
                     width: 60,
                     height: 60,
                     fit: BoxFit.cover,
-                    image: AssetImage(widget.element.imageSource),
+                    image: AssetImage(widget.species.imageSource),
                   ),
                 ],
               ),
               secondChild: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(widget.element.name,
+                  Text(widget.species.name,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 16)),
-                  if (widget.element != null)
+                  if (widget.species != null)
                     FlatButton(
                       onPressed: () {
                         if (_expanded) {
@@ -91,7 +97,7 @@ class _ExpandableSpeciesElementCardState extends State<ExpandableSpeciesElementC
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    DetailViewPageSpecies(widget.element)),
+                                    DetailViewPageSpecies(widget.species)),
                           ).then((value) {
                             setState(() {});
                           });
@@ -109,13 +115,13 @@ class _ExpandableSpeciesElementCardState extends State<ExpandableSpeciesElementC
                     return IconButton(
                       icon: Icon(
                         Icons.favorite,
-                        color: user.doesLikeElement(widget.element.name)
+                        color: user.doesLikeElement(widget.species.name)
                             ? Colors.red
                             : Colors.black38,
                       ),
                       onPressed: () {
                         setState(() {
-                          user.likeUnlikeElement(widget.element.name);
+                          user.likeUnlikeElement(widget.species.name);
                         });
                       },
                     );
@@ -127,7 +133,7 @@ class _ExpandableSpeciesElementCardState extends State<ExpandableSpeciesElementC
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 5, 5, 50),
                 child: Text(
-                  widget.element.short,
+                  widget.species.short,
                   textAlign: TextAlign.left,
                 ),
               ),

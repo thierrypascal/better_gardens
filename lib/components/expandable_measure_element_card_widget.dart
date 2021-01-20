@@ -5,16 +5,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// A Card which shows a habitat element. If you tap on the card it extends.
+/// And shows more information about the element
 class ExpandableMeasureElementCard extends StatefulWidget {
+  /// which element the cards shows
   final BiodiversityMeasure element;
 
-  const ExpandableMeasureElementCard(this.element);
+  /// show a card to the provided element
+  ExpandableMeasureElementCard(this.element);
 
   @override
-  _ExpandableMeasureElementCardState createState() => _ExpandableMeasureElementCardState();
+  _ExpandableMeasureElementCardState createState() =>
+      _ExpandableMeasureElementCardState();
 }
 
-class _ExpandableMeasureElementCardState extends State<ExpandableMeasureElementCard> {
+class _ExpandableMeasureElementCardState
+    extends State<ExpandableMeasureElementCard> {
   bool _expanded = false;
 
   @override
@@ -63,7 +69,7 @@ class _ExpandableMeasureElementCardState extends State<ExpandableMeasureElementC
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 16)),
                         Text(
-                          "Gut für: ${widget.element.beneficialFor()}",
+                          "Gut für: ${widget.element.beneficialFor}",
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],

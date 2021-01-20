@@ -1,15 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BiodiversityMeasure {
+  /// name of the element e.g. meadow
   final String name;
+
+  /// a short description of the element
   final String description;
+
+  /// a detailed description on how to build the element
   final String buildInstructions;
+
+  /// which type the element belongs to e.g. Structure
   final String type;
   final Map<String, bool> _beneficialFor;
   final Map<String, bool> _badFor;
+
+  /// a reference to the image
   final String imageSource;
+
+  /// the reference to the location in the database
   final DocumentReference reference;
 
+  /// create a new [BiodiversityMeasure]
   BiodiversityMeasure(
       this.name,
       this.description,
@@ -20,6 +32,8 @@ class BiodiversityMeasure {
       this.imageSource,
       this._badFor);
 
+  /// creates a [BiodiversityMeasure] from the provided map
+  /// used to load elements from the database and for testing
   BiodiversityMeasure.fromMap(Map<String, dynamic> map, {this.reference})
       : name = map.containsKey('name') ? map['name'] as String : "",
         description =
@@ -35,33 +49,29 @@ class BiodiversityMeasure {
             ? Map<String, bool>.from(map['beneficialFor'] as Map)
             : Map<String, bool>.identity(),
         imageSource =
-        map.containsKey('image') ? map['image'] as String : 'res/logo.png' {
+            map.containsKey('image') ? map['image'] as String : 'res/logo.png' {
     _beneficialFor.removeWhere((key, value) => !value);
     _badFor.removeWhere((key, value) => value);
   }
 
+  /// load a [BiodiversityMeasure] form a database snapshot
   BiodiversityMeasure.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data(), reference: snapshot.reference);
 
-  String beneficialFor() {
-    final StringBuffer string = StringBuffer("(");
-    for (final String s in _beneficialFor.keys) {
-      string.write("$s, ");
-    }
-    final String s = string.toString();
-    if (s.length > 1) {
-      return "${s.substring(0, s.length - 2)})";
-    } else {
-      return "nichts";
-    }
-  }
+  /// returns a formatted string which holds all species
+  /// which this element is good for
+  String get beneficialFor => _buildString(_beneficialFor.keys);
 
-  String badFor() {
-    final StringBuffer string = StringBuffer("(");
-    for (final String s in _badFor.keys) {
+  /// returns a formatted string which holds all species
+  /// which this element is bad for
+  String get badFor => _buildString(_badFor.keys);
+
+  String _buildString(List<String> elements) {
+    final string = StringBuffer("(");
+    for (final s in elements) {
       string.write("$s, ");
     }
-    final String s = string.toString();
+    final s = string.toString();
     if (s.length > 1) {
       return "${s.substring(0, s.length - 2)})";
     } else {

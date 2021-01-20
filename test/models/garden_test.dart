@@ -1,5 +1,4 @@
 import 'package:biodiversity/models/garden.dart';
-
 import 'package:flutter_test/flutter_test.dart';
 
 /// This test class makes sure no invalid data

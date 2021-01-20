@@ -6,17 +6,19 @@ import 'package:flutter/foundation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
+/// a service which loads and stores all map markers
 class MapMarkerService extends ChangeNotifier {
   final Map<String, BitmapDescriptor> _icons = <String, BitmapDescriptor>{};
   final List<AddressObject> _markers = [];
   final BuildContext _context;
   bool _initialized = false;
 
+  ///init of the service, should only be used once
   MapMarkerService(this._context) {
     FirebaseFirestore.instance
         .collection('locations')
         .snapshots()
-        .listen((snapshots) => _updateElements(snapshots));
+        .listen(_updateElements);
     _loadIcons();
   }
 
@@ -30,14 +32,13 @@ class MapMarkerService extends ChangeNotifier {
   }
 
   Future<void> _loadIcons() async {
-    final BitmapDescriptor structureIcon =
-        await BitmapDescriptor.fromAssetImage(
-            const ImageConfiguration(), 'res/structureIcon.png');
-    final BitmapDescriptor plantIcon = await BitmapDescriptor.fromAssetImage(
+    final structureIcon = await BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(), 'res/structureIcon.png');
+    final plantIcon = await BitmapDescriptor.fromAssetImage(
         const ImageConfiguration(), 'res/plantIcon.png');
-    final BitmapDescriptor methodIcon = await BitmapDescriptor.fromAssetImage(
+    final methodIcon = await BitmapDescriptor.fromAssetImage(
         const ImageConfiguration(), 'res/methodIcon.png');
-    final BitmapDescriptor wishIcon = await BitmapDescriptor.fromAssetImage(
+    final wishIcon = await BitmapDescriptor.fromAssetImage(
         const ImageConfiguration(), 'res/wishIcon.png');
 
     _icons.putIfAbsent('element', () => structureIcon);
@@ -46,20 +47,20 @@ class MapMarkerService extends ChangeNotifier {
     _icons.putIfAbsent('wish', () => wishIcon);
   }
 
-  List<AddressObject> getAddressObjectList() {
-    return _markers;
-  }
+  /// returns a list of all [AddressObjects] stored
+  List<AddressObject> get addressObjectList => _markers;
 
+  /// returns a set of all markers
   Future<Set<Marker>> getMarkerSet(
       {Function(String element) onTapCallback}) async {
     while (!_initialized) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
 
-    final Set<Marker> list = <Marker>{};
-    for (final AddressObject object in _markers) {
-      for (final String element in object.elements.keys) {
-        final String type =
+    final list = <Marker>{};
+    for (final object in _markers) {
+      for (final element in object.elements.keys) {
+        final type =
             await Provider.of<BiodiversityService>(_context, listen: false)
                 .getTypeOfObject(element);
         list.add(Marker(
@@ -76,9 +77,10 @@ class MapMarkerService extends ChangeNotifier {
     return list;
   }
 
+  /// add a marker to the collection, the marker will then saved to the database
   void addMarker(String element, int amount, LatLng coordinate) {
     AddressObject addressObject;
-    for (final AddressObject object in _markers.toList()) {
+    for (final object in _markers.toList()) {
       if (object.isSameLocation(coordinate)) {
         addressObject = object;
         addressObject.addElement(element, amount);
@@ -86,7 +88,7 @@ class MapMarkerService extends ChangeNotifier {
       }
     }
     if (addressObject == null) {
-      addressObject = AddressObject(DateTime.now(), {element: amount},
+      addressObject = AddressObject({element: amount},
           GeoPoint(coordinate.latitude, coordinate.longitude));
       _markers.add(addressObject);
     }

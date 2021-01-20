@@ -9,8 +9,6 @@ class SelectionList extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Element auswählen'),
         ),
-        body: const BiodiversityItemListWidget(
-          useSimpleCard: true,
-        ));
+        body: BiodiversityItemListWidget(useSimpleCard: true));
   }
 }
