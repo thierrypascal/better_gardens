@@ -1,16 +1,18 @@
 import 'package:biodiversity/components/expandable_measure_element_card_widget.dart';
 import 'package:biodiversity/components/simple_measure_element_card_widget.dart';
 import 'package:biodiversity/fonts/icons_biodiversity_icons.dart';
-import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/biodiversity_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// displays a page with three categories of biodiversity elements
 class BiodiversityItemListWidget extends StatefulWidget {
+  /// whether to use extendable cards or not
   final bool useSimpleCard;
 
-  const BiodiversityItemListWidget({Key key, this.useSimpleCard})
-      : super(key: key);
+  /// Page with three categories ["Element", "Plant", "Method"]
+  /// if [useSimpleCard] is set, the displayed cards will not be extendable
+  BiodiversityItemListWidget({Key key, this.useSimpleCard}) : super(key: key);
 
   @override
   _BiodiversityItemListWidgetState createState() =>
@@ -34,9 +36,10 @@ class _BiodiversityItemListWidgetState
           });
         },
         itemCount: _pageList.length,
-        itemBuilder: (BuildContext context, int index) {
-          final String elementType = _pageList.elementAt(index);
-          return ItemList(elementType, widget.useSimpleCard);
+        itemBuilder: (context, index) {
+          final elementType = _pageList.elementAt(index);
+          return _itemList(context, elementType,
+              useSimpleCard: widget.useSimpleCard);
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -64,20 +67,11 @@ class _BiodiversityItemListWidgetState
       _currentPage = index;
     });
   }
-}
 
-class ItemList extends StatelessWidget {
-  final String elementType;
-  final bool _useSimpleCard;
-
-  const ItemList(this.elementType, this._useSimpleCard, {Key key})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final List<BiodiversityMeasure> list =
-        Provider.of<BiodiversityService>(context)
-            .getBiodiversityObjectList(elementType);
+  Widget _itemList(BuildContext context, String elementType,
+      {bool useSimpleCard = false}) {
+    final list = Provider.of<BiodiversityService>(context)
+        .getBiodiversityObjectList(elementType);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -100,13 +94,13 @@ class ItemList extends StatelessWidget {
               )
             : ListView.separated(
                 itemCount: list.length,
-                itemBuilder: (BuildContext context, int index) {
+                itemBuilder: (context, index) {
                   final element = list.elementAt(index);
-                  return _useSimpleCard
+                  return useSimpleCard
                       ? SimpleMeasureElementCard(element)
                       : ExpandableMeasureElementCard(element);
                 },
-                separatorBuilder: (BuildContext context, int index) {
+                separatorBuilder: (context, index) {
                   return const SizedBox(height: 5);
                 },
               ),
