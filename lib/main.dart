@@ -1,3 +1,4 @@
+import 'package:biodiversity/admin/load_data.dart';
 import 'package:biodiversity/models/biodiversity_service.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/map_marker_service.dart';
@@ -12,15 +13,16 @@ void main() {
   runApp(MyApp());
 }
 
+/// MainActivity of the app
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+    final _initialization = Firebase.initializeApp();
 
     return FutureBuilder(
       future: _initialization,
-      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+      builder: (context, snapshot) {
         if (snapshot.hasError) {
           return const Center(
             child: Text("Something went wrong"),
@@ -55,13 +57,14 @@ class MyApp extends StatelessWidget {
                     modalBackgroundColor: Colors.green),
                 errorColor: Colors.redAccent,
 
-                // This makes the visual density adapt to the platform that you run
-                // the app on. For desktop platforms, the controls will be smaller and
-                // closer together (more dense) than on mobile platforms.
+                // This makes the visual density adapt to the platform that you
+                // run the app on. For desktop platforms, the controls will be
+                // smaller and closer together (more dense)
+                // than on mobile platforms.
                 visualDensity: VisualDensity.adaptivePlatformDensity,
               ),
               //home: LoginPage(),
-              home: LoginPage(),
+              home: LoadData(),
             ),
           );
         }

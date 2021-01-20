@@ -58,6 +58,8 @@ dev_dependencies:
     sdk: flutter
   mockito:
   cloud_firestore_mocks: ^0.5.2+1
+  csv:
+  file_picker:
 
 
 # For information on the generic Dart part of this file, see the
