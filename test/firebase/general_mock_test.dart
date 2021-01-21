@@ -16,16 +16,19 @@ void main() {
     await Firebase.initializeApp();
   });
 
-  testWidgets('User test', (WidgetTester tester) async {
-    final MyApp authService = MyApp();
-    User testUser = User.empty();
+  testWidgets('User test', (tester) async {
+    final authService = MyApp();
+    final testUser = User.empty();
     testUser.updateUserData(newName: "Manu");
-    expect(testUser.name, "Manu");
-    expect(testUser.isLoggedIn, false);
-    expect(testUser.doesLikeElement("plant"), false);
+    expect(testUser.name, "Manu", reason: "Set name was wrong");
+    expect(testUser.isLoggedIn, false, reason: "User not logged in");
+    expect(testUser.doesLikeElement("plant"), false,
+        reason: "Should not like element before it is liked");
     testUser.likeUnlikeElement("plant");
-    expect(testUser.doesLikeElement("plant"), true);
-    expect(testUser.loadDetailsFromLoggedInUser(), false);
+    expect(testUser.doesLikeElement("plant"), true,
+        reason: "Should like element after like action");
+    expect(await testUser.loadDetailsFromLoggedInUser(), false,
+        reason: "Should return false since the user is not logged in");
     // Tests to write
   });
 }
