@@ -25,6 +25,7 @@ flutter_build_android:
     - echo $PATH
     - flutter packages get
     - flutter doctor -v
+    - flutter build apk --debug
   script:
     - flutter build apk -v
   artifacts:
