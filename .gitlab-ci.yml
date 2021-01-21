@@ -24,7 +24,7 @@ flutter_build_android:
     - whoami
     - echo $PATH
     - flutter packages get
-    - flutter clean
+    - flutter doctor
   script:
     - flutter build apk
   artifacts:
