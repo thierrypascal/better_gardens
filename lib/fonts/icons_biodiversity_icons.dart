@@ -11,17 +11,23 @@
 ///      fonts:
 ///       - asset: fonts/IconsBiodiversity.ttf
 ///
-/// 
+///
 ///
 import 'package:flutter/widgets.dart';
 
+///Container class for the app specific icons
 class IconsBiodiversity {
-  IconsBiodiversity._();
-
   static const _kFontFam = 'IconsBiodiversity';
 
+  /// A green icon showing a plant
   static const IconData plant = IconData(0xe800, fontFamily: _kFontFam);
+
+  /// A red icon showing a clipboard and a hear
   static const IconData wish = IconData(0xe802, fontFamily: _kFontFam);
+
+  /// A blue icon showing a square
   static const IconData method = IconData(0xe803, fontFamily: _kFontFam);
+
+  /// A orange icon showing a brick wall
   static const IconData structure = IconData(0xe805, fontFamily: _kFontFam);
 }

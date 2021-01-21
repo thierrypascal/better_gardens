@@ -36,9 +36,7 @@ class _LargeSubMapState extends State<LargeSubMap> {
         onTap: () {},
         draggable: true,
       ));
-      Provider
-          .of<MapInteractionContainer>(context)
-          .selectedLocation = tapPos;
+      Provider.of<MapInteractionContainer>(context).selectedLocation = tapPos;
     });
   }
 
@@ -77,19 +75,12 @@ class _LargeSubMapState extends State<LargeSubMap> {
               },
             ),
             SizedBox(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width,
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height / 3,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height / 3,
               child: GoogleMap(
                 onMapCreated: _onMapCreated,
                 initialCameraPosition: CameraPosition(
-                  target: Provider
-                      .of<MapInteractionContainer>(context)
+                  target: Provider.of<MapInteractionContainer>(context)
                       .selectedLocation,
                   zoom: 18.0,
                 ),

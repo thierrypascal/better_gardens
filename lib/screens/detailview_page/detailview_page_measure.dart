@@ -97,7 +97,7 @@ class _DetailViewPageMeasureState extends State<DetailViewPageMeasure> {
                     "Gut für die folgenden Tiere:",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   ),
-                  Text(widget.element.beneficialFor()),
+                  Text(widget.element.beneficialFor),
                 ],
               ),
             ),

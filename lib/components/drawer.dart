@@ -8,6 +8,7 @@ import 'package:biodiversity/screens/species_list_page/species_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// The Drawer which is located at the right side of the screen
 class MyDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -25,8 +26,7 @@ class MyDrawer extends StatelessWidget {
             )),
         child: Scaffold(
           appBar: AppBar(),
-          body: LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
+          body: LayoutBuilder(builder: (context, constraints) {
             return SingleChildScrollView(
               child: ConstrainedBox(
                 constraints: BoxConstraints(
@@ -101,7 +101,7 @@ class MyDrawer extends StatelessWidget {
                       onTap: () {},
                     ),
                     // ignore: prefer_if_elements_to_conditional_expressions
-                    _loginLogoutButton(),
+                    _loginLogoutButton(context),
 
                     const Image(
                       image: AssetImage('res/gardenDrawer.png'),
@@ -117,16 +117,8 @@ class MyDrawer extends StatelessWidget {
       ),
     );
   }
-}
 
-class _loginLogoutButton extends StatefulWidget {
-  @override
-  _loginLogoutButtonState createState() => _loginLogoutButtonState();
-}
-
-class _loginLogoutButtonState extends State<_loginLogoutButton> {
-  @override
-  Widget build(BuildContext context) {
+  Widget _loginLogoutButton(BuildContext context) {
     if (Provider.of<User>(context).isLoggedIn) {
       return ListTile(
         title: const Text('Logout'),

@@ -8,7 +8,7 @@ class InformationListPage extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(title: const Text("Biodiversität Massnahmen")),
         drawer: MyDrawer(),
-        body: const BiodiversityItemListWidget(
+        body: BiodiversityItemListWidget(
           useSimpleCard: false,
         ));
   }
