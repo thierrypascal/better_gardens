@@ -23,6 +23,7 @@ flutter_build_android:
     - export JAVA_HOME=/usr/local/bin/jdk8u275-b01/
     - whoami
     - echo $PATH
+    - pwd
     - flutter packages get
     - flutter doctor -v
   script:
