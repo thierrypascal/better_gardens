@@ -23,11 +23,10 @@ flutter_build_android:
     - export JAVA_HOME=/usr/local/bin/jdk8u275-b01/
     - whoami
     - echo $PATH
-    - pwd
     - flutter packages get
     - flutter doctor -v
   script:
-    - flutter build appbundle --target-platform android-arm,android-arm64,android-x64 -v
+    - flutter build appbundle --target-platform android-arm,android-arm64,android-x64
   artifacts:
     paths:
       - build/app/outputs/apk/release/app-release.apk
