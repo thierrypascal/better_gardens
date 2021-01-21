@@ -24,9 +24,9 @@ flutter_build_android:
     - whoami
     - echo $PATH
     - flutter packages get
-    - flutter doctor
+    - flutter doctor -v
   script:
-    - flutter build apk
+    - flutter build apk -v
   artifacts:
     paths:
       - build/app/outputs/apk/release/app-release.apk
