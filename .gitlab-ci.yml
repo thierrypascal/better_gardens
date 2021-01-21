@@ -17,6 +17,7 @@ build_android_release:
   before_script:
     - whoami
     - echo $PATH
+    - pwd
     - flutter packages get
     - flutter clean
     - flutter doctor --android-licenses
