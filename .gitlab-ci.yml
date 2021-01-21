@@ -26,6 +26,7 @@ flutter_build_android:
     - flutter packages get
     - flutter doctor -v
     - flutter build apk --debug
+    - flutter build apk --profile
   script:
     - flutter build apk --release -v
   artifacts:
