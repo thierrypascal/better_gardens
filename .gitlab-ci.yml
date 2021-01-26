@@ -4,31 +4,25 @@ stages:
 flutter_test:
   stage: test
   before_script:
-    - export PATH="$PATH:/usr/local/bin/flutter/bin"
-    - export ANDROID_HOME=/usr/local/bin/android-sdk/
-    - export ANDROID_SDK_ROOT=/usr/local/bin/android-sdk/
-    - export PATH=$PATH:$ANDROID_HOME/tools/bin
-    - export JAVA_HOME=/usr/local/bin/jdk8u275-b01/
     - whoami
     - echo $PATH
+    - pwd
+    - flutter doctor -v
   script:
     - flutter test
-flutter_build_android:
+
+build_android_release:
   stage: build
   before_script:
-    - export PATH="$PATH:/usr/local/bin/flutter/bin"
-    - export ANDROID_HOME=/usr/local/bin/android-sdk/
-    - export ANDROID_SDK_ROOT=/usr/local/bin/android-sdk/
-    - export PATH=$PATH:$ANDROID_HOMEtools/bin
-    - export JAVA_HOME=/usr/local/bin/jdk8u275-b01/
     - whoami
     - echo $PATH
     - flutter packages get
-    - flutter doctor -v
-    - flutter build apk --debug
-    - flutter build apk --profile
+    - flutter clean
+    - flutter doctor --android-licenses
+    - flutter doctor
+    - pwd
   script:
-    - flutter build apk --release -v
+    - flutter build appbundle --release
   artifacts:
     paths:
-      - build/app/outputs/apk/release/app-release.apk
+      - build/app/outputs/
