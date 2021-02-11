@@ -66,7 +66,7 @@ class BiodiversityMeasure {
   /// which this element is bad for
   String get badFor => _buildString(_badFor.keys);
 
-  String _buildString(List<String> elements) {
+  String _buildString(Iterable<String> elements) {
     final string = StringBuffer("(");
     for (final s in elements) {
       string.write("$s, ");
