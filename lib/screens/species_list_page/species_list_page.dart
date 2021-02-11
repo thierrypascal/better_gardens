@@ -6,7 +6,7 @@ class SpeciesListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("Spezien")),
+        appBar: AppBar(title: const Text("Arten")),
         drawer: MyDrawer(),
         body: SpeciesItemListWidget(useSimpleCard: false));
   }

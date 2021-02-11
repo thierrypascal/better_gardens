@@ -24,7 +24,7 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Element hinzufügen'),
+        title: const Text('Lebensraum hinzufügen'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {

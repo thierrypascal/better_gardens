@@ -69,7 +69,7 @@ class MyDrawer extends StatelessWidget {
                       onTap: () {},
                     ),
                     ListTile(
-                      title: const Text('Biodiversität Massnahmen'),
+                      title: const Text('Lebensräume'),
                       onTap: () {
                         Navigator.push(
                           context,
@@ -79,7 +79,7 @@ class MyDrawer extends StatelessWidget {
                       },
                     ),
                     ListTile(
-                      title: const Text('Spezien'),
+                      title: const Text('Arten'),
                       onTap: () {
                         Navigator.push(
                           context,

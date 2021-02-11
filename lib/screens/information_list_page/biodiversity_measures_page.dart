@@ -6,7 +6,7 @@ class InformationListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("Biodiversität Massnahmen")),
+        appBar: AppBar(title: const Text("Lebensräume")),
         drawer: MyDrawer(),
         body: BiodiversityItemListWidget(
           useSimpleCard: false,

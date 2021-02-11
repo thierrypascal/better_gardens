@@ -7,7 +7,7 @@ class SelectionList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Element auswählen'),
+          title: const Text('Lebensraum hinzufügen'),
         ),
         body: BiodiversityItemListWidget(useSimpleCard: true));
   }

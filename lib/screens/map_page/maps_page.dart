@@ -53,7 +53,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Map'),
+        title: const Text('Karte'),
       ),
       drawer: MyDrawer(),
       body: Stack(
@@ -169,7 +169,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           ),
           child: FloatingActionButton(
             heroTag: null,
-            tooltip: 'Wunsch hinzufügen',
+            tooltip: 'Vernetzungsprojekt starten',
             backgroundColor: Theme.of(context).cardColor,
             //TODO add onPressed functionality
             onPressed: () {},
@@ -189,7 +189,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           ),
           child: FloatingActionButton(
             heroTag: null,
-            tooltip: 'Element hinzufügen',
+            tooltip: 'Lebensraum hinzufügen',
             backgroundColor: Theme.of(context).cardColor,
             onPressed: () {
               Provider.of<MapInteractionContainer>(context, listen: false)
