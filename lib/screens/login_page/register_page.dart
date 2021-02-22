@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // TODO use screen_with_logo_and_waves.dart
     return Scaffold(
       appBar: AppBar(
         title: const Text('Registrieren'),
