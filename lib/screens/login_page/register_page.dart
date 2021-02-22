@@ -71,7 +71,7 @@ class RegisterPage extends StatelessWidget {
                                 MaterialPageRoute(
                                     builder: (context) =>
                                         RegisterFacebookPage())),
-                            child: const Text("Facbook"),
+                            child: const Text("Facebook"),
                           ),
                           RaisedButton(
                             elevation: 5,
