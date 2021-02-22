@@ -22,7 +22,7 @@ build_android_release:
     - flutter doctor
     - pwd
   script:
-    - flutter build appbundle --release
+    - flutter build appbundle --debug
   artifacts:
     paths:
       - build/app/outputs/
