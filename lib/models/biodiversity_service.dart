@@ -32,6 +32,12 @@ class BiodiversityService extends ChangeNotifier {
         .toList();
   }
 
+  /// returns the complete list of [BiodiversityMeasure]
+  List<BiodiversityMeasure> getFullBiodiversityObjectList() {
+    return _measures
+        .toList();
+  }
+
   /// returns the type of a [BiodiversityMeasure] identified by the given name
   Future<String> getTypeOfObject(String name) async {
     while (!_initialized) {

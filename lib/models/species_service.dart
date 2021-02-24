@@ -32,6 +32,12 @@ class SpeciesService extends ChangeNotifier {
         .toList();
   }
 
+  ///returns all Species
+  List<Species> getFullSpeciesObjectList() {
+    return _species
+        .toList();
+  }
+
   /// returns the type of a given Species
   Future<String> getTypeOfObject(String name) async {
     while (!_initialized) {
