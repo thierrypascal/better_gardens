@@ -56,6 +56,7 @@ class _SpeciesListPageState extends State<SpeciesListPage> {
                 key: _tagStateKey,
                 itemCount: _items.length,
                 alignment: WrapAlignment.start,
+                runSpacing: 6,
                 itemBuilder: (index) {
                   final item = _items[index];
 
@@ -66,11 +67,12 @@ class _SpeciesListPageState extends State<SpeciesListPage> {
                     active: item.active,
                     customData: item.customData,
                     textStyle: TextStyle(
-                      fontSize: 16,
+                      fontSize: 14,
                     ),
                     combine: ItemTagsCombine.withTextBefore,
                     onPressed: (item) => print(item),   //TODO: Implement sorting functionality
-                    activeColor: Colors.green,
+                    activeColor: Colors.grey,
+                    borderRadius: BorderRadius.zero,
                   );
                 },
               ),
