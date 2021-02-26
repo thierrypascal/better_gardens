@@ -3,7 +3,6 @@ import 'package:biodiversity/components/species_item_list_widget.dart';
 import 'package:biodiversity/models/tag_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tags/flutter_tags.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SpeciesListPage extends StatefulWidget {
   @override
@@ -11,6 +10,7 @@ class SpeciesListPage extends StatefulWidget {
 }
 
 class _SpeciesListPageState extends State<SpeciesListPage> {
+  TextEditingController editingController = TextEditingController();
   List _items;
 
   @override
@@ -34,18 +34,22 @@ class _SpeciesListPageState extends State<SpeciesListPage> {
       body: Column(
         children: <Widget>[
           Padding(
-            padding: new EdgeInsets.fromLTRB(8, 0, 8, 0),
-            child: Row(
+            padding: new EdgeInsets.fromLTRB(8, 8, 8, 0),
+            child: Column(
               children: <Widget>[
-                Icon(FontAwesomeIcons.search, size: 20),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
-                    child: TextField(
-                      decoration: const InputDecoration(labelText: 'Suchen'),
-                    ),
+                  TextField(
+                    onChanged: (value) {
+                      //filterSearchResults(value);
+                    },
+                    controller: editingController,
+                    decoration: InputDecoration(
+                        labelText: "Suchen",
+                        hintText: "Suchen",
+                        prefixIcon: Icon(Icons.search),
+                        border: UnderlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(5.0)))),
                   ),
-                )
               ],
             ),
           ),
@@ -70,9 +74,10 @@ class _SpeciesListPageState extends State<SpeciesListPage> {
                       fontSize: 14,
                     ),
                     combine: ItemTagsCombine.withTextBefore,
-                    onPressed: (item) => print(item),   //TODO: Implement sorting functionality
+                    onPressed: (item) => print(item),
+                    //TODO: Implement sorting functionality
                     activeColor: Colors.grey,
-                    borderRadius: BorderRadius.zero,
+                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
                   );
                 },
               ),

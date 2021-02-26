@@ -12,6 +12,7 @@ class InformationListPage extends StatefulWidget {
 }
 
 class _InformationListPageState extends State<InformationListPage> {
+  TextEditingController editingController = TextEditingController();
   List _items;
 
   @override
@@ -36,17 +37,21 @@ class _InformationListPageState extends State<InformationListPage> {
       body: Column(
         children: <Widget>[
           Padding(
-            padding: new EdgeInsets.fromLTRB(8, 0, 8, 0),
-            child: Row(
+            padding: new EdgeInsets.fromLTRB(8, 8, 8, 0),
+            child: Column(
               children: <Widget>[
-                Icon(FontAwesomeIcons.search, size: 20),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
-                    child: TextField(
-                      decoration: const InputDecoration(labelText: 'Suchen'),
-                    ),
-                  ),
+                TextField(
+                  onChanged: (value) {
+                    //filterSearchResults(value);
+                  },
+                  controller: editingController,
+                  decoration: InputDecoration(
+                      labelText: "Suchen",
+                      hintText: "Suchen",
+                      prefixIcon: Icon(Icons.search),
+                      border: UnderlineInputBorder(
+                          borderRadius:
+                          BorderRadius.all(Radius.circular(5.0)))),
                 ),
               ],
             ),
