@@ -65,13 +65,54 @@ class _ExpandableMeasureElementCardState
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(widget.element.name,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16)),
-                        Text(
-                          "Gut für: ${widget.element.beneficialFor}",
-                          overflow: TextOverflow.ellipsis,
+                        //Switched this in order to manage the name as required
+                        // Text(widget.element.name,
+                        //     style: const TextStyle(
+                        //         fontWeight: FontWeight.bold, fontSize: 20)),
+                        //I changed the fontSize from 16 to 20
+                        //Code to put the Merken and the Hinzufügen
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(widget.element.name,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 20)),
+                            Column(
+                              //mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.add,
+                                      ),
+                                      onPressed: () {},
+                                    ),
+                                    Text("hinzufügen"),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.favorite,
+                                      ),
+                                      onPressed: () {},
+                                    ),
+                                    Text("merken"),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
+                        //TODO DELETE
+                        // Text(
+                        //
+                        //   "Gut für: ${widget.element.beneficialFor}",
+                        //   overflow: TextOverflow.ellipsis,
+                        // ),
                       ],
                     ),
                   ),
