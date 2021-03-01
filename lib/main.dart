@@ -1,4 +1,3 @@
-import 'package:biodiversity/admin/load_data.dart';
 import 'package:biodiversity/models/biodiversity_service.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/map_marker_service.dart';
@@ -64,8 +63,8 @@ class MyApp extends StatelessWidget {
                 // than on mobile platforms.
                 visualDensity: VisualDensity.adaptivePlatformDensity,
               ),
-              //home: LoginPage(),
-              home: LoadData(),
+              home: LoginPage(),
+              //home: LoadData(),
             ),
           );
         }
