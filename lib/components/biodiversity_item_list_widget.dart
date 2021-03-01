@@ -1,8 +1,10 @@
 import 'package:biodiversity/components/expandable_measure_element_card_widget.dart';
 import 'package:biodiversity/components/simple_measure_element_card_widget.dart';
 import 'package:biodiversity/fonts/icons_biodiversity_icons.dart';
+import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/biodiversity_service.dart';
 import 'package:biodiversity/models/tag_item.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:provider/provider.dart';
@@ -22,15 +24,14 @@ class BiodiversityItemListWidget extends StatefulWidget {
 
 class _BiodiversityItemListWidgetState
     extends State<BiodiversityItemListWidget> {
-  TextEditingController editingController = TextEditingController();
-  List duplicateList;
-  List list;
+  TextEditingController textController = TextEditingController();
   List _items;
+  List list = [BiodiversityMeasure("name", "description", "tA", "type", {}, null, "null", {}),
+    BiodiversityMeasure("test", "description", "buildInstructions", "tB", {}, null, "null", {})];
+
 
   @override
   void initState() {
-    super.initState();
-//    duplicateList.addAll(list);
     //TODO: load all types of habitat elements from service
     _items = [
       TagItem("Mauern und Beläge", true, 0),
@@ -40,6 +41,7 @@ class _BiodiversityItemListWidgetState
       TagItem("Kleinstrukturen", true, 4),
       TagItem("Nisthilfen", true, 5),
     ];
+    super.initState();
   }
 
   @override
@@ -53,9 +55,9 @@ class _BiodiversityItemListWidgetState
               children: <Widget>[
                 TextField(
                   onChanged: (value) {
-                    filterSearchResults(value);
+//                    filterSearchResults(value);
                   },
-                  controller: editingController,
+                  controller: textController,
                   decoration: InputDecoration(
                       labelText: "Suchen",
                       hintText: "Suchen",
@@ -111,8 +113,9 @@ class _BiodiversityItemListWidgetState
   }
 
   Widget _itemList(BuildContext context, {bool useSimpleCard = false}) {
-    final list = Provider.of<BiodiversityService>(context)
-        .getFullBiodiversityObjectList();
+//    final list = Provider.of<BiodiversityService>(context)
+//        .getFullBiodiversityObjectList();
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -149,29 +152,7 @@ class _BiodiversityItemListWidgetState
     );
   }
 
-  void filterSearchResults(String query) {
-/*    List dummySearchList = List();
-    dummySearchList.addAll(duplicateList);
-    if(query.isNotEmpty) {
-      List dummyListData = List();
-      dummySearchList.forEach((item) {
-        if(item.contains(query)) {
-          dummyListData.add(item);
-        }
-      });
-      setState(() {
-        list.clear();
-        list.addAll(dummyListData);
-      });
-      return;
-    } else {
-      setState(() {
-        list.clear();
-        list.addAll(duplicateList);
-      });
-    }
-*/
-  }
+
 
   final GlobalKey<TagsState> _tagStateKey = GlobalKey<TagsState>();
 
