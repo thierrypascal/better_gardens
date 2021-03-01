@@ -29,6 +29,23 @@ class _DetailViewPageMeasureState extends State<DetailViewPageMeasure> {
               height: 150,
               width: MediaQuery.of(context).size.width,
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [            
+                IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () {
+                      Navigator.canPop(context)
+                          ? Navigator.pop(context)
+                          : Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => InformationListPage()),
+                            );
+                    }),
+                Text("Zurück zur Liste"),
+              ],
+            ),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
@@ -48,33 +65,46 @@ class _DetailViewPageMeasureState extends State<DetailViewPageMeasure> {
                             if (user == null) {
                               return const Text("");
                             }
-                            return IconButton(
-                              icon: user.doesLikeElement(widget.element.name)
-                                  ? const Icon(Icons.favorite)
-                                  : const Icon(Icons.favorite_border),
-                              color: user.doesLikeElement(widget.element.name)
-                                  ? Colors.red
-                                  : Colors.black38,
-                              onPressed: () {
-                                setState(() {
-                                  user.likeUnlikeElement(widget.element.name);
-                                });
-                              },
+                            return Row(
+                              children: [
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.add,
+                                  ),
+                                  onPressed: () {},
+                                ),
+                                IconButton(
+                                  icon:
+                                      user.doesLikeElement(widget.element.name)
+                                          ? const Icon(Icons.favorite)
+                                          : const Icon(Icons.favorite_border),
+                                  color:
+                                      user.doesLikeElement(widget.element.name)
+                                          ? Colors.red
+                                          : Colors.black38,
+                                  onPressed: () {
+                                    setState(() {
+                                      user.likeUnlikeElement(
+                                          widget.element.name);
+                                    });
+                                  },
+                                ),
+                              ],
                             );
                           },
                         ),
-                        IconButton(
-                            icon: const Icon(Icons.close),
-                            onPressed: () {
-                              Navigator.canPop(context)
-                                  ? Navigator.pop(context)
-                                  : Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              InformationListPage()),
-                                    );
-                            }),
+                        // IconButton(
+                        //     icon: const Icon(Icons.close),
+                        //     onPressed: () {
+                        //       Navigator.canPop(context)
+                        //           ? Navigator.pop(context)
+                        //           : Navigator.push(
+                        //               context,
+                        //               MaterialPageRoute(
+                        //                   builder: (context) =>
+                        //                       InformationListPage()),
+                        //             );
+                        //     }),
                       ])
                     ],
                   ),

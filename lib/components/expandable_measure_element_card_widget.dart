@@ -65,10 +65,6 @@ class _ExpandableMeasureElementCardState
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        //Switched this in order to manage the name as required
-                        // Text(widget.element.name,
-                        //     style: const TextStyle(
-                        //         fontWeight: FontWeight.bold, fontSize: 20)),
                         //I changed the fontSize from 16 to 20
                         //Code to put the Merken and the Hinzufügen
                         Row(
@@ -83,11 +79,14 @@ class _ExpandableMeasureElementCardState
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    IconButton(
-                                      icon: Icon(
-                                        Icons.add,
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 25.0),
+                                      child: IconButton(
+                                        icon: Icon(
+                                          Icons.add,
+                                        ),
+                                        onPressed: () {},
                                       ),
-                                      onPressed: () {},
                                     ),
                                     Text("hinzufügen"),
                                   ],
@@ -107,12 +106,6 @@ class _ExpandableMeasureElementCardState
                             ),
                           ],
                         ),
-                        //TODO DELETE
-                        // Text(
-                        //
-                        //   "Gut für: ${widget.element.beneficialFor}",
-                        //   overflow: TextOverflow.ellipsis,
-                        // ),
                       ],
                     ),
                   ),
@@ -130,41 +123,32 @@ class _ExpandableMeasureElementCardState
                   Text(widget.element.name,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 16)),
-                  if (widget.element != null)
-                    FlatButton(
-                      onPressed: () {
-                        if (_expanded) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    DetailViewPageMeasure(widget.element)),
-                          ).then((value) {
-                            setState(() {});
-                          });
-                        }
-                      },
-                      child: const Text(
-                        "Weitere infos",
-                        style: TextStyle(decoration: TextDecoration.underline),
-                      ),
-                    ),
                   Consumer<User>(builder: (context, user, child) {
                     if (user == null) {
                       return const Text("");
                     }
-                    return IconButton(
-                      icon: Icon(
-                        Icons.favorite,
-                        color: user.doesLikeElement(widget.element.name)
-                            ? Colors.red
-                            : Colors.black38,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          user.likeUnlikeElement(widget.element.name);
-                        });
-                      },
+                    return Row(
+                      children: [
+                         IconButton(
+                          icon: Icon(
+                            Icons.add,
+                          ),
+                          onPressed: (){},
+                          ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.favorite,
+                            color: user.doesLikeElement(widget.element.name)
+                                ? Colors.red
+                                : Colors.black38,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              user.likeUnlikeElement(widget.element.name);
+                            });
+                          },
+                        ),
+                      ],
                     );
                   }),
                 ],
@@ -178,6 +162,35 @@ class _ExpandableMeasureElementCardState
                   textAlign: TextAlign.left,
                 ),
               ),
+              if (widget.element != null)
+               Row(
+                 mainAxisAlignment: MainAxisAlignment.start,
+                 children: [
+                   Padding(
+                     padding: const EdgeInsets.only(bottom: 10.0),
+                     child: FlatButton(
+                            onPressed: () {
+                              if (_expanded) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          DetailViewPageMeasure(widget.element)),
+                                ).then((value) {
+                                  setState(() {});
+                                });
+                              }
+                            },
+                            child: const Text(
+                              "Weitere infos",
+                              style: TextStyle(
+                                decoration: TextDecoration.underline
+                                ),
+                            ),
+                          ),
+                   ),
+                 ],
+               ),
             ],
           ),
         ],
