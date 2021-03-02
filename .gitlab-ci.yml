@@ -39,8 +39,6 @@ analyze:sonarqube:
     - sonar-cube
   script:
     - sonar-scanner -Dsonar.qualitygate.wait=true
-  dependencies:
-    - build
 variables:
   SONAR_HOST_URL: ${CI_SONARQUBE_HOST_URL}
   SONAR_TOKEN: ${CI_SONARQUBE_TOKEN}
