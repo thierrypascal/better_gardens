@@ -1,6 +1,7 @@
 stages:
   - test
   - build
+  - analyze
 flutter_test:
   stage: test
   before_script:
@@ -35,6 +36,7 @@ analyze:sonarqube:
     - master
     - release
     - development
+    - sonar-cube
   script:
     - sonar-scanner -Dsonar.qualitygate.wait=true
   dependencies:
