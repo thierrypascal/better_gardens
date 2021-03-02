@@ -29,6 +29,8 @@ build_android_release:
       - build/app/outputs/
 
 analyze:sonarqube:
+  before_script:
+    - export PATH="$PATH:/usr/share/sonar-scanner/bin"
   image: sonarsource/sonar-scanner-cli:latest
   stage: analyze
   allow_failure: true
