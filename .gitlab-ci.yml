@@ -29,10 +29,10 @@ build_android_release:
       - build/app/outputs/
 
 analyze:sonarqube:
+  stage: analyze
   before_script:
     - export PATH="$PATH:/usr/share/sonar-scanner/bin"
-  image: sonarsource/sonar-scanner-cli:latest
-  stage: analyze
+  #image: sonarsource/sonar-scanner-cli:latest
   allow_failure: true
   only:
     - master
@@ -40,6 +40,9 @@ analyze:sonarqube:
     - development
     - sonar-cube
   script:
+    - flutter pub get # Download dependencies
+    - flutter test --machine > tests.output # Run tests
+    - flutter test --coverage # Compute coverage
     - sonar-scanner -Dsonar.qualitygate.wait=true
 variables:
   SONAR_HOST_URL: ${CI_SONARQUBE_HOST_URL}
