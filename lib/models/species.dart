@@ -3,6 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Container class for a species
 class Species {
+  /// class of the specie e.g. Hedgehog
+  final String speciesClass;
+
   /// name of the specie e.g. Hedgehog
   final String name;
 
@@ -27,7 +30,8 @@ class Species {
 
   /// creates a Species object from a Map
   Species.fromMap(Map<String, dynamic> map, {this.reference})
-      : name = map.containsKey('name') ? map['name'] as String : "",
+      : speciesClass = map.containsKey('class') ? map['class'] as String : "",
+        name = map.containsKey('name') ? map['name'] as String : "",
         shortDescription = map.containsKey('shortDescription')
             ? map['shortDescription'] as String
             : "",

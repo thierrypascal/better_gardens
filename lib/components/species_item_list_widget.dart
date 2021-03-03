@@ -17,7 +17,7 @@ class SpeciesItemListWidget extends StatefulWidget {
 }
 
 class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
-  List _tagItems;
+  List<TagItem> _tagItems = List<TagItem>();
   TextEditingController editingController = TextEditingController();
   TextEditingController filterController = TextEditingController();
   List<Species> items = List<Species>();
@@ -26,16 +26,16 @@ class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
   @override
   void initState() {
     super.initState();
-    //TODO: load all types of species from service
-    _tagItems = [
-      TagItem("Amphibien und Reptilien", true, 0),
-      TagItem("Säugetiere", true, 1),
-      TagItem("Vögel", true, 2),
-      TagItem("Insekten und andere Kleintiere", true, 3),
-      TagItem("Pflanzen und Pilze", true, 4),
-    ];
     items = Provider.of<SpeciesService>(context, listen: false).getFullSpeciesObjectList();
     filteredItems.addAll(items);
+    createTagItems();
+  }
+
+  void createTagItems(){
+    final categories = Provider.of<SpeciesService>(context, listen: false).getAllClasses();
+    for (String s in categories){
+      _tagItems.add(TagItem(s, true));
+    }
   }
 
   void filterSearchResults(String query) {
@@ -94,6 +94,8 @@ class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
                 itemCount: _tagItems.length,
                 alignment: WrapAlignment.start,
                 runSpacing: 6,
+                horizontalScroll: true,
+                heightHorizontalScroll: 40,
                 itemBuilder: (index) {
                   final item = _tagItems[index];
 
@@ -102,10 +104,10 @@ class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
                     index: index,
                     title: item.title,
                     active: item.active,
-                    customData: item.customData,
                     textStyle: TextStyle(
                       fontSize: 14,
                     ),
+                    textOverflow: TextOverflow.fade,
                     combine: ItemTagsCombine.withTextBefore,
                     onPressed: (item) => print(item),
                     //TODO: Implement sorting functionality

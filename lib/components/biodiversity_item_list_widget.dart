@@ -33,14 +33,14 @@ class _BiodiversityItemListWidgetState
   void initState() {
     super.initState();
     //TODO: load all types of habitat elements from service
-    _tagItems = [
-      TagItem("Mauern und Beläge", true, 0),
-      TagItem("Lebensbereiche", true, 1),
-      TagItem("Gehölze", true, 2),
-      TagItem("Gebäude", true, 3),
-      TagItem("Kleinstrukturen", true, 4),
-      TagItem("Nisthilfen", true, 5),
-    ];
+    // _tagItems = [
+    //   TagItem("Mauern und Beläge", true, 0),
+    //   TagItem("Lebensbereiche", true, 1),
+    //   TagItem("Gehölze", true, 2),
+    //   TagItem("Gebäude", true, 3),
+    //   TagItem("Kleinstrukturen", true, 4),
+    //   TagItem("Nisthilfen", true, 5),
+    // ];
     items = Provider.of<BiodiversityService>(context, listen: false).getFullBiodiversityObjectList();
     filteredItems.addAll(items);
   }

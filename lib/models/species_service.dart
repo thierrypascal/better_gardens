@@ -64,8 +64,8 @@ class SpeciesService extends ChangeNotifier {
       return _classes.toList();
     }
     for (final s in _species) {
-      if (!_classes.contains(s.name)) {
-        _classes.add(s.name);
+      if (!_classes.contains(s.speciesClass)) {
+        _classes.add(s.speciesClass);
       }
     }
     return _classes.toList();
