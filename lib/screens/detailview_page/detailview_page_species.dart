@@ -89,7 +89,7 @@ class _DetailViewPageSpeciesState extends State<DetailViewPageSpecies> {
                     "Tips",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   ),
-                  Text(widget.element.tips),
+                  //Text(widget.element.tips),
                   const SizedBox(
                     height: 20,
                   ),
@@ -97,7 +97,7 @@ class _DetailViewPageSpeciesState extends State<DetailViewPageSpecies> {
                     "Links",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   ),
-                  Text(widget.element.links),
+                  //Text(widget.element.links),
                   const SizedBox(
                     height: 20,
                   ),

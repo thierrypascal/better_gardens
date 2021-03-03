@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 /// A service which loads all species and stores them
 class SpeciesService extends ChangeNotifier {
   final List<Species> _species = [];
+  final List<String> _classes = [];
   bool _initialized = false;
 
   /// init the service, should only be used once
@@ -55,5 +56,18 @@ class SpeciesService extends ChangeNotifier {
   /// returns a single Species referenced by the provided reference
   Species getSpeciesByReference(DocumentReference reference) {
     return _species.where((element) => element.reference == reference).first;
+  }
+
+  /// returns a list of all distinct classes all species are in
+  List<String> getAllClasses() {
+    if (_classes.isNotEmpty) {
+      return _classes.toList();
+    }
+    for (final s in _species) {
+      if (!_classes.contains(s.name)) {
+        _classes.add(s.name);
+      }
+    }
+    return _classes.toList();
   }
 }
