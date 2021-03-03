@@ -41,8 +41,7 @@ class _BiodiversityItemListWidgetState
       TagItem("Kleinstrukturen", true, 4),
       TagItem("Nisthilfen", true, 5),
     ];
-//    items = Provider.of<BiodiversityService>(context).getFullBiodiversityObjectList();
-    items = [BiodiversityMeasure("name", "description", "buildInstructions", "type", {}, null, "imageSource", {}), BiodiversityMeasure("test", "description", "buildInstructions", "type", {}, null, "imageSource", {})];
+    items = Provider.of<BiodiversityService>(context, listen: false).getFullBiodiversityObjectList();
     filteredItems.addAll(items);
   }
 
