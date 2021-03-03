@@ -119,7 +119,7 @@ class _DetailViewPageMeasureState extends State<DetailViewPageMeasure> {
                     "Bauanleitung",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   ),
-                  Text(widget.element.buildInstructions),
+                  Text(widget.element.goodTogetherWith.length.toString()),
                   const SizedBox(
                     height: 20,
                   ),
