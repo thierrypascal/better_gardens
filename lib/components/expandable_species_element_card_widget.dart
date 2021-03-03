@@ -133,7 +133,7 @@ class _ExpandableSpeciesElementCardState
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 5, 5, 50),
                 child: Text(
-                  widget.species.short,
+                  widget.species.shortDescription,
                   textAlign: TextAlign.left,
                 ),
               ),

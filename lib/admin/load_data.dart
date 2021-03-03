@@ -94,10 +94,10 @@ class _LoadDataState extends State<LoadData> {
         key: (v) => v, value: (v) => []);
     for (final List line in _data.skip(1)) {
       if (line[0] == '') continue;
-      final supportedBy = {};
+      final supportedBy = [];
       for (var i = 4; i < line.length; i++) {
         if (line[i] == 1) {
-          supportedBy[_data[0][i]] = true;
+          supportedBy.add(_data[0][i]);
           _lebensraume[_data[0][i]].add(line[3]);
         }
       }
