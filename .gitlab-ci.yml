@@ -34,7 +34,6 @@ analyze:sonarqube:
   stage: analyze
   before_script:
     - export PATH="$PATH:/usr/share/sonar-scanner/bin"
-  image: sonarsource/sonar-scanner-cli:latest
   allow_failure: true
   only:
     - master
