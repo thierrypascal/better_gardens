@@ -24,13 +24,16 @@ class BiodiversityItemListWidget extends StatefulWidget {
 
 class _BiodiversityItemListWidgetState
     extends State<BiodiversityItemListWidget> {
-  TextEditingController textController = TextEditingController();
-  List _items;
+  List _tagItems;
+  TextEditingController filterController = TextEditingController();
+  List<BiodiversityMeasure> items = [];
+  List<BiodiversityMeasure> filteredItems = List<BiodiversityMeasure>();
 
   @override
   void initState() {
+    super.initState();
     //TODO: load all types of habitat elements from service
-    _items = [
+    _tagItems = [
       TagItem("Mauern und Beläge", true, 0),
       TagItem("Lebensbereiche", true, 1),
       TagItem("Gehölze", true, 2),
@@ -38,7 +41,32 @@ class _BiodiversityItemListWidgetState
       TagItem("Kleinstrukturen", true, 4),
       TagItem("Nisthilfen", true, 5),
     ];
-    super.initState();
+//    items = Provider.of<BiodiversityService>(context).getFullBiodiversityObjectList();
+    items = [BiodiversityMeasure("name", "description", "buildInstructions", "type", {}, null, "imageSource", {}), BiodiversityMeasure("test", "description", "buildInstructions", "type", {}, null, "imageSource", {})];
+    filteredItems.addAll(items);
+  }
+
+  void filterSearchResults(String query) {
+    List<BiodiversityMeasure> tempList = List<BiodiversityMeasure>();
+    tempList.addAll(items);
+    if(query.isNotEmpty) {
+      List<BiodiversityMeasure> tempListData = List<BiodiversityMeasure>();
+      tempList.forEach((item) {
+        if(item.name.toLowerCase().contains(query.toLowerCase())) {
+          tempListData.add(item);
+        }
+      });
+      setState(() {
+        filteredItems.clear();
+        filteredItems.addAll(tempListData);
+      });
+      return;
+    } else {
+      setState(() {
+        filteredItems.clear();
+        filteredItems.addAll(items);
+      });
+    }
   }
 
   @override
@@ -52,9 +80,9 @@ class _BiodiversityItemListWidgetState
               children: <Widget>[
                 TextField(
                   onChanged: (value) {
-//                    filterSearchResults(value);
+                    filterSearchResults(value);
                   },
-                  controller: textController,
+                  controller: filterController,
                   decoration: InputDecoration(
                       labelText: "Suchen",
                       hintText: "Suchen",
@@ -71,11 +99,11 @@ class _BiodiversityItemListWidgetState
               padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
               child: Tags(
                 key: _tagStateKey,
-                itemCount: _items.length,
+                itemCount: _tagItems.length,
                 alignment: WrapAlignment.start,
                 runSpacing: 6,
                 itemBuilder: (index) {
-                  final item = _items[index];
+                  final item = _tagItems[index];
 
                   return ItemTags(
                     key: Key(index.toString()),
@@ -110,13 +138,10 @@ class _BiodiversityItemListWidgetState
   }
 
   Widget _itemList(BuildContext context, {bool useSimpleCard = false}) {
-    final list = Provider.of<BiodiversityService>(context)
-        .getFullBiodiversityObjectList();
-
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: list.isEmpty
+        child: filteredItems.isEmpty
             ? Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -134,9 +159,9 @@ class _BiodiversityItemListWidgetState
                 ),
               )
             : ListView.separated(
-                itemCount: list.length,
+                itemCount: filteredItems.length,
                 itemBuilder: (context, index) {
-                  final element = list.elementAt(index);
+                  final element = filteredItems.elementAt(index);
                   return useSimpleCard
                       ? SimpleMeasureElementCard(element)
                       : ExpandableMeasureElementCard(element);

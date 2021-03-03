@@ -17,20 +17,48 @@ class SpeciesItemListWidget extends StatefulWidget {
 }
 
 class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
+  List _tagItems;
   TextEditingController editingController = TextEditingController();
-  List _items;
+  TextEditingController filterController = TextEditingController();
+  List<Species> items = List<Species>();
+  List<Species> filteredItems = List<Species>();
 
   @override
   void initState() {
+    super.initState();
     //TODO: load all types of species from service
-    _items = [
+    _tagItems = [
       TagItem("Amphibien und Reptilien", true, 0),
       TagItem("Säugetiere", true, 1),
       TagItem("Vögel", true, 2),
       TagItem("Insekten und andere Kleintiere", true, 3),
       TagItem("Pflanzen und Pilze", true, 4),
     ];
-    super.initState();
+    items = Provider.of<SpeciesService>(context, listen: false).getFullSpeciesObjectList();
+    filteredItems.addAll(items);
+  }
+
+  void filterSearchResults(String query) {
+    List<Species> tempList = List<Species>();
+    tempList.addAll(items);
+    if(query.isNotEmpty) {
+      List<Species> tempListData = List<Species>();
+      tempList.forEach((item) {
+        if(item.name.toLowerCase().contains(query.toLowerCase())) {
+          tempListData.add(item);
+        }
+      });
+      setState(() {
+        filteredItems.clear();
+        filteredItems.addAll(tempListData);
+      });
+      return;
+    } else {
+      setState(() {
+        filteredItems.clear();
+        filteredItems.addAll(items);
+      });
+    }
   }
 
   @override
@@ -44,7 +72,7 @@ class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
               children: <Widget>[
                 TextField(
                   onChanged: (value) {
-                    //filterSearchResults(value);
+                    filterSearchResults(value);
                   },
                   controller: editingController,
                   decoration: InputDecoration(
@@ -63,11 +91,11 @@ class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
               padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
               child: Tags(
                 key: _tagStateKey,
-                itemCount: _items.length,
+                itemCount: _tagItems.length,
                 alignment: WrapAlignment.start,
                 runSpacing: 6,
                 itemBuilder: (index) {
-                  final item = _items[index];
+                  final item = _tagItems[index];
 
                   return ItemTags(
                     key: Key(index.toString()),
@@ -103,13 +131,10 @@ class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
 
   //TODO: create own file ItemList, together with biodiversity_item_list_widget.dart
   Widget _itemList(BuildContext context, {bool useSimpleCard = false}) {
-    final List<Species> list =
-    Provider.of<SpeciesService>(context).getFullSpeciesObjectList();
-
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: list.isEmpty
+        child: filteredItems.isEmpty
             ? Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -127,9 +152,9 @@ class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
           ),
         )
             : ListView.separated(
-          itemCount: list.length,
+          itemCount: filteredItems.length,
           itemBuilder: (context, index) {
-            final element = list.elementAt(index);
+            final element = filteredItems.elementAt(index);
             return useSimpleCard
                 ? SimpleSpeciesElementCard(element)
                 : ExpandableSpeciesElementCard(element);
