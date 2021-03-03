@@ -10,7 +10,8 @@ flutter_test:
     - pwd
     - flutter doctor -v
   script:
-    - flutter test
+    #- flutter test
+    - echo "do test..."
 
 build_android_release:
   stage: build
@@ -23,7 +24,8 @@ build_android_release:
     - flutter doctor
     - pwd
   script:
-    - flutter build appbundle --debug
+    #- flutter build appbundle --debug
+    - echo "do build..."
   artifacts:
     paths:
       - build/app/outputs/
@@ -32,7 +34,7 @@ analyze:sonarqube:
   stage: analyze
   before_script:
     - export PATH="$PATH:/usr/share/sonar-scanner/bin"
-  #image: sonarsource/sonar-scanner-cli:latest
+  image: sonarsource/sonar-scanner-cli:latest
   allow_failure: true
   only:
     - master
