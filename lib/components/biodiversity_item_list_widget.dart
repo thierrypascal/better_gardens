@@ -26,9 +26,6 @@ class _BiodiversityItemListWidgetState
     extends State<BiodiversityItemListWidget> {
   TextEditingController textController = TextEditingController();
   List _items;
-  List list = [BiodiversityMeasure("name", "description", "tA", "type", {}, null, "null", {}),
-    BiodiversityMeasure("test", "description", "buildInstructions", "tB", {}, null, "null", {})];
-
 
   @override
   void initState() {
@@ -113,8 +110,8 @@ class _BiodiversityItemListWidgetState
   }
 
   Widget _itemList(BuildContext context, {bool useSimpleCard = false}) {
-//    final list = Provider.of<BiodiversityService>(context)
-//        .getFullBiodiversityObjectList();
+    final list = Provider.of<BiodiversityService>(context)
+        .getFullBiodiversityObjectList();
 
     return Scaffold(
       body: Padding(

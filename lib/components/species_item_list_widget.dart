@@ -22,7 +22,6 @@ class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
 
   @override
   void initState() {
-    super.initState();
     //TODO: load all types of species from service
     _items = [
       TagItem("Amphibien und Reptilien", true, 0),
@@ -31,6 +30,7 @@ class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
       TagItem("Insekten und andere Kleintiere", true, 3),
       TagItem("Pflanzen und Pilze", true, 4),
     ];
+    super.initState();
   }
 
   @override
@@ -88,16 +88,60 @@ class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
               ),
             ),
           ),
-          PageView.builder(
-            itemCount: 1,
-            itemBuilder: (context, index) {
-              return ItemList(widget.useSimpleCard);
-            },
+          Expanded(
+            child: PageView.builder(
+              itemCount: 1,
+              itemBuilder: (context, index) {
+                return _itemList(context, useSimpleCard: widget.useSimpleCard);
+              },
+            ),
           ),
         ],
       ),
     );
   }
+
+  //TODO: create own file ItemList, together with biodiversity_item_list_widget.dart
+  Widget _itemList(BuildContext context, {bool useSimpleCard = false}) {
+    final List<Species> list =
+    Provider.of<SpeciesService>(context).getFullSpeciesObjectList();
+
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: list.isEmpty
+            ? Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Text(
+                "Leider keine Einträge vorhanden",
+                textScaleFactor: 2,
+                textAlign: TextAlign.center,
+              ),
+              Icon(
+                Icons.emoji_nature,
+                size: 80,
+              )
+            ],
+          ),
+        )
+            : ListView.separated(
+          itemCount: list.length,
+          itemBuilder: (context, index) {
+            final element = list.elementAt(index);
+            return useSimpleCard
+                ? SimpleSpeciesElementCard(element)
+                : ExpandableSpeciesElementCard(element);
+          },
+          separatorBuilder: (context, index) {
+            return const SizedBox(height: 5);
+          },
+        ),
+      ),
+    );
+  }
+
 
   final GlobalKey<TagsState> _tagStateKey = GlobalKey<TagsState>();
 
@@ -105,52 +149,5 @@ class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
     List<Item> lst = _tagStateKey.currentState?.getAllItem;
     if (lst != null)
       lst.where((a) => a.active == true).forEach((a) => print(a.title));
-  }
-}
-
-//TODO: create own file ItemList, together with biodiversity_item_list_widget.dart
-class ItemList extends StatelessWidget {
-  final bool _useSimpleCard;
-
-  const ItemList(this._useSimpleCard, {Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final List<Species> list =
-        Provider.of<SpeciesService>(context).getFullSpeciesObjectList();
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: list.isEmpty
-            ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text(
-                      "Leider keine Einträge vorhanden",
-                      textScaleFactor: 2,
-                      textAlign: TextAlign.center,
-                    ),
-                    Icon(
-                      Icons.emoji_nature,
-                      size: 80,
-                    )
-                  ],
-                ),
-              )
-            : ListView.separated(
-                itemCount: list.length,
-                itemBuilder: (context, index) {
-                  final element = list.elementAt(index);
-                  return _useSimpleCard
-                      ? SimpleSpeciesElementCard(element)
-                      : ExpandableSpeciesElementCard(element);
-                },
-                separatorBuilder: (context, index) {
-                  return const SizedBox(height: 5);
-                },
-              ),
-      ),
-    );
   }
 }

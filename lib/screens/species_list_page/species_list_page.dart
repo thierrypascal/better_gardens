@@ -9,7 +9,7 @@ class SpeciesListPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text("Arten")),
       drawer: MyDrawer(),
-      body: Expanded(child: SpeciesItemListWidget(useSimpleCard: false)),
+      body: SpeciesItemListWidget(useSimpleCard: false),
     );
   }
 }
