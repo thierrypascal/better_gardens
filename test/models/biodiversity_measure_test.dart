@@ -1,11 +1,9 @@
 import 'package:biodiversity/models/biodiversity_measure.dart';
-
 import 'package:flutter_test/flutter_test.dart';
 
 /// This test class makes sure no invalid data
 /// can be retrieved from the database
 void main() {
-
   // DocumentReference does not have to be passed as an argument if it is null
   // DocumentReference dummy = null; // does not really connect to a database
 
@@ -13,14 +11,13 @@ void main() {
   BiodiversityMeasure validMeasure;
 
   test('Valid biodiversity measures', () {
-
     measureAttributes = {
       "name": "Some name...",
       "description": "Some description...",
       "buildInstructions": "Instructions...",
       "type": "dummy",
-      "_beneficialFor": {"birds": true},
-      "_badFor": {"birds": false},
+      "_beneficialFor": ["birds"],
+      "goodTogetherWith": ["birds"],
       "imageSource": "some/path"
     };
     validMeasure = BiodiversityMeasure.fromMap(measureAttributes);
@@ -37,11 +34,9 @@ void main() {
     };
     validMeasure = BiodiversityMeasure.fromMap(measureAttributes);
     expect(validMeasure, isA<BiodiversityMeasure>());
-
   });
 
   test('Invalid biodiversity measures', () {
-
     measureAttributes = {
       "name": 1,
       "description": "Some description...",
@@ -51,40 +46,44 @@ void main() {
       "_badFor": {"birds": false},
       "imageSource": "some/path"
     };
-    expect(() => BiodiversityMeasure.fromMap(measureAttributes), throwsA(isA<TypeError>()));
+    expect(() => BiodiversityMeasure.fromMap(measureAttributes),
+        throwsA(isA<TypeError>()));
 
     measureAttributes = {
       "name": "Some name...",
       "description": 2.3,
-      "buildInstructions": "Instructions...",
+      "shortDescription": "Instructions...",
       "type": "dummy",
       "_beneficialFor": {"birds": true},
       "_badFor": {"birds": false},
       "imageSource": "some/path"
     };
-    expect(() => BiodiversityMeasure.fromMap(measureAttributes), throwsA(isA<TypeError>()));
+    expect(() => BiodiversityMeasure.fromMap(measureAttributes),
+        throwsA(isA<TypeError>()));
 
     measureAttributes = {
       "name": "Some name...",
       "description": "Some description...",
-      "buildInstructions": {"instruction inside a set"},
+      "shortDescription": {"instruction inside a set"},
       "type": "dummy",
       "_beneficialFor": {"birds": true},
       "_badFor": {"birds": false},
       "imageSource": "some/path"
     };
-    expect(() => BiodiversityMeasure.fromMap(measureAttributes), throwsA(isA<TypeError>()));
+    expect(() => BiodiversityMeasure.fromMap(measureAttributes),
+        throwsA(isA<TypeError>()));
 
     measureAttributes = {
       "name": "Some name...",
       "description": "Some description...",
-      "buildInstructions": "Instructions...",
+      "shortDescription": "Instructions...",
       "type": {"no_type": true},
       "_beneficialFor": {"birds": true},
       "_badFor": {"birds": false},
       "imageSource": "some/path"
     };
-    expect(() => BiodiversityMeasure.fromMap(measureAttributes), throwsA(isA<TypeError>()));
+    expect(() => BiodiversityMeasure.fromMap(measureAttributes),
+        throwsA(isA<TypeError>()));
 
 /*    measureAttributes = {
       "name": "Some name...",
@@ -118,7 +117,5 @@ void main() {
       "imageSource": 9;
     };
     expect(() => BiodiversityMeasure.fromMap(measureAttributes), throwsA(isA<TypeError>()));*/
-
   });
-
 }
