@@ -24,25 +24,25 @@ class BiodiversityItemListWidget extends StatefulWidget {
 
 class _BiodiversityItemListWidgetState
     extends State<BiodiversityItemListWidget> {
-  List _tagItems;
+  List<TagItem> _tagItems = List<TagItem>();
   TextEditingController filterController = TextEditingController();
-  List<BiodiversityMeasure> items = [];
+  List<BiodiversityMeasure> items = List<BiodiversityMeasure>();
   List<BiodiversityMeasure> filteredItems = List<BiodiversityMeasure>();
 
   @override
   void initState() {
     super.initState();
-    //TODO: load all types of habitat elements from service
-    // _tagItems = [
-    //   TagItem("Mauern und Beläge", true, 0),
-    //   TagItem("Lebensbereiche", true, 1),
-    //   TagItem("Gehölze", true, 2),
-    //   TagItem("Gebäude", true, 3),
-    //   TagItem("Kleinstrukturen", true, 4),
-    //   TagItem("Nisthilfen", true, 5),
-    // ];
     items = Provider.of<BiodiversityService>(context, listen: false).getFullBiodiversityObjectList();
     filteredItems.addAll(items);
+    createTagItems();
+  }
+
+  void createTagItems() {
+    final categories =
+    Provider.of<BiodiversityService>(context, listen: false).getAllClasses();
+    for (String s in categories) {
+      _tagItems.add(TagItem(s, false));
+    }
   }
 
   void filterSearchResults(String query) {
@@ -74,7 +74,7 @@ class _BiodiversityItemListWidgetState
       body: Column(
         children: <Widget>[
           Padding(
-            padding: new EdgeInsets.fromLTRB(8, 8, 8, 0),
+            padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
             child: Column(
               children: <Widget>[
                 TextField(
@@ -109,7 +109,6 @@ class _BiodiversityItemListWidgetState
                     index: index,
                     title: item.title,
                     active: item.active,
-                    customData: item.customData,
                     textStyle: TextStyle(
                       fontSize: 14,
                     ),

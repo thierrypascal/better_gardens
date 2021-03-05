@@ -31,20 +31,21 @@ class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
     createTagItems();
   }
 
-  void createTagItems(){
-    final categories = Provider.of<SpeciesService>(context, listen: false).getAllClasses();
-    for (String s in categories){
-      _tagItems.add(TagItem(s, true));
+  void createTagItems() {
+    final categories =
+        Provider.of<SpeciesService>(context, listen: false).getAllClasses();
+    for (String s in categories) {
+      _tagItems.add(TagItem(s, false));
     }
   }
 
   void filterSearchResults(String query) {
     List<Species> tempList = List<Species>();
     tempList.addAll(items);
-    if(query.isNotEmpty) {
+    if (query.isNotEmpty) {
       List<Species> tempListData = List<Species>();
       tempList.forEach((item) {
-        if(item.name.toLowerCase().contains(query.toLowerCase())) {
+        if (item.name.toLowerCase().contains(query.toLowerCase())) {
           tempListData.add(item);
         }
       });
@@ -67,7 +68,7 @@ class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
       body: Column(
         children: <Widget>[
           Padding(
-            padding: new EdgeInsets.fromLTRB(8, 8, 8, 0),
+            padding: new EdgeInsets.fromLTRB(8, 0, 8, 0),
             child: Column(
               children: <Widget>[
                 TextField(
@@ -89,32 +90,60 @@ class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
           SizedBox(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-              child: Tags(
-                key: _tagStateKey,
-                itemCount: _tagItems.length,
-                alignment: WrapAlignment.start,
-                runSpacing: 6,
-                horizontalScroll: true,
-                heightHorizontalScroll: 40,
-                itemBuilder: (index) {
-                  final item = _tagItems[index];
-
-                  return ItemTags(
-                    key: Key(index.toString()),
-                    index: index,
-                    title: item.title,
-                    active: item.active,
-                    textStyle: TextStyle(
-                      fontSize: 14,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                    child: Container(
+                      height: 24,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          FlatButton(
+                            child: Text("Alle selektieren"),
+                            onPressed: () {
+                              setState(() {
+//                                _toggleTagItemsActiveInactive();
+                              });
+                            },
+                          ),
+                          FlatButton(
+                            child: Text("Selektion aufheben"),
+                            onPressed: () {},
+                          ),
+                        ],
+                      ),
                     ),
-                    textOverflow: TextOverflow.fade,
-                    combine: ItemTagsCombine.withTextBefore,
-                    onPressed: (item) => print(item),
-                    //TODO: Implement sorting functionality
-                    activeColor: Colors.grey,
-                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                  );
-                },
+                  ),
+                  Tags(
+                    key: _tagStateKey,
+                    itemCount: _tagItems.length,
+                    alignment: WrapAlignment.start,
+                    runSpacing: 6,
+                    horizontalScroll: false,
+                    heightHorizontalScroll: 40,
+                    itemBuilder: (index) {
+                      final item = _tagItems[index];
+
+                      return ItemTags(
+                        key: Key(index.toString()),
+                        index: index,
+                        title: item.title,
+                        active: item.active,
+                        textStyle: TextStyle(
+                          fontSize: 14,
+                        ),
+                        textOverflow: TextOverflow.fade,
+                        combine: ItemTagsCombine.withTextBefore,
+                        onPressed: (item) => print(item),
+                        //TODO: Implement sorting functionality
+                        activeColor: Colors.grey,
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
           ),
@@ -138,33 +167,33 @@ class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
         padding: const EdgeInsets.all(8.0),
         child: filteredItems.isEmpty
             ? Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Text(
-                "Leider keine Einträge vorhanden",
-                textScaleFactor: 2,
-                textAlign: TextAlign.center,
-              ),
-              Icon(
-                Icons.emoji_nature,
-                size: 80,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Text(
+                      "Leider keine Einträge vorhanden",
+                      textScaleFactor: 2,
+                      textAlign: TextAlign.center,
+                    ),
+                    Icon(
+                      Icons.emoji_nature,
+                      size: 80,
+                    )
+                  ],
+                ),
               )
-            ],
-          ),
-        )
             : ListView.separated(
-          itemCount: filteredItems.length,
-          itemBuilder: (context, index) {
-            final element = filteredItems.elementAt(index);
-            return useSimpleCard
-                ? SimpleSpeciesElementCard(element)
-                : ExpandableSpeciesElementCard(element);
-          },
-          separatorBuilder: (context, index) {
-            return const SizedBox(height: 5);
-          },
-        ),
+                itemCount: filteredItems.length,
+                itemBuilder: (context, index) {
+                  final element = filteredItems.elementAt(index);
+                  return useSimpleCard
+                      ? SimpleSpeciesElementCard(element)
+                      : ExpandableSpeciesElementCard(element);
+                },
+                separatorBuilder: (context, index) {
+                  return const SizedBox(height: 5);
+                },
+              ),
       ),
     );
   }
@@ -175,6 +204,6 @@ class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
   _getAllItem() {
     List<Item> lst = _tagStateKey.currentState?.getAllItem;
     if (lst != null)
-      lst.where((a) => a.active == true).forEach((a) => print(a.title));
+      lst.where((a) => a.active == true).forEach((a) => print(a.title + ", " + a.active.toString()));
   }
 }

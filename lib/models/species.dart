@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Container class for a species
 class Species {
-  /// class of the specie e.g. Hedgehog
+  /// class of the specie e.g. Säugetier
   final String speciesClass;
 
   /// name of the specie e.g. Hedgehog
