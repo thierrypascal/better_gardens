@@ -1,50 +1,63 @@
+import 'package:biodiversity/components/expandable_measure_element_card_widget.dart';
 import 'package:biodiversity/components/expandable_species_element_card_widget.dart';
+import 'package:biodiversity/components/simple_measure_element_card_widget.dart';
 import 'package:biodiversity/components/simple_species_element_card_widget.dart';
-import 'package:biodiversity/models/species.dart';
+import 'package:biodiversity/models/biodiversity_service.dart';
 import 'package:biodiversity/models/species_service.dart';
 import 'package:biodiversity/models/tag_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:provider/provider.dart';
 
-class SpeciesItemListWidget extends StatefulWidget {
-  final bool useSimpleCard;
 
-  SpeciesItemListWidget({Key key, this.useSimpleCard}) : super(key: key);
+class ListWidget extends StatefulWidget {
+  final bool useSimpleCard;
+  final bool isSpeciesList;
+
+  ListWidget({Key key, this.useSimpleCard, this.isSpeciesList})
+      : super(key: key);
 
   @override
-  _SpeciesItemListWidgetState createState() => _SpeciesItemListWidgetState();
+  _ListWidgetState createState() => _ListWidgetState();
 }
 
-class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
+class _ListWidgetState extends State<ListWidget> {
   List<TagItem> _tagItems = List<TagItem>();
   TextEditingController editingController = TextEditingController();
   TextEditingController filterController = TextEditingController();
-  List<Species> items = List<Species>();
-  List<Species> filteredItems = List<Species>();
+  List categories = List();
+  List items = List();
+  List filteredItems = List();
 
   @override
   void initState() {
     super.initState();
-    items = Provider.of<SpeciesService>(context, listen: false)
-        .getFullSpeciesObjectList();
+    widget.isSpeciesList
+        ? items = Provider.of<SpeciesService>(context, listen: false)
+            .getFullSpeciesObjectList()
+        : items = Provider.of<BiodiversityService>(context, listen: false)
+            .getFullBiodiversityObjectList();
     filteredItems.addAll(items);
     createTagItems();
   }
 
   void createTagItems() {
-    final categories =
-        Provider.of<SpeciesService>(context, listen: false).getAllClasses();
+    widget.isSpeciesList
+        ? categories =
+            Provider.of<SpeciesService>(context, listen: false).getAllClasses()
+        : categories =
+            Provider.of<BiodiversityService>(context, listen: false).getAllClasses();
+
     for (String s in categories) {
       _tagItems.add(TagItem(s, false));
     }
   }
 
   void filterSearchResults(String query) {
-    List<Species> tempList = List<Species>();
+    List tempList = List();
     tempList.addAll(items);
     if (query.isNotEmpty) {
-      List<Species> tempListData = List<Species>();
+      List tempListData = List();
       tempList.forEach((item) {
         if (item.name.toLowerCase().contains(query.toLowerCase())) {
           tempListData.add(item);
@@ -187,9 +200,13 @@ class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
                 itemCount: filteredItems.length,
                 itemBuilder: (context, index) {
                   final element = filteredItems.elementAt(index);
-                  return useSimpleCard
-                      ? SimpleSpeciesElementCard(element)
-                      : ExpandableSpeciesElementCard(element);
+                  return widget.isSpeciesList
+                      ? useSimpleCard
+                          ? SimpleSpeciesElementCard(element)
+                          : ExpandableSpeciesElementCard(element)
+                      : useSimpleCard
+                          ? SimpleMeasureElementCard(element)
+                          : ExpandableMeasureElementCard(element);
                 },
                 separatorBuilder: (context, index) {
                   return const SizedBox(height: 5);
@@ -204,6 +221,8 @@ class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
   _getAllItem() {
     List<Item> lst = _tagStateKey.currentState?.getAllItem;
     if (lst != null)
-      lst.where((a) => a.active == true).forEach((a) => print(a.title + ", " + a.active.toString()));
+      lst
+          .where((a) => a.active == true)
+          .forEach((a) => print(a.title + ", " + a.active.toString()));
   }
 }
