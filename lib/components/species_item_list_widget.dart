@@ -26,7 +26,8 @@ class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
   @override
   void initState() {
     super.initState();
-    items = Provider.of<SpeciesService>(context, listen: false).getFullSpeciesObjectList();
+    items = Provider.of<SpeciesService>(context, listen: false)
+        .getFullSpeciesObjectList();
     filteredItems.addAll(items);
     createTagItems();
   }
@@ -197,7 +198,6 @@ class _SpeciesItemListWidgetState extends State<SpeciesItemListWidget> {
       ),
     );
   }
-
 
   final GlobalKey<TagsState> _tagStateKey = GlobalKey<TagsState>();
 
