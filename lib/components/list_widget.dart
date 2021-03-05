@@ -6,7 +6,8 @@ import 'package:biodiversity/models/biodiversity_service.dart';
 import 'package:biodiversity/models/species_service.dart';
 import 'package:biodiversity/models/tag_item.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tags/flutter_tags.dart';
+//import 'package:flutter_tags/flutter_tags.dart';
+import 'package:biodiversity/components/tags/flutter_tags.dart';
 import 'package:provider/provider.dart';
 
 
@@ -117,14 +118,14 @@ class _ListWidgetState extends State<ListWidget> {
                           FlatButton(
                             child: Text("Alle selektieren"),
                             onPressed: () {
-                              setState(() {
-//                                _toggleTagItemsActiveInactive();
-                              });
+                              _tagStateKey.currentState.setAllItemsActive();
                             },
                           ),
                           FlatButton(
                             child: Text("Selektion aufheben"),
-                            onPressed: () {},
+                            onPressed: () {
+                              _tagStateKey.currentState.setAllItemsInactive();
+                            },
                           ),
                         ],
                       ),

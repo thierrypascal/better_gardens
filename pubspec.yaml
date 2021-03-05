@@ -32,7 +32,6 @@ dependencies:
 
   modal_bottom_sheet:
   flutter_markdown:
-  flutter_tags: "^0.4.9+1"
 
   provider:
 
