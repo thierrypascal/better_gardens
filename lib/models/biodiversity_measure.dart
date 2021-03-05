@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 /// A container class of a Measure to improve biodiversity.
 /// Example: A pile of branches
@@ -7,7 +10,7 @@ class BiodiversityMeasure {
   final String name;
 
   /// a description of the element
-  final String description;
+  String description;
 
   /// a short description of the element
   final String shortDescription;
@@ -25,12 +28,13 @@ class BiodiversityMeasure {
   /// the reference to the location in the database
   final DocumentReference reference;
 
+  final _storage = FirebaseStorage.instance;
+  final _descriptionPath = "biodiversityMeasures/descriptions/";
+
   /// creates a [BiodiversityMeasure] from the provided map
   /// used to load elements from the database and for testing
   BiodiversityMeasure.fromMap(Map<String, dynamic> map, {this.reference})
       : name = map.containsKey('name') ? map['name'] as String : "",
-        description =
-            map.containsKey('description') ? map['description'] as String : "",
         shortDescription = map.containsKey('shortDescription')
             ? map['shortDescription'] as String
             : "",
@@ -42,7 +46,21 @@ class BiodiversityMeasure {
             ? map['goodTogetherWith'].cast<String>()
             : [],
         imageSource =
-            map.containsKey('image') ? map['image'] as String : 'res/logo.png';
+            map.containsKey('image') ? map['image'] as String : 'res/logo.png' {
+    _loadDescription();
+  }
+
+  Future<void> _loadDescription() async {
+    final folder = await _storage.ref(_descriptionPath).listAll();
+    if (folder.items.contains("$name.md")) {
+      final data = await _storage
+          .ref("biodiversityMeasures/descriptions/$name.md")
+          .getData();
+      description = Utf8Decoder().convert(data);
+    } else {
+      description = shortDescription;
+    }
+  }
 
   /// load a [BiodiversityMeasure] form a database snapshot
   BiodiversityMeasure.fromSnapshot(DocumentSnapshot snapshot)
