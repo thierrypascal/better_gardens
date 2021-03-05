@@ -3,6 +3,7 @@ import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/information_list_page/biodiversity_measures_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
 
 class DetailViewPageMeasure extends StatefulWidget {
@@ -31,7 +32,7 @@ class _DetailViewPageMeasureState extends State<DetailViewPageMeasure> {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
-              children: [            
+              children: [
                 IconButton(
                     icon: const Icon(Icons.arrow_back),
                     onPressed: () {
@@ -61,7 +62,7 @@ class _DetailViewPageMeasureState extends State<DetailViewPageMeasure> {
                       ),
                       Row(children: [
                         Consumer<User>(
-                          builder: (BuildContext context, user, Widget child) {
+                          builder: (context, user, child) {
                             if (user == null) {
                               return const Text("");
                             }
@@ -93,33 +94,10 @@ class _DetailViewPageMeasureState extends State<DetailViewPageMeasure> {
                             );
                           },
                         ),
-                        // IconButton(
-                        //     icon: const Icon(Icons.close),
-                        //     onPressed: () {
-                        //       Navigator.canPop(context)
-                        //           ? Navigator.pop(context)
-                        //           : Navigator.push(
-                        //               context,
-                        //               MaterialPageRoute(
-                        //                   builder: (context) =>
-                        //                       InformationListPage()),
-                        //             );
-                        //     }),
                       ])
                     ],
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Text(widget.element.description),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Text(
-                    "Bauanleitung",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                  ),
-                  Text(widget.element.goodTogetherWith.length.toString()),
+                  Markdown(data: widget.element.description),
                   const SizedBox(
                     height: 20,
                   ),
