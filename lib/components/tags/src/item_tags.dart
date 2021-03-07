@@ -245,15 +245,17 @@ class _ItemTagsState extends State<ItemTags> {
                 if (widget.singleItem) {
                   _singleItem(_dataListInherited, _dataList);
                   _dataList.active = true;
-                } else
+                } else {
                   _dataList.active = !_dataList.active;
+                }
 
-                if (widget.onPressed != null)
+                if (widget.onPressed != null) {
                   widget.onPressed(Item(
                       index: widget.index,
                       title: _dataList.title,
                       active: _dataList.active,
                       customData: widget.customData));
+                }
               }
             : null,
         onLongPress: widget.onLongPressed != null

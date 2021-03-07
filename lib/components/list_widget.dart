@@ -6,10 +6,10 @@ import 'package:biodiversity/models/biodiversity_service.dart';
 import 'package:biodiversity/models/species_service.dart';
 import 'package:biodiversity/models/tag_item.dart';
 import 'package:flutter/material.dart';
+
 //import 'package:flutter_tags/flutter_tags.dart';
 import 'package:biodiversity/components/tags/flutter_tags.dart';
 import 'package:provider/provider.dart';
-
 
 class ListWidget extends StatefulWidget {
   final bool useSimpleCard;
@@ -28,6 +28,7 @@ class _ListWidgetState extends State<ListWidget> {
   TextEditingController filterController = TextEditingController();
   List categories = List();
   List items = List();
+  List categorisedItems = List();
   List filteredItems = List();
 
   @override
@@ -38,7 +39,8 @@ class _ListWidgetState extends State<ListWidget> {
             .getFullSpeciesObjectList()
         : items = Provider.of<BiodiversityService>(context, listen: false)
             .getFullBiodiversityObjectList();
-    filteredItems.addAll(items);
+    categorisedItems.addAll(items);
+    filteredItems.addAll(categorisedItems);
     createTagItems();
   }
 
@@ -46,17 +48,66 @@ class _ListWidgetState extends State<ListWidget> {
     widget.isSpeciesList
         ? categories =
             Provider.of<SpeciesService>(context, listen: false).getAllClasses()
-        : categories =
-            Provider.of<BiodiversityService>(context, listen: false).getAllClasses();
+        : categories = Provider.of<BiodiversityService>(context, listen: false)
+            .getAllClasses();
 
     for (String s in categories) {
       _tagItems.add(TagItem(s, false));
     }
   }
 
-  void filterSearchResults(String query) {
+  void filterClassResults() {
     List tempList = List();
     tempList.addAll(items);
+    List tempActiveItemList = _tagStateKey.currentState.getAllActiveItems;
+
+    if (widget.isSpeciesList) {
+      if (tempActiveItemList != null && tempActiveItemList.isNotEmpty) {
+        List tempListData = List();
+        tempList.forEach((item) {
+          tempActiveItemList.forEach((activeTag) {
+            if (item.speciesClass.contains(activeTag)) {
+              tempListData.add(item);
+            }
+          });
+        });
+        setState(() {
+          categorisedItems.clear();
+          categorisedItems.addAll(tempListData);
+        });
+      } else {
+        setState(() {
+          categorisedItems.clear();
+          categorisedItems.addAll(items);
+        });
+      }
+    } else {
+      if (tempActiveItemList != null && tempActiveItemList.isNotEmpty) {
+        List tempListData = List();
+        tempList.forEach((item) {
+          tempActiveItemList.forEach((activeTag) {
+            if (item.type.contains(activeTag)) {
+              tempListData.add(item);
+            }
+          });
+        });
+        setState(() {
+          categorisedItems.clear();
+          categorisedItems.addAll(tempListData);
+        });
+      } else {
+        setState(() {
+          categorisedItems.clear();
+          categorisedItems.addAll(items);
+        });
+      }
+    }
+    filterSearchResults("");
+  }
+
+  void filterSearchResults(String query) {
+    List tempList = List();
+    tempList.addAll(categorisedItems);
     if (query.isNotEmpty) {
       List tempListData = List();
       tempList.forEach((item) {
@@ -72,7 +123,7 @@ class _ListWidgetState extends State<ListWidget> {
     } else {
       setState(() {
         filteredItems.clear();
-        filteredItems.addAll(items);
+        filteredItems.addAll(categorisedItems);
       });
     }
   }
@@ -119,12 +170,14 @@ class _ListWidgetState extends State<ListWidget> {
                             child: Text("Alle selektieren"),
                             onPressed: () {
                               _tagStateKey.currentState.setAllItemsActive();
+                              filterClassResults();
                             },
                           ),
                           FlatButton(
                             child: Text("Selektion aufheben"),
                             onPressed: () {
                               _tagStateKey.currentState.setAllItemsInactive();
+                              filterClassResults();
                             },
                           ),
                         ],
@@ -151,8 +204,9 @@ class _ListWidgetState extends State<ListWidget> {
                         ),
                         textOverflow: TextOverflow.fade,
                         combine: ItemTagsCombine.withTextBefore,
-                        onPressed: (item) => print(item),
-                        //TODO: Implement sorting functionality
+                        onPressed: (item) {
+                          filterClassResults();
+                        },
                         activeColor: Colors.grey,
                         borderRadius: BorderRadius.all(Radius.circular(5.0)),
                       );

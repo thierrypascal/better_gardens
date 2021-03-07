@@ -86,12 +86,21 @@ class TagsState extends State<Tags> {
   Orientation _orientation = Orientation.portrait;
   double _width = 0;
 
+  ///Not final to let list be editable
   List<DataList> _list = List();
 
+  ///Return all TagItems
   List<Item> get getAllItem => _list.toList();
+
+  ///Return the classes/title of all active TagItems
+  List<String> get getAllActiveItems => _list.where((item) => item.active == true).map((e) => e.title).toList();
+
+  ///sets all TagItems to active
   void setAllItemsActive(){
     _list.forEach((element) {element.active = true;});
   }
+
+  ///sets all TagItems to inactive
   void setAllItemsInactive(){
     _list.forEach((element) {element.active = false;});
   }
