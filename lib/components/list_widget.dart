@@ -52,7 +52,7 @@ class _ListWidgetState extends State<ListWidget> {
             .getAllClasses();
 
     for (String s in categories) {
-      _tagItems.add(TagItem(s, false));
+      _tagItems.add(TagItem(s, true));
     }
   }
 
@@ -202,12 +202,14 @@ class _ListWidgetState extends State<ListWidget> {
                         textStyle: TextStyle(
                           fontSize: 14,
                         ),
+                        textActiveColor: Colors.black,
+                        elevation: 3,
                         textOverflow: TextOverflow.fade,
                         combine: ItemTagsCombine.withTextBefore,
                         onPressed: (item) {
                           filterClassResults();
                         },
-                        activeColor: Colors.grey,
+                        activeColor: Colors.grey[300],
                         borderRadius: BorderRadius.all(Radius.circular(5.0)),
                       );
                     },
