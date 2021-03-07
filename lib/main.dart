@@ -35,8 +35,8 @@ class MyApp extends StatelessWidget {
                 lazy: false,
               ),
               ChangeNotifierProvider(
-                  create: (context) => BiodiversityService()),
-              ChangeNotifierProvider(create: (context) => SpeciesService()),
+                  create: (context) => BiodiversityService(), lazy: false,),
+              ChangeNotifierProvider(create: (context) => SpeciesService(), lazy: false,),
               ChangeNotifierProvider(
                   create: (context) => MapInteractionContainer.empty()),
               ChangeNotifierProvider(
@@ -64,7 +64,6 @@ class MyApp extends StatelessWidget {
                 visualDensity: VisualDensity.adaptivePlatformDensity,
               ),
               home: LoginPage(),
-              //home: LoadData(),
             ),
           );
         }

@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 /// a service which loads all [BiodiversityMeasure] at once and stores them
 class BiodiversityService extends ChangeNotifier {
   final List<BiodiversityMeasure> _measures = [];
+  final List<String> _classes = [];
   bool _initialized = false;
 
   /// initializer for the service
@@ -32,6 +33,12 @@ class BiodiversityService extends ChangeNotifier {
         .toList();
   }
 
+  /// returns the complete list of [BiodiversityMeasure]
+  List<BiodiversityMeasure> getFullBiodiversityObjectList() {
+    return _measures
+        .toList();
+  }
+
   /// returns the type of a [BiodiversityMeasure] identified by the given name
   Future<String> getTypeOfObject(String name) async {
     while (!_initialized) {
@@ -50,5 +57,18 @@ class BiodiversityService extends ChangeNotifier {
   BiodiversityMeasure getBiodiversityMeasureByReference(
       DocumentReference reference) {
     return _measures.where((element) => element.reference == reference).first;
+  }
+
+  /// returns a list of all distinct classes all species are in
+  List<String> getAllClasses() {
+    if (_classes.isNotEmpty) {
+      return _classes.toList();
+    }
+    for (final s in _measures) {
+      if (!_classes.contains(s.type)) {
+        _classes.add(s.type);
+      }
+    }
+    return _classes.toList();
   }
 }
