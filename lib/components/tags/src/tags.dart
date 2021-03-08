@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
-
 import 'package:biodiversity/components/tags/flutter_tags.dart';
 import 'package:biodiversity/components/tags/src/util/custom_wrap.dart';
+import 'package:flutter/material.dart';
 
 ///ItemBuilder
 typedef Widget ItemBuilder(int index);
@@ -87,22 +86,27 @@ class TagsState extends State<Tags> {
   double _width = 0;
 
   ///Not final to let list be editable
-  List<DataList> _list = List();
+  List<DataList> _list = [];
 
   ///Return all TagItems
   List<Item> get getAllItem => _list.toList();
 
   ///Return the classes/title of all active TagItems
-  List<String> get getAllActiveItems => _list.where((item) => item.active == true).map((e) => e.title).toList();
+  List<String> get getAllActiveItems =>
+      _list.where((item) => item.active == true).map((e) => e.title).toList();
 
   ///sets all TagItems to active
-  void setAllItemsActive(){
-    _list.forEach((element) {element.active = true;});
+  void setAllItemsActive() {
+    _list.forEach((element) {
+      element.active = true;
+    });
   }
 
   ///sets all TagItems to inactive
-  void setAllItemsInactive(){
-    _list.forEach((element) {element.active = false;});
+  void setAllItemsInactive() {
+    _list.forEach((element) {
+      element.active = false;
+    });
   }
 
   //get the current width of the screen
@@ -129,7 +133,7 @@ class TagsState extends State<Tags> {
     }
 
     Widget child;
-    if (widget.horizontalScroll && !widget.symmetry)
+    if (widget.horizontalScroll && !widget.symmetry) {
       child = Container(
         height: widget.heightHorizontalScroll,
         color: Colors.transparent,
@@ -141,7 +145,7 @@ class TagsState extends State<Tags> {
           children: _buildItems(),
         ),
       );
-    else
+    } else {
       child = CustomWrap(
         key: _containerKey,
         alignment: widget.alignment,
@@ -156,6 +160,7 @@ class TagsState extends State<Tags> {
         crossAxisAlignment: WrapCrossAlignment.end,
         children: _buildItems(),
       );
+    }
 
     return DataListInherited(
       list: _list,
@@ -176,44 +181,48 @@ class TagsState extends State<Tags> {
             padding: widget.textField.padding,
             child: SuggestionsTextField(
               tagsTextField: widget.textField,
-              onSubmitted: (String str) {
+              onSubmitted: (str) {
                 if (!widget.textField.duplicates) {
-                  final List<DataList> lst =
-                      _list.where((l) => l.title == str).toList();
+                  final lst = _list.where((l) => l.title == str).toList();
 
                   if (lst.isNotEmpty) {
-                    lst.forEach((d) => d.showDuplicate = true);
+                    for (final d in lst) {
+                      d.showDuplicate = true;
+                    }
                     return;
                   }
                 }
 
-                if (widget.textField.onSubmitted != null)
+                if (widget.textField.onSubmitted != null) {
                   widget.textField.onSubmitted(str);
+                }
               },
             ),
           )
         : null;
 
-    List<Widget> finalList = List();
+    var finalList = <Widget>[];
 
-    List<Widget> itemList = List.generate(widget.itemCount, (i) {
-      final Widget item = widget.itemBuilder(i);
-      if (widget.symmetry)
+    var itemList = List<Widget>.generate(widget.itemCount, (i) {
+      final item = widget.itemBuilder(i);
+      if (widget.symmetry) {
         return Container(
           width: _widthCalc(),
           child: item,
         );
-      else if (widget.horizontalScroll)
+      } else if (widget.horizontalScroll) {
         return Container(
           margin: EdgeInsets.symmetric(horizontal: widget.spacing),
           alignment: Alignment.center,
           child: item,
         );
+      }
       return item;
     });
 
-    if (widget.horizontalScroll && widget.textDirection == TextDirection.rtl)
+    if (widget.horizontalScroll && widget.textDirection == TextDirection.rtl) {
       itemList = itemList.reversed.toList();
+    }
 
     if (textField == null) {
       finalList.addAll(itemList);
@@ -234,11 +243,11 @@ class TagsState extends State<Tags> {
 
   //Container width divided by the number of columns when symmetry is active
   double _widthCalc() {
-    int columns = widget.columns ?? 0;
-    int margin = widget.spacing.round();
+    var columns = widget.columns ?? 0;
+    var margin = widget.spacing.round();
 
-    int subtraction = columns * (margin);
-    double width = (_width > 1) ? (_width - subtraction) / columns : _width;
+    var subtraction = columns * (margin);
+    var width = (_width > 1) ? (_width - subtraction) / columns : _width;
 
     return width;
   }
@@ -282,21 +291,23 @@ class DataList extends ValueNotifier implements Item {
   final dynamic customData;
   final int index;
 
-  get showDuplicate {
+  bool get showDuplicate {
     final val = _showDuplicate;
     _showDuplicate = false;
     return val;
   }
 
   bool _showDuplicate;
+
   set showDuplicate(bool a) {
     _showDuplicate = a;
     // rebuild only the specific Item that changes its value
     notifyListeners();
   }
 
-  get active => _active;
+  bool get active => _active;
   bool _active;
+
   set active(bool a) {
     _active = a;
     // rebuild only the specific Item that changes its value
