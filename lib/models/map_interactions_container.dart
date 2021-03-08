@@ -21,7 +21,7 @@ class MapInteractionContainer extends ChangeNotifier {
   LatLng get selectedLocation => _selectedLocation;
 
   /// returns the type of the stored element
-  String get type => _element != null ? _element.type : "";
+  String get type => _element != null ? _element.type : '';
 
   set element(BiodiversityMeasure element) {
     _element = element;
@@ -44,11 +44,11 @@ class MapInteractionContainer extends ChangeNotifier {
   /// a default message is returned if no coordinates are stored
   Future<String> getAddressOfSelectedLocation() async {
     if (_selectedLocation == null) {
-      return "Keine Adresse ausgewählt";
+      return 'Keine Adresse ausgewählt';
     }
     final placeMark = await placemarkFromCoordinates(
         _selectedLocation.latitude, _selectedLocation.longitude);
-    return "${placeMark[0].street}, ${placeMark[0].locality}";
+    return '${placeMark[0].street}, ${placeMark[0].locality}';
   }
 
   /// returns a [CameraPosition] wich has the stored location in focus

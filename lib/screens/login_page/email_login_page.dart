@@ -8,10 +8,13 @@ import 'package:provider/provider.dart';
 
 /// Displays the page where a user can login with an email and password
 class EmailLoginPage extends StatelessWidget {
+  /// Displays the page where a user can login with an email and password
+  EmailLoginPage({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return LogoAndWavesScreen(
-      title: "Email login",
+      title: 'Email login',
       children: [
         EmailForm(),
         Row(
@@ -37,6 +40,9 @@ class EmailLoginPage extends StatelessWidget {
 /// Display the email form with the Login button
 /// created in order to get the Scaffold
 class EmailForm extends StatefulWidget {
+  /// Display the email form with the Login button
+  EmailForm({Key key}) : super(key: key);
+
   @override
   _EmailFormState createState() => _EmailFormState();
 }
@@ -56,12 +62,12 @@ class _EmailFormState extends State<EmailForm> {
             onSaved: (value) => _email = value,
             validator: (value) {
               if (value.isEmpty) {
-                return "Bitte geben Sie eine Email Adresse ein";
+                return 'Bitte geben Sie eine Email Adresse ein';
                 //match valid email addresses https://stackoverflow.com/a/16888554
               } else if (!RegExp(
                       "^[a-zA-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*\$")
                   .hasMatch(value)) {
-                return "Bitte geben Sie eine gültige Email Adresse ein";
+                return 'Bitte geben Sie eine gültige Email Adresse ein';
               } else {
                 return null;
               }
@@ -76,7 +82,7 @@ class _EmailFormState extends State<EmailForm> {
             onSaved: (value) => _password = value,
             validator: (value) {
               if (value.isEmpty) {
-                return "Bitte geben Sie ein Passwort ein";
+                return 'Bitte geben Sie ein Passwort ein';
               } else {
                 return null;
               }
@@ -124,7 +130,7 @@ class _EmailFormState extends State<EmailForm> {
             Text(errorMessage.message),
             if (!errorMessage.isEmailConfirmed)
               ElevatedButton(
-                child: Text("Bestätigungsmail erneut senden"),
+                child: Text('Bestätigungsmail erneut senden'),
                 onPressed: () => Provider.of<User>(context, listen: false)
                     .sendEmailConfirmation(_email, _password),
               )

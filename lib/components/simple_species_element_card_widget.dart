@@ -1,19 +1,17 @@
-import 'package:biodiversity/models/biodiversity_measure.dart';
-import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/species.dart';
-import 'package:biodiversity/screens/map_page/maps_add_biodiversity_measure_page.dart';
-import 'package:biodiversity/screens/map_page/maps_selection_list_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
+/// same as structural_element_card_widget.dart, but with less infos,
+/// not expandable
 class SimpleSpeciesElementCard extends StatelessWidget {
-  //same as structural_element_card_widget.dart, but with less infos, not expandable
   //TODO: edit to be used by species
   final Species element;
   final bool goToSelectionList;
 
-  const SimpleSpeciesElementCard(this.element, {this.goToSelectionList = false});
+  const SimpleSpeciesElementCard(this.element,
+      {this.goToSelectionList = false, Key key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +25,7 @@ class SimpleSpeciesElementCard extends StatelessWidget {
                 builder: (context) => goToSelectionList
                     ? SelectionList()
                     : AddBiodiversityMeasure()));
-      },  *///TODO: edit to use MapInteractionContainer with Species
+      },  */ //TODO: edit to use MapInteractionContainer with Species
       child: Container(
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(3)),

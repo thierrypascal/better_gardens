@@ -1,6 +1,8 @@
+import 'package:biodiversity/components/tags/src/tags.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:biodiversity/components/tags/src/tags.dart';
+
+// ignore_for_file: public_member_api_docs, omit_local_variable_types, curly_braces_in_flow_control_structures, lines_longer_than_80_chars, avoid_returning_null
 
 /// Used by [ItemTags.onPressed].
 typedef OnPressedCallback = void Function(Item i);
@@ -316,7 +318,7 @@ class _ItemTagsState extends State<ItemTags> {
           )
         : text;
 
-    final List list = List();
+    final List list = [];
 
     switch (widget.combine) {
       case ItemTagsCombine.onlyText:
@@ -355,7 +357,7 @@ class _ItemTagsState extends State<ItemTags> {
             );
           return Flexible(
             flex: widget.combine == ItemTagsCombine.withTextAfter ||
-                    list.length == 1
+                list.length == 1
                 ? 1
                 : 0,
             child: list[i],
@@ -448,6 +450,7 @@ class _ItemTagsState extends State<ItemTags> {
 ///callback
 class Item {
   Item({this.index, this.title, this.active, this.customData});
+
   final int index;
   final String title;
   final bool active;
@@ -455,7 +458,7 @@ class Item {
 
   @override
   String toString() {
-    return "id:$index, title: $title, active: $active, customData: $customData";
+    return 'id:$index, title: $title, active: $active, customData: $customData';
   }
 }
 

@@ -2,13 +2,13 @@ import 'package:biodiversity/components/expandable_measure_element_card_widget.d
 import 'package:biodiversity/components/expandable_species_element_card_widget.dart';
 import 'package:biodiversity/components/simple_measure_element_card_widget.dart';
 import 'package:biodiversity/components/simple_species_element_card_widget.dart';
+
+//import 'package:flutter_tags/flutter_tags.dart';
+import 'package:biodiversity/components/tags/flutter_tags.dart';
 import 'package:biodiversity/models/biodiversity_service.dart';
 import 'package:biodiversity/models/species_service.dart';
 import 'package:biodiversity/models/tag_item.dart';
 import 'package:flutter/material.dart';
-
-//import 'package:flutter_tags/flutter_tags.dart';
-import 'package:biodiversity/components/tags/flutter_tags.dart';
 import 'package:provider/provider.dart';
 
 class ListWidget extends StatefulWidget {
@@ -23,13 +23,13 @@ class ListWidget extends StatefulWidget {
 }
 
 class _ListWidgetState extends State<ListWidget> {
-  List<TagItem> _tagItems = List<TagItem>();
+  final List<TagItem> _tagItems = <TagItem>[];
   TextEditingController editingController = TextEditingController();
   TextEditingController filterController = TextEditingController();
-  List categories = List();
-  List items = List();
-  List categorisedItems = List();
-  List filteredItems = List();
+  List categories = [];
+  List items = [];
+  List categorisedItems = [];
+  List filteredItems = [];
 
   @override
   void initState() {
@@ -57,20 +57,20 @@ class _ListWidgetState extends State<ListWidget> {
   }
 
   void filterClassResults() {
-    List tempList = List();
+    var tempList = [];
     tempList.addAll(items);
     List tempActiveItemList = _tagStateKey.currentState.getAllActiveItems;
 
     if (widget.isSpeciesList) {
       if (tempActiveItemList != null && tempActiveItemList.isNotEmpty) {
-        List tempListData = List();
-        tempList.forEach((item) {
-          tempActiveItemList.forEach((activeTag) {
+        var tempListData = [];
+        for (var item in tempList) {
+          for (var activeTag in tempActiveItemList) {
             if (item.speciesClass.contains(activeTag)) {
               tempListData.add(item);
             }
-          });
-        });
+          }
+        }
         setState(() {
           categorisedItems.clear();
           categorisedItems.addAll(tempListData);
@@ -83,14 +83,14 @@ class _ListWidgetState extends State<ListWidget> {
       }
     } else {
       if (tempActiveItemList != null && tempActiveItemList.isNotEmpty) {
-        List tempListData = List();
-        tempList.forEach((item) {
-          tempActiveItemList.forEach((activeTag) {
+        var tempListData = [];
+        for (var item in tempList) {
+          for (var activeTag in tempActiveItemList) {
             if (item.type.contains(activeTag)) {
               tempListData.add(item);
             }
-          });
-        });
+          }
+        }
         setState(() {
           categorisedItems.clear();
           categorisedItems.addAll(tempListData);
@@ -102,19 +102,19 @@ class _ListWidgetState extends State<ListWidget> {
         });
       }
     }
-    filterSearchResults("");
+    filterSearchResults('');
   }
 
   void filterSearchResults(String query) {
-    List tempList = List();
+    var tempList = [];
     tempList.addAll(categorisedItems);
     if (query.isNotEmpty) {
-      List tempListData = List();
-      tempList.forEach((item) {
+      var tempListData = [];
+      for (var item in tempList) {
         if (item.name.toLowerCase().contains(query.toLowerCase())) {
           tempListData.add(item);
         }
-      });
+      }
       setState(() {
         filteredItems.clear();
         filteredItems.addAll(tempListData);
@@ -134,7 +134,7 @@ class _ListWidgetState extends State<ListWidget> {
       body: Column(
         children: <Widget>[
           Padding(
-            padding: new EdgeInsets.fromLTRB(8, 0, 8, 0),
+            padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
             child: Column(
               children: <Widget>[
                 TextField(
@@ -143,8 +143,8 @@ class _ListWidgetState extends State<ListWidget> {
                   },
                   controller: editingController,
                   decoration: InputDecoration(
-                      labelText: "Suchen",
-                      hintText: "Suchen",
+                      labelText: 'Suchen',
+                      hintText: 'Suchen',
                       prefixIcon: Icon(Icons.search),
                       border: UnderlineInputBorder(
                           borderRadius:
@@ -167,14 +167,14 @@ class _ListWidgetState extends State<ListWidget> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           FlatButton(
-                            child: Text("Alle selektieren"),
+                            child: Text('Alle selektieren'),
                             onPressed: () {
                               _tagStateKey.currentState.setAllItemsActive();
                               filterClassResults();
                             },
                           ),
                           FlatButton(
-                            child: Text("Selektion aufheben"),
+                            child: Text('Selektion aufheben'),
                             onPressed: () {
                               _tagStateKey.currentState.setAllItemsInactive();
                               filterClassResults();
@@ -231,7 +231,7 @@ class _ListWidgetState extends State<ListWidget> {
     );
   }
 
-  //TODO: create own file ItemList, together with biodiversity_item_list_widget.dart
+  //TODO: create own file ItemList, merged with biodiversity_item_list_widget
   Widget _itemList(BuildContext context, {bool useSimpleCard = false}) {
     return Scaffold(
       body: Padding(
@@ -242,7 +242,7 @@ class _ListWidgetState extends State<ListWidget> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
                     Text(
-                      "Leider keine Einträge vorhanden",
+                      'Leider keine Einträge vorhanden',
                       textScaleFactor: 2,
                       textAlign: TextAlign.center,
                     ),
@@ -276,10 +276,11 @@ class _ListWidgetState extends State<ListWidget> {
   final GlobalKey<TagsState> _tagStateKey = GlobalKey<TagsState>();
 
   _getAllItem() {
-    List<Item> lst = _tagStateKey.currentState?.getAllItem;
-    if (lst != null)
+    var lst = _tagStateKey.currentState?.getAllItem;
+    if (lst != null) {
       lst
           .where((a) => a.active == true)
-          .forEach((a) => print(a.title + ", " + a.active.toString()));
+          .forEach((a) => print('${a.title}, ${a.active}'));
+    }
   }
 }

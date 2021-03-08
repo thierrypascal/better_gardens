@@ -8,18 +8,18 @@ class FacebookMockUser {
   String password;
   String email;
   final String uuid;
-  bool _signedIn;
+  bool signedIn;
 
   FacebookMockUser(this.name, this.password, this.email)
       : uuid = Uuid().v1(),
-        _signedIn = false;
+        signedIn = false;
 }
 
 /// Mocks a FacebookAuth instance with a single User provided at construction
 class FacebookAuthMock extends Mock implements FacebookAuth {
   /// mock User
   FacebookMockUser mockUser =
-      FacebookMockUser("tester", "123456", "tester@test.com");
+      FacebookMockUser('tester', '123456', 'tester@test.com');
 
   /// provide the mocked User which will be used to perform all actions
   FacebookAuthMock({mockUser});
@@ -36,15 +36,16 @@ class FacebookAuthMock extends Mock implements FacebookAuth {
       String loginBehavior = LoginBehavior.DIALOG_ONLY,
       bool failLogin}) {
     if (failLogin) {
-      throw FacebookAuthException("Login-Abort", "login aborted by user");
+      throw FacebookAuthException('Login-Abort', 'login aborted by user');
     }
-    mockUser._signedIn = true;
+    mockUser.signedIn = true;
     return Future.value(_getAccessToken(permissions: permissions));
   }
 
   @override
   Future<Function> logOut() {
-    mockUser._signedIn = false;
+    mockUser.signedIn = false;
+    return null;
   }
 
   @override
@@ -54,7 +55,7 @@ class FacebookAuthMock extends Mock implements FacebookAuth {
 
   @override
   Future<Map<String, dynamic>> getUserData(
-      {String fields = "name,email,picture.width(200)"}) {
+      {String fields = 'name,email,picture.width(200)'}) {
     return Future.value({});
   }
 

@@ -6,12 +6,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// same as structural_element_card_widget.dart, but with less infos,
+/// not expandable
 class SimpleMeasureElementCard extends StatelessWidget {
-  //same as structural_element_card_widget.dart, but with less infos, not expandable
+  /// the [BiodiversityMeasure] element to display
   final BiodiversityMeasure element;
+
+  /// if on tap onto the element the page should be redirected to SelectionList
   final bool goToSelectionList;
 
-  const SimpleMeasureElementCard(this.element, {this.goToSelectionList = false});
+  /// Non expandable ListTile, displaying a [BiodiversityMeasure]
+  const SimpleMeasureElementCard(this.element,
+      {this.goToSelectionList = false, Key key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

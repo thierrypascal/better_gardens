@@ -8,6 +8,9 @@ import 'package:provider/provider.dart';
 
 /// Page to send a password reset link
 class ForgotPasswordPage extends StatefulWidget {
+  /// Page to send a password reset link
+  ForgotPasswordPage({Key key}) : super(key: key);
+
   @override
   _ForgotPasswordPageState createState() => _ForgotPasswordPageState();
 }
@@ -19,14 +22,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return LogoAndWavesScreen(
-      title: "Passwort zurücksetzen",
+      title: 'Passwort zurücksetzen',
       children: [
         Form(
           key: _emailForm,
           child: Column(
             children: [
-              Text("Um dein Passwort zurückzusetzen,"
-                  " gib deine Email adresse unten ein."),
+              Text('Um dein Passwort zurückzusetzen,'
+                  ' gib deine Email adresse unten ein.'),
               TextFormField(
                 decoration: InputDecoration(labelText: 'Email adresse'),
                 autofocus: true,
@@ -34,19 +37,19 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 onSaved: (value) => _email = value,
                 validator: (value) {
                   if (value.isEmpty) {
-                    return "Bitte geben Sie eine Email Adresse ein";
+                    return 'Bitte geben Sie eine Email Adresse ein';
                     //match valid email addresses https://stackoverflow.com/a/16888554
                   } else if (!RegExp(
                           "^[a-zA-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*\$")
                       .hasMatch(value)) {
-                    return "Bitte geben Sie eine gültige Email Adresse ein";
+                    return 'Bitte geben Sie eine gültige Email Adresse ein';
                   } else {
                     return null;
                   }
                 },
               ),
               ElevatedButton(
-                child: Text("Passwort zurücksetzen"),
+                child: Text('Passwort zurücksetzen'),
                 onPressed: () {
                   if (_emailForm.currentState.validate()) {
                     _emailForm.currentState.save();
@@ -77,41 +80,41 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   Widget _showConfirmationDialog(BuildContext context, String email) {
     return AlertDialog(
-      title: Text("Email verschickt"),
+      title: Text('Email verschickt'),
       content: Column(
         children: [
-          Text("Eine email wurde an deine Mailadresse $email verschickt."),
+          Text('Eine email wurde an deine Mailadresse $email verschickt.'),
         ],
       ),
       actions: [
         ElevatedButton(
-            child: Text("Schliessen"), onPressed: () => Navigator.pop(context)),
+            child: Text('Schliessen'), onPressed: () => Navigator.pop(context)),
       ],
     );
   }
 
   Widget _showEmailNotFoundDialog(BuildContext context) {
     return AlertDialog(
-      title: Text("Email nicht gefunden"),
+      title: Text('Email nicht gefunden'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text("Die eingegebene Email adresse passt "
-              "zu keinem registrierten account.\nStelle sicher, dass du "
-              "die Email adresse richtig geschrieben hast."
-              "\nDeine Eingabe: $_email"),
+          Text('Die eingegebene Email adresse passt '
+              'zu keinem registrierten account.\nStelle sicher, dass du '
+              'die Email adresse richtig geschrieben hast.'
+              '\nDeine Eingabe: $_email'),
           SizedBox(height: 10),
           Text(
-              "Falls du noch kein Account hast, registriere dich bitte zuerst.")
+              'Falls du noch kein Account hast, registriere dich bitte zuerst.')
         ],
       ),
       actions: [
         ElevatedButton(
           onPressed: () => Navigator.pop(context, true),
-          child: Text("Schliessen"),
+          child: Text('Schliessen'),
         ),
         ElevatedButton(
-          child: Text("Registrieren"),
+          child: Text('Registrieren'),
           onPressed: () => Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => RegisterPage())),
         )

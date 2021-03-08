@@ -43,10 +43,10 @@ class User extends ChangeNotifier {
         _gardens = <DocumentReference>{},
         _favoredObjects = <String>{},
         _addressID = null,
-        nickname = "",
-        name = "",
-        surname = "",
-        phone = "";
+        nickname = '',
+        name = '',
+        surname = '',
+        phone = '';
 
   /// Loads the details like nickname, liked objects etc. form the database
   /// After the details are loaded, the listeners are notified
@@ -60,10 +60,10 @@ class User extends ChangeNotifier {
     }
     final doc = await _firestore.doc(documentPath).get();
     if (!doc.exists) {
-      logging.log("Loading failed, no doc found");
+      logging.log('Loading failed, no doc found');
       return false;
     }
-    logging.log("load details");
+    logging.log('load details');
     final map = doc.data();
     if (map.containsKey('nickname') && map['nickname'] is String) {
       nickname = map['nickname'];
@@ -86,7 +86,7 @@ class User extends ChangeNotifier {
     if (map.containsKey('favoredObjects') && map['favoredObjects'] is List) {
       _favoredObjects = Set.from(map['favoredObjects']);
     }
-    logging.log("loaded User: ${toString()}");
+    logging.log('loaded User: ${toString()}');
     if (informListeners) {
       notifyListeners();
     }
@@ -163,8 +163,8 @@ class User extends ChangeNotifier {
 
   /// returns a [String] with the path to the users profile in the database
   String get documentPath => _loggedIn && _auth.currentUser != null
-      ? "users/${_auth.currentUser.uid}"
-      : "users/anonymous";
+      ? 'users/${_auth.currentUser.uid}'
+      : 'users/anonymous';
 
   /// signs the user out, saves all data to the database.
   /// The listeners will be notified
@@ -174,10 +174,10 @@ class User extends ChangeNotifier {
     }
     saveUser();
     _auth.signOut();
-    nickname = "";
-    name = "";
-    surname = "";
-    phone = "";
+    nickname = '';
+    name = '';
+    surname = '';
+    phone = '';
     _addressID = null;
     _gardens = <DocumentReference>{};
     _favoredObjects = <String>{};
@@ -187,7 +187,7 @@ class User extends ChangeNotifier {
 
   @override
   String toString() {
-    return "{Nickname: $nickname, Name: $name, Surname: $surname}";
+    return '{Nickname: $nickname, Name: $name, Surname: $surname}';
   }
 
   /// Signs the user in with a google account.<br>
@@ -202,7 +202,7 @@ class User extends ChangeNotifier {
     _googleSignIn.signOut();
     final googleAccount = await _googleSignIn.signIn();
     if (googleAccount == null) {
-      return LoginResult("Anmeldung abgebrochen.");
+      return LoginResult('Anmeldung abgebrochen.');
     }
     final token = await googleAccount.authentication;
     final credential = GoogleAuthProvider.credential(idToken: token.idToken);
@@ -224,20 +224,20 @@ class User extends ChangeNotifier {
     AccessToken token;
     try {
       token = await _facebookAuth
-          .login(loginBehavior: "dialog", permissions: ["email"]);
+          .login(loginBehavior: 'dialog', permissions: ['email']);
     } on FacebookAuthException {
-      return LoginResult("Anmeldung abgebrochen");
+      return LoginResult('Anmeldung abgebrochen');
     }
-    final data = await _facebookAuth.getUserData(fields: "email");
-    if (!data.containsKey("email")) {
+    final data = await _facebookAuth.getUserData(fields: 'email');
+    if (!data.containsKey('email')) {
       _facebookAuth.logOut();
       return LoginResult(
-          "Name oder Email konnte nicht von Facebook abgerufen werden");
+          'Name oder Email konnte nicht von Facebook abgerufen werden');
     }
     final credential = FacebookAuthProvider.credential(token.token);
     final result = await _signInWithCredential(
         credential: credential,
-        email: data["email"],
+        email: data['email'],
         signOutCallback: _googleSignIn.signOut);
     return result;
   }
@@ -254,19 +254,19 @@ class User extends ChangeNotifier {
             email: email, password: password);
         if (!_auth.currentUser.emailVerified) {
           _auth.signOut();
-          return LoginResult("Bitte bestätigen Sie zuerst ihre Email Adresse",
+          return LoginResult('Bitte bestätigen Sie zuerst ihre Email Adresse',
               isEmailConfirmed: false);
         }
         _loggedIn = true;
         await loadDetailsFromLoggedInUser();
       } on FirebaseAuthException catch (error) {
-        if (error.code == "invalid-email") {
-          return LoginResult("Die eingegebene Email Adresse ist ungültig.");
-        } else if (error.code == "user-disabled") {
-          return LoginResult("Ihr Konto wurde gesperrt. "
-              "Bite wenden Sie sich an den Support.");
+        if (error.code == 'invalid-email') {
+          return LoginResult('Die eingegebene Email Adresse ist ungültig.');
+        } else if (error.code == 'user-disabled') {
+          return LoginResult('Ihr Konto wurde gesperrt. '
+              'Bite wenden Sie sich an den Support.');
         } else {
-          return LoginResult("Die Email Adresse oder das Passwort ist falsch");
+          return LoginResult('Die Email Adresse oder das Passwort ist falsch');
         }
       }
     }
@@ -281,26 +281,26 @@ class User extends ChangeNotifier {
       final signInMethods = await _auth.fetchSignInMethodsForEmail(email);
       if (signInMethods.isEmpty) {
         signOutCallback();
-        return LoginResult("Bitte registrieren Sie sich zuerst.",
+        return LoginResult('Bitte registrieren Sie sich zuerst.',
             isRegistered: false);
       } else if (!signInMethods.contains(credential.providerId)) {
         signOutCallback();
-        return LoginResult("Sie haben sich bisher nicht mit einem "
-            "${credential.providerId} account registriert.<br>");
+        return LoginResult('Sie haben sich bisher nicht mit einem '
+            '${credential.providerId} account registriert.<br>');
       }
       await _auth.signInWithCredential(credential);
       _loggedIn = true;
       await loadDetailsFromLoggedInUser();
     } on FirebaseAuthException catch (error) {
       signOutCallback();
-      if (error.code == "account-exists-with-different-credential") {
-        return LoginResult("Sie haben sich bereits mit einem anderen Account"
-            "registriert.");
+      if (error.code == 'account-exists-with-different-credential') {
+        return LoginResult('Sie haben sich bereits mit einem anderen Account'
+            'registriert.');
       }
-      if (error.code == "invalid-email") {
+      if (error.code == 'invalid-email') {
         // This should not be possible,
         // since the email is fetched from the provider account
-        return LoginResult("Deine Email adresse ist ungültig");
+        return LoginResult('Deine Email adresse ist ungültig');
       }
     }
     return null;
@@ -314,7 +314,7 @@ class User extends ChangeNotifier {
     }
     final googleAccount = await _googleSignIn.signIn();
     if (googleAccount == null) {
-      return "Registrierung abgebrochen";
+      return 'Registrierung abgebrochen';
     }
     final token = await googleAccount.authentication;
     final credential = GoogleAuthProvider.credential(idToken: token.idToken);
@@ -343,16 +343,16 @@ class User extends ChangeNotifier {
       updateUserData(newName: name, newSurname: surname, newNickname: nickname);
       cred.user.sendEmailVerification();
     } on FirebaseAuthException catch (error) {
-      if (error.code == "invalid-email") {
-        return "Die eingegebene Email Adresse ist ungültig.";
-      } else if (error.code == "email-already-in-use") {
-        return "Die angegebene Email Adresse wird bereits verwendet.";
-      } else if (error.code == "weak-password") {
-        return "Das angegebene Passwort ist zu schwach. "
-            "Ihr Passwort sollte mindestens 6 Zeichen lang sein "
-            "und Zahlen sowie Gross- und Kleinbuchstaben beinhalten.";
+      if (error.code == 'invalid-email') {
+        return 'Die eingegebene Email Adresse ist ungültig.';
+      } else if (error.code == 'email-already-in-use') {
+        return 'Die angegebene Email Adresse wird bereits verwendet.';
+      } else if (error.code == 'weak-password') {
+        return 'Das angegebene Passwort ist zu schwach. '
+            'Ihr Passwort sollte mindestens 6 Zeichen lang sein '
+            'und Zahlen sowie Gross- und Kleinbuchstaben beinhalten.';
       } else {
-        return "Something went wrong.";
+        return 'Something went wrong.';
       }
     }
     return null;
@@ -368,20 +368,20 @@ class User extends ChangeNotifier {
     AccessToken token;
     try {
       token = await _facebookAuth
-          .login(loginBehavior: "dialog", permissions: ["email"]);
-    } on FacebookAuthException catch (error) {
-      return "Registrierung abgebrochen";
+          .login(loginBehavior: 'dialog', permissions: ['email']);
+    } on FacebookAuthException {
+      return 'Registrierung abgebrochen';
     }
-    final data = await _facebookAuth.getUserData(fields: "name, email");
-    if (!data.containsKey("name") || !data.containsKey("email")) {
-      return "Name oder Email konnte nicht von Facebook abgerufen werden";
+    final data = await _facebookAuth.getUserData(fields: 'name, email');
+    if (!data.containsKey('name') || !data.containsKey('email')) {
+      return 'Name oder Email konnte nicht von Facebook abgerufen werden';
     }
     final credential = FacebookAuthProvider.credential(token.token);
     final result = await _registerWithCredential(
         context: context,
         credential: credential,
-        displayName: data["name"],
-        email: data["email"],
+        displayName: data['name'],
+        email: data['email'],
         signOutCallback: _facebookAuth.logOut);
     return result;
   }
@@ -398,8 +398,8 @@ class User extends ChangeNotifier {
         !(await getSignInMethods(email)).contains(credential.providerId);
     if (isNotRegistered && !await showPrivacyAgreement(context)) {
       signOutCallback();
-      return "Damit du ein Konto erstellen kannst, "
-          "musst du das Privacy agreement annehmen.";
+      return 'Damit du ein Konto erstellen kannst, '
+          'musst du das Privacy agreement annehmen.';
     }
     try {
       final authUser = await _auth.signInWithCredential(credential);
@@ -422,7 +422,7 @@ class User extends ChangeNotifier {
       await _auth.currentUser.sendEmailVerification();
       _auth.signOut();
     } on FirebaseAuthException {
-      return "Something went wrong";
+      return 'Something went wrong';
     }
     return null;
   }
@@ -430,7 +430,7 @@ class User extends ChangeNotifier {
   /// Sends a password reset link to the provided email.
   Future<bool> sendPasswordResetLink(String email) async {
     final methods = await getSignInMethods(email);
-    if (methods.contains("password")) {
+    if (methods.contains('password')) {
       _auth.sendPasswordResetEmail(email: email);
       return true;
     }

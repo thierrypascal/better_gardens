@@ -7,6 +7,10 @@ import 'package:provider/provider.dart';
 /// Page that handles the registration with google.
 /// The page itself doesn't contain any content
 class RegisterGooglePage extends StatefulWidget {
+  /// Page that handles the registration with google.
+  /// The page itself doesn't contain any content
+  RegisterGooglePage({Key key}) : super(key: key);
+
   @override
   _RegisterGooglePageState createState() => _RegisterGooglePageState();
 }
@@ -34,7 +38,7 @@ class _RegisterGooglePageState extends State<RegisterGooglePage> {
           ),
         if (_errorText != null) SizedBox(height: 10),
         ElevatedButton(
-          child: Text("Registrieren"),
+          child: Text('Registrieren'),
           onPressed: () => _handleRegistration(context),
         ),
       ],

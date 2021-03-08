@@ -49,7 +49,7 @@ class SpeciesService extends ChangeNotifier {
     if (element != null) {
       return element.type;
     } else {
-      return "unknown";
+      return 'unknown';
     }
   }
 
