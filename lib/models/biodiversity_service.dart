@@ -54,7 +54,8 @@ class BiodiversityService extends ChangeNotifier {
   }
 
   /// returns the [BiodiversityMeasure] identified by the provided reference
-  BiodiversityMeasure getBiodiversityMeasureByReference(DocumentReference reference) {
+  BiodiversityMeasure getBiodiversityMeasureByReference(
+      DocumentReference reference) {
     return _measures.where((element) => element.reference == reference).first;
   }
 
