@@ -2,7 +2,6 @@ import 'package:biodiversity/components/expandable_measure_element_card_widget.d
 import 'package:biodiversity/components/expandable_species_element_card_widget.dart';
 import 'package:biodiversity/components/simple_measure_element_card_widget.dart';
 import 'package:biodiversity/components/simple_species_element_card_widget.dart';
-
 //import 'package:flutter_tags/flutter_tags.dart';
 import 'package:biodiversity/components/tags/flutter_tags.dart';
 import 'package:biodiversity/models/biodiversity_service.dart';
@@ -134,7 +133,7 @@ class _ListWidgetState extends State<ListWidget> {
       body: Column(
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+            padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
             child: Column(
               children: <Widget>[
                 TextField(
@@ -142,7 +141,7 @@ class _ListWidgetState extends State<ListWidget> {
                     filterSearchResults(value);
                   },
                   controller: editingController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       labelText: 'Suchen',
                       hintText: 'Suchen',
                       prefixIcon: Icon(Icons.search),
@@ -167,14 +166,14 @@ class _ListWidgetState extends State<ListWidget> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           FlatButton(
-                            child: Text('Alle selektieren'),
+                            child: const Text('Alle selektieren'),
                             onPressed: () {
                               _tagStateKey.currentState.setAllItemsActive();
                               filterClassResults();
                             },
                           ),
                           FlatButton(
-                            child: Text('Selektion aufheben'),
+                            child: const Text('Selektion aufheben'),
                             onPressed: () {
                               _tagStateKey.currentState.setAllItemsInactive();
                               filterClassResults();
@@ -199,7 +198,7 @@ class _ListWidgetState extends State<ListWidget> {
                         index: index,
                         title: item.title,
                         active: item.active,
-                        textStyle: TextStyle(
+                        textStyle: const TextStyle(
                           fontSize: 14,
                         ),
                         textActiveColor: Colors.black,
@@ -210,7 +209,8 @@ class _ListWidgetState extends State<ListWidget> {
                           filterClassResults();
                         },
                         activeColor: Colors.grey[300],
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(5.0)),
                       );
                     },
                   ),

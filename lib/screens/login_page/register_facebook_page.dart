@@ -28,16 +28,16 @@ class _RegisterFacebookPageState extends State<RegisterFacebookPage> {
     return LogoAndWavesScreen(
       title: 'Registrieren mit Facebook',
       children: [
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         if (_errorText != null)
           Text(
             _errorText,
             textScaleFactor: 1.2,
-            style: TextStyle(color: Colors.red),
+            style: const TextStyle(color: Colors.red),
           ),
-        if (_errorText != null) SizedBox(height: 10),
+        if (_errorText != null) const SizedBox(height: 10),
         ElevatedButton(
-          child: Text('Registrieren'),
+          child: const Text('Registrieren'),
           onPressed: () => _handleRegistration(context),
         ),
       ],

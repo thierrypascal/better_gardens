@@ -28,10 +28,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           key: _emailForm,
           child: Column(
             children: [
-              Text('Um dein Passwort zurückzusetzen,'
+              const Text('Um dein Passwort zurückzusetzen,'
                   ' gib deine Email adresse unten ein.'),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Email adresse'),
+                decoration: const InputDecoration(labelText: 'Email adresse'),
                 autofocus: true,
                 keyboardType: TextInputType.emailAddress,
                 onSaved: (value) => _email = value,
@@ -49,7 +49,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 },
               ),
               ElevatedButton(
-                child: Text('Passwort zurücksetzen'),
+                child: const Text('Passwort zurücksetzen'),
                 onPressed: () {
                   if (_emailForm.currentState.validate()) {
                     _emailForm.currentState.save();
@@ -80,7 +80,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   Widget _showConfirmationDialog(BuildContext context, String email) {
     return AlertDialog(
-      title: Text('Email verschickt'),
+      title: const Text('Email verschickt'),
       content: Column(
         children: [
           Text('Eine email wurde an deine Mailadresse $email verschickt.'),
@@ -88,14 +88,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       ),
       actions: [
         ElevatedButton(
-            child: Text('Schliessen'), onPressed: () => Navigator.pop(context)),
+            child: const Text('Schliessen'),
+            onPressed: () => Navigator.pop(context)),
       ],
     );
   }
 
   Widget _showEmailNotFoundDialog(BuildContext context) {
     return AlertDialog(
-      title: Text('Email nicht gefunden'),
+      title: const Text('Email nicht gefunden'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -103,18 +104,18 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               'zu keinem registrierten account.\nStelle sicher, dass du '
               'die Email adresse richtig geschrieben hast.'
               '\nDeine Eingabe: $_email'),
-          SizedBox(height: 10),
-          Text(
+          const SizedBox(height: 10),
+          const Text(
               'Falls du noch kein Account hast, registriere dich bitte zuerst.')
         ],
       ),
       actions: [
         ElevatedButton(
           onPressed: () => Navigator.pop(context, true),
-          child: Text('Schliessen'),
+          child: const Text('Schliessen'),
         ),
         ElevatedButton(
-          child: Text('Registrieren'),
+          child: const Text('Registrieren'),
           onPressed: () => Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => RegisterPage())),
         )
