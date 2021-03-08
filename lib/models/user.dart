@@ -14,8 +14,10 @@ import 'package:google_sign_in/google_sign_in.dart';
 /// The class is built to be used as a singleton,
 /// so only one instance should be used throughout the app.
 class User extends ChangeNotifier {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final FirebaseAuth _auth;
+  final FirebaseFirestore _firestore;
+  final GoogleSignIn _googleSignIn;
+  final FacebookAuth _facebookAuth;
 
   Set<DocumentReference> _gardens;
   Set<String> _favoredObjects;
@@ -35,7 +37,8 @@ class User extends ChangeNotifier {
   String phone;
 
   /// Provides an empty User object. This should only be used once at App start.
-  User.empty()
+  User.empty(
+      this._auth, this._firestore, this._googleSignIn, this._facebookAuth)
       : _loggedIn = false,
         _gardens = <DocumentReference>{},
         _favoredObjects = <String>{},
@@ -55,7 +58,7 @@ class User extends ChangeNotifier {
     if (!_loggedIn) {
       return false;
     }
-    final doc = await FirebaseFirestore.instance.doc(documentPath).get();
+    final doc = await _firestore.doc(documentPath).get();
     if (!doc.exists) {
       logging.log("Loading failed, no doc found");
       return false;
@@ -96,7 +99,7 @@ class User extends ChangeNotifier {
     if (!_loggedIn) {
       return false;
     }
-    await FirebaseFirestore.instance.doc(documentPath).set({
+    await _firestore.doc(documentPath).set({
       'nickname': nickname,
       'name': name,
       'surname': surname,
@@ -122,7 +125,7 @@ class User extends ChangeNotifier {
     if (newSurname != null) surname = newSurname;
     if (newNickname != null) {
       nickname = newNickname;
-      FirebaseAuth.instance.currentUser.updateProfile(displayName: nickname);
+      if (_loggedIn) _auth.currentUser.updateProfile(displayName: nickname);
     }
     if (newPhone != null) phone = newPhone;
     if (newAddress != null) {
@@ -159,10 +162,9 @@ class User extends ChangeNotifier {
   bool get isLoggedIn => _loggedIn;
 
   /// returns a [String] with the path to the users profile in the database
-  String get documentPath =>
-      _loggedIn && FirebaseAuth.instance.currentUser != null
-          ? "users/${FirebaseAuth.instance.currentUser.uid}"
-          : "users/anonymous";
+  String get documentPath => _loggedIn && _auth.currentUser != null
+      ? "users/${_auth.currentUser.uid}"
+      : "users/anonymous";
 
   /// signs the user out, saves all data to the database.
   /// The listeners will be notified
@@ -171,7 +173,7 @@ class User extends ChangeNotifier {
       return;
     }
     saveUser();
-    FirebaseAuth.instance.signOut();
+    _auth.signOut();
     nickname = "";
     name = "";
     surname = "";
@@ -221,14 +223,14 @@ class User extends ChangeNotifier {
     }
     AccessToken token;
     try {
-      token = await FacebookAuth.instance
+      token = await _facebookAuth
           .login(loginBehavior: "dialog", permissions: ["email"]);
     } on FacebookAuthException {
       return LoginResult("Anmeldung abgebrochen");
     }
-    final data = await FacebookAuth.instance.getUserData(fields: "email");
+    final data = await _facebookAuth.getUserData(fields: "email");
     if (!data.containsKey("email")) {
-      FacebookAuth.instance.logOut();
+      _facebookAuth.logOut();
       return LoginResult(
           "Name oder Email konnte nicht von Facebook abgerufen werden");
     }
@@ -365,12 +367,12 @@ class User extends ChangeNotifier {
     }
     AccessToken token;
     try {
-      token = await FacebookAuth.instance
+      token = await _facebookAuth
           .login(loginBehavior: "dialog", permissions: ["email"]);
     } on FacebookAuthException catch (error) {
       return "Registrierung abgebrochen";
     }
-    final data = await FacebookAuth.instance.getUserData(fields: "name, email");
+    final data = await _facebookAuth.getUserData(fields: "name, email");
     if (!data.containsKey("name") || !data.containsKey("email")) {
       return "Name oder Email konnte nicht von Facebook abgerufen werden";
     }
@@ -380,7 +382,7 @@ class User extends ChangeNotifier {
         credential: credential,
         displayName: data["name"],
         email: data["email"],
-        signOutCallback: FacebookAuth.instance.logOut);
+        signOutCallback: _facebookAuth.logOut);
     return result;
   }
 
@@ -427,7 +429,7 @@ class User extends ChangeNotifier {
 
   /// Sends a password reset link to the provided email.
   Future<bool> sendPasswordResetLink(String email) async {
-    final methods = await _auth.fetchSignInMethodsForEmail(email);
+    final methods = await getSignInMethods(email);
     if (methods.contains("password")) {
       _auth.sendPasswordResetEmail(email: email);
       return true;

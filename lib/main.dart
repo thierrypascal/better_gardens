@@ -4,8 +4,12 @@ import 'package:biodiversity/models/map_marker_service.dart';
 import 'package:biodiversity/models/species_service.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -31,12 +35,17 @@ class MyApp extends StatelessWidget {
           return MultiProvider(
             providers: [
               ChangeNotifierProvider(
-                create: (context) => User.empty(),
+                create: (context) => User.empty(
+                    auth.FirebaseAuth.instance,
+                    FirebaseFirestore.instance,
+                    GoogleSignIn(),
+                    FacebookAuth.instance),
                 lazy: false,
               ),
               ChangeNotifierProvider(
-                create: (context) => BiodiversityService(),
-                lazy: false,
+                  create: (context) =>
+                      BiodiversityService(FirebaseFirestore.instance),
+                  lazy: false,
               ),
               ChangeNotifierProvider(
                 create: (context) => SpeciesService(),

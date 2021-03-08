@@ -5,13 +5,14 @@ import 'package:flutter/foundation.dart';
 
 /// a service which loads all [BiodiversityMeasure] at once and stores them
 class BiodiversityService extends ChangeNotifier {
+  final FirebaseFirestore _firestore;
   final List<BiodiversityMeasure> _measures = [];
   final List<String> _classes = [];
   bool _initialized = false;
 
   /// initializer for the service
-  BiodiversityService() {
-    FirebaseFirestore.instance
+  BiodiversityService(this._firestore) {
+    _firestore
         .collection('biodiversityMeasures')
         .snapshots()
         .listen(_updateElements);
@@ -54,8 +55,7 @@ class BiodiversityService extends ChangeNotifier {
   }
 
   /// returns the [BiodiversityMeasure] identified by the provided reference
-  BiodiversityMeasure getBiodiversityMeasureByReference(
-      DocumentReference reference) {
+  BiodiversityMeasure getBiodiversityMeasureByReference(DocumentReference reference) {
     return _measures.where((element) => element.reference == reference).first;
   }
 

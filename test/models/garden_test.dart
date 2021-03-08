@@ -25,6 +25,28 @@ void main() {
     validGarden = Garden.fromMap(gardenAttributes);
     expect(validGarden, isA<Garden>());
 
+    /* TODO unfortunately, this test passes. It should not.
+         See same example below.
+     */
+/*    gardenAttributes = {
+      "name": "",
+      "city": "",
+      "street": "",
+      "numberOfStructureElements": 0,
+      "numberOfPlants": 0,
+      "numberOfMethods": 0,
+      "ownedObjects": {}
+    };
+*/
+
+
+  });
+
+  test('Invalid gardens', () {
+
+    /* TODO this should not be valid: a garden should have a name and an address
+         linked to it. A "" just makes no sense.
+     */
     gardenAttributes = {
       "name": "",
       "city": "",
@@ -34,12 +56,7 @@ void main() {
       "numberOfMethods": 0,
       "ownedObjects": {}
     };
-    validGarden = Garden.fromMap(gardenAttributes);
-    expect(validGarden, isA<Garden>());
-
-  });
-
-  test('Invalid gardens', () {
+    // expect(() => Garden.fromMap(gardenAttributes), .....);
 
     gardenAttributes = {
       "name": null,

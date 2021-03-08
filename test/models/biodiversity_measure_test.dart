@@ -84,38 +84,5 @@ void main() {
     };
     expect(() => BiodiversityMeasure.fromMap(measureAttributes),
         throwsA(isA<TypeError>()));
-
-/*    measureAttributes = {
-      "name": "Some name...",
-      "description": "Some description...",
-      "buildInstructions": "Instructions...",
-      "type": "dummy",
-      "_beneficialFor": "not a map",
-      "_badFor": {"birds": false},
-      "imageSource": "some/path"
-    };
-    expect(() => BiodiversityMeasure.fromMap(measureAttributes), throwsA(isA<TypeError>()));*/
-
-/*    measureAttributes = {
-      "name": "Some name...",
-      "description": "Some description...",
-      "buildInstructions": "Instructions...",
-      "type": "dummy",
-      "_beneficialFor": {"birds": true},
-      "_badFor": {"birds": "notABoolean"}, // not a boolean
-      "imageSource": "some/path"
-    };
-    expect(() => BiodiversityMeasure.fromMap(measureAttributes), throwsA(isA<TypeError>()));*/
-
-/*    measureAttributes = {
-      "name": "Some name...",
-      "description": "Some description...",
-      "buildInstructions": "Instructions...",
-      "type": "dummy",
-      "_beneficialForu": {"birds": true},
-      "_badFor": {"birds": false},
-      "imageSource": 9;
-    };
-    expect(() => BiodiversityMeasure.fromMap(measureAttributes), throwsA(isA<TypeError>()));*/
   });
 }
