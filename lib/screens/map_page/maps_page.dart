@@ -137,19 +137,19 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                   title: 'Element',
                   detail: _biodiversityMeasure,
                 ),
-                _TitleDividerCard(
+                const _TitleDividerCard(
                   title: 'Garten Spitzname',
                   detail: 'Spitzname',
                 ),
-                _TitleDividerCard(
+                const _TitleDividerCard(
                   title: 'Garten Typ',
                   detail: 'Normaler Garten',
                 ),
-                _TitleDividerCard(
+                const _TitleDividerCard(
                   title: 'Adresse',
                   detail: 'Adresse',
                 ),
-                _TitleDividerCard(
+                const _TitleDividerCard(
                   title: 'Besitzer',
                   detail: 'Greenway',
                 ),

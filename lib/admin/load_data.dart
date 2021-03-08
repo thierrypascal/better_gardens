@@ -29,7 +29,7 @@ class _LoadDataState extends State<LoadData> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Text(
+            const Text(
               'This page should only be used by developers.\n'
               'The content of the Excel file stored in the repo under:\n'
               'res/data/Lebensraume-und-Arten.xlsx\n'
@@ -45,17 +45,17 @@ class _LoadDataState extends State<LoadData> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.backup_rounded),
-                      SizedBox(width: 10),
-                      Text('load and update data'),
+                      const Icon(Icons.backup_rounded),
+                      const SizedBox(width: 10),
+                      const Text('load and update data'),
                     ],
                   ),
                 ),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 LinearProgressIndicator(value: _progress),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 if (_progress == 1)
-                  Text('All data loaded and saved to the server :)'),
+                  const Text('All data loaded and saved to the server :)'),
               ],
             ),
           ],

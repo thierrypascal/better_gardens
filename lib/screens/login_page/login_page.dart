@@ -11,7 +11,7 @@ final ButtonStyle _buttonStyle = ButtonStyle(
     backgroundColor: MaterialStateProperty.all(Colors.white),
     foregroundColor: MaterialStateProperty.all(Colors.black),
     textStyle: MaterialStateProperty.all(
-        TextStyle(fontWeight: FontWeight.w500, fontSize: 22)));
+        const TextStyle(fontWeight: FontWeight.w500, fontSize: 22)));
 
 /// The screen where you can select which method you want to use to sign in
 class LoginPage extends StatelessWidget {
@@ -41,13 +41,13 @@ class LoginPage extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(flex: 1, child: Icon(FontAwesomeIcons.envelope)),
+              const Expanded(flex: 1, child: Icon(FontAwesomeIcons.envelope)),
               Expanded(
                   flex: 9,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('E-mail'),
+                      const Text('E-mail'),
                     ],
                   )),
             ],
@@ -122,13 +122,13 @@ class SignInButton extends StatelessWidget {
       {@required Function() signInFunction}) async {
     final result = await signInFunction();
     if (result == null) {
-      Scaffold.of(context).showSnackBar(SnackBar(
+      Scaffold.of(context).showSnackBar(const SnackBar(
         content: Text('Anmeldung erfolgreich'),
       ));
       return;
     }
     if (!result.isRegistered) {
-      Scaffold.of(context).showSnackBar(SnackBar(
+      Scaffold.of(context).showSnackBar(const SnackBar(
           content: Text('Du bist noch nicht registriert mit deinem account.\n'
               'Bitte registriere dich zuerst, bevor du dich anmeldest.')));
     } else {

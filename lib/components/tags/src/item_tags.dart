@@ -2,7 +2,8 @@ import 'package:biodiversity/components/tags/src/tags.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-// ignore_for_file: public_member_api_docs, omit_local_variable_types, curly_braces_in_flow_control_structures, lines_longer_than_80_chars, avoid_returning_null
+// ignore_for_file: public_member_api_docs, omit_local_variable_types, curly_braces_in_flow_control_structures,
+// ignore_for_file: lines_longer_than_80_chars, avoid_returning_null, prefer_const_constructors
 
 /// Used by [ItemTags.onPressed].
 typedef OnPressedCallback = void Function(Item i);

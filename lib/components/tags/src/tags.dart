@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 // ignore_for_file: curly_braces_in_flow_control_structures, lines_longer_than_80_chars
 // ignore_for_file: avoid_returning_null, prefer_single_quotes, prefer_collection_literals
 // ignore_for_file: unnecessary_lambdas, avoid_types_on_closure_parameters, prefer_generic_function_type_aliases
-// ignore_for_file: avoid_function_literals_in_foreach_calls, type_annotate_public_apis
+// ignore_for_file: avoid_function_literals_in_foreach_calls, type_annotate_public_apis, prefer_const_constructors
 
 ///ItemBuilder
 typedef Widget ItemBuilder(int index);
