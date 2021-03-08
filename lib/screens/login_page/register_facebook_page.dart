@@ -7,6 +7,9 @@ import 'package:provider/provider.dart';
 
 /// The page where you can register with your facebook account
 class RegisterFacebookPage extends StatefulWidget {
+  /// The page where you can register with your facebook account
+  RegisterFacebookPage({Key key}) : super(key: key);
+
   @override
   _RegisterFacebookPageState createState() => _RegisterFacebookPageState();
 }
@@ -23,7 +26,7 @@ class _RegisterFacebookPageState extends State<RegisterFacebookPage> {
   @override
   Widget build(BuildContext context) {
     return LogoAndWavesScreen(
-      title: "Registrieren mit Facebook",
+      title: 'Registrieren mit Facebook',
       children: [
         SizedBox(height: 20),
         if (_errorText != null)
@@ -34,7 +37,7 @@ class _RegisterFacebookPageState extends State<RegisterFacebookPage> {
           ),
         if (_errorText != null) SizedBox(height: 10),
         ElevatedButton(
-          child: Text("Registrieren"),
+          child: Text('Registrieren'),
           onPressed: () => _handleRegistration(context),
         ),
       ],

@@ -18,9 +18,9 @@ import '../facebook_mock/facebook_auth_mock.dart';
 final _globalKey = GlobalKey();
 
 Widget loadProviders(Widget widget,
-    {String name = "Gabriel",
-    String password = "123456",
-    String email = "gabriel@tester.com"}) {
+    {String name = 'Gabriel',
+    String password = '123456',
+    String email = 'gabriel@tester.com'}) {
   final firebase = MockFirestoreInstance();
   return MultiProvider(
       providers: [
@@ -49,27 +49,27 @@ Widget loadProviders(Widget widget,
 }
 
 void main() {
-  testWidgets("Check if all login options are present", (tester) async {
+  testWidgets('Check if all login options are present', (tester) async {
     await tester.pumpWidget(loadProviders(LoginPage()));
 
-    final emailLogin = find.text("E-mail");
-    final googleLogin = find.text("Google");
-    final facebookLogin = find.text("Facebook");
+    final emailLogin = find.text('E-mail');
+    final googleLogin = find.text('Google');
+    final facebookLogin = find.text('Facebook');
 
-    expect(emailLogin, findsOneWidget, reason: "E-mail login option not found");
+    expect(emailLogin, findsOneWidget, reason: 'E-mail login option not found');
     expect(googleLogin, findsOneWidget,
-        reason: "Google login option not found");
+        reason: 'Google login option not found');
     expect(facebookLogin, findsOneWidget,
-        reason: "Facebook login option not found");
+        reason: 'Facebook login option not found');
   });
 
-  testWidgets("Test Email login", (tester) async {
+  testWidgets('Test Email login', (tester) async {
     await tester.pumpWidget(loadProviders(LoginPage()));
-    await tester.tap(find.text("E-mail"));
+    await tester.tap(find.text('E-mail'));
     await tester.pumpAndSettle();
     expect(find.byType(LoginPage), findsNothing,
-        reason: "LoginPage still loaded, should be EmailLoginPage");
+        reason: 'LoginPage still loaded, should be EmailLoginPage');
     expect(find.byType(EmailLoginPage), findsOneWidget,
-        reason: "EmailLoginPage not loaded");
+        reason: 'EmailLoginPage not loaded');
   });
 }

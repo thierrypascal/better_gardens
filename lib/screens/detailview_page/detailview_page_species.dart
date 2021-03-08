@@ -5,9 +5,12 @@ import 'package:biodiversity/screens/information_list_page/biodiversity_measures
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// Page which shows the details of a Species
 class DetailViewPageSpecies extends StatefulWidget {
+  /// Which Species will be displayed
   final Species element;
 
+  /// Page which shows the details of a Species
   const DetailViewPageSpecies(this.element, {Key key}) : super(key: key);
 
   @override
@@ -18,7 +21,7 @@ class _DetailViewPageSpeciesState extends State<DetailViewPageSpecies> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Details: ${widget.element.name}")),
+      appBar: AppBar(title: Text('Details: ${widget.element.name}')),
       drawer: MyDrawer(),
       body: SingleChildScrollView(
         child: Column(
@@ -44,9 +47,9 @@ class _DetailViewPageSpeciesState extends State<DetailViewPageSpecies> {
                       ),
                       Row(children: [
                         Consumer<User>(
-                          builder: (BuildContext context, user, Widget child) {
+                          builder: (context, user, child) {
                             if (user == null) {
-                              return const Text("");
+                              return const Text('');
                             }
                             return IconButton(
                               icon: user.doesLikeElement(widget.element.name)
@@ -69,10 +72,10 @@ class _DetailViewPageSpeciesState extends State<DetailViewPageSpecies> {
                               Navigator.canPop(context)
                                   ? Navigator.pop(context)
                                   : Navigator.push(
-                                      context,
+                                context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              InformationListPage()),
+                                              HabitatelementListPage()),
                                     );
                             }),
                       ])
@@ -86,7 +89,7 @@ class _DetailViewPageSpeciesState extends State<DetailViewPageSpecies> {
                     height: 20,
                   ),
                   const Text(
-                    "Tips",
+                    'Tips',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   ),
                   //Text(widget.element.tips),
@@ -94,7 +97,7 @@ class _DetailViewPageSpeciesState extends State<DetailViewPageSpecies> {
                     height: 20,
                   ),
                   const Text(
-                    "Links",
+                    'Links',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   ),
                   //Text(widget.element.links),
@@ -102,7 +105,7 @@ class _DetailViewPageSpeciesState extends State<DetailViewPageSpecies> {
                     height: 20,
                   ),
                   const Text(
-                    "Wird durch folgende Elemente unterstützt:",
+                    'Wird durch folgende Elemente unterstützt:',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   ),
                   Text(widget.element.supportedBy()),

@@ -2,7 +2,6 @@ class TagItem {
   String title;
   bool active;
 
-  TagItem(
-      this.title,
-      this.active);
+  // ignore: avoid_positional_boolean_parameters
+  TagItem(this.title, this.active);
 }

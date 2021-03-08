@@ -17,6 +17,7 @@ void main() {
 }
 
 /// The mainActivity of the flutter app
+// ignore: use_key_in_widget_constructors
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return const Center(
-            child: Text("Something went wrong"),
+            child: Text('Something went wrong'),
           );
         }
         if (snapshot.connectionState == ConnectionState.done) {
@@ -43,9 +44,9 @@ class MyApp extends StatelessWidget {
                 lazy: false,
               ),
               ChangeNotifierProvider(
-                  create: (context) =>
-                      BiodiversityService(FirebaseFirestore.instance),
-                  lazy: false,
+                create: (context) =>
+                    BiodiversityService(FirebaseFirestore.instance),
+                lazy: false,
               ),
               ChangeNotifierProvider(
                 create: (context) => SpeciesService(),

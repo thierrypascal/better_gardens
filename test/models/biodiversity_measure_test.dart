@@ -12,25 +12,25 @@ void main() {
 
   test('Valid biodiversity measures', () {
     measureAttributes = {
-      "name": "Some name...",
-      "description": "Some description...",
-      "buildInstructions": "Instructions...",
-      "type": "dummy",
-      "_beneficialFor": ["birds"],
-      "goodTogetherWith": ["birds"],
-      "imageSource": "some/path"
+      'name': 'Some name...',
+      'description': 'Some description...',
+      'buildInstructions': 'Instructions...',
+      'type': 'dummy',
+      '_beneficialFor': ['birds'],
+      'goodTogetherWith': ['birds'],
+      'imageSource': 'some/path'
     };
     validMeasure = BiodiversityMeasure.fromMap(measureAttributes);
     expect(validMeasure, isA<BiodiversityMeasure>());
 
     measureAttributes = {
-      "name": null,
-      "description": null,
-      "buildInstructions": null,
-      "type": null,
-      "_beneficialFor": null,
-      "_badFor": null,
-      "imageSource": null
+      'name': null,
+      'description': null,
+      'buildInstructions': null,
+      'type': null,
+      '_beneficialFor': null,
+      '_badFor': null,
+      'imageSource': null
     };
     validMeasure = BiodiversityMeasure.fromMap(measureAttributes);
     expect(validMeasure, isA<BiodiversityMeasure>());
@@ -38,49 +38,49 @@ void main() {
 
   test('Invalid biodiversity measures', () {
     measureAttributes = {
-      "name": 1,
-      "description": "Some description...",
-      "buildInstructions": "Instructions...",
-      "type": "dummy",
-      "_beneficialFor": {"birds": true},
-      "_badFor": {"birds": false},
-      "imageSource": "some/path"
+      'name': 1,
+      'description': 'Some description...',
+      'buildInstructions': 'Instructions...',
+      'type': 'dummy',
+      '_beneficialFor': {'birds': true},
+      '_badFor': {'birds': false},
+      'imageSource': 'some/path'
     };
     expect(() => BiodiversityMeasure.fromMap(measureAttributes),
         throwsA(isA<TypeError>()));
 
     measureAttributes = {
-      "name": "Some name...",
-      "description": 2.3,
-      "shortDescription": "Instructions...",
-      "type": "dummy",
-      "_beneficialFor": {"birds": true},
-      "_badFor": {"birds": false},
-      "imageSource": "some/path"
+      'name': 'Some name...',
+      'description': 2.3,
+      'shortDescription': 'Instructions...',
+      'type': 'dummy',
+      '_beneficialFor': {'birds': true},
+      '_badFor': {'birds': false},
+      'imageSource': 'some/path'
     };
     expect(() => BiodiversityMeasure.fromMap(measureAttributes),
         throwsA(isA<TypeError>()));
 
     measureAttributes = {
-      "name": "Some name...",
-      "description": "Some description...",
-      "shortDescription": {"instruction inside a set"},
-      "type": "dummy",
-      "_beneficialFor": {"birds": true},
-      "_badFor": {"birds": false},
-      "imageSource": "some/path"
+      'name': 'Some name...',
+      'description': 'Some description...',
+      'shortDescription': {'instruction inside a set'},
+      'type': 'dummy',
+      '_beneficialFor': {'birds': true},
+      '_badFor': {'birds': false},
+      'imageSource': 'some/path'
     };
     expect(() => BiodiversityMeasure.fromMap(measureAttributes),
         throwsA(isA<TypeError>()));
 
     measureAttributes = {
-      "name": "Some name...",
-      "description": "Some description...",
-      "shortDescription": "Instructions...",
-      "type": {"no_type": true},
-      "_beneficialFor": {"birds": true},
-      "_badFor": {"birds": false},
-      "imageSource": "some/path"
+      'name': 'Some name...',
+      'description': 'Some description...',
+      'shortDescription': 'Instructions...',
+      'type': {'no_type': true},
+      '_beneficialFor': {'birds': true},
+      '_badFor': {'birds': false},
+      'imageSource': 'some/path'
     };
     expect(() => BiodiversityMeasure.fromMap(measureAttributes),
         throwsA(isA<TypeError>()));

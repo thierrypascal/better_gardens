@@ -1,6 +1,9 @@
 import 'dart:math' as math;
+
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+
+// ignore_for_file: public_member_api_docs, omit_local_variable_types, curly_braces_in_flow_control_structures, lines_longer_than_80_chars, avoid_returning_null
 
 /// Custom Wrap
 class CustomWrap extends MultiChildRenderObjectWidget {
@@ -125,6 +128,7 @@ class CustomRenderWrap extends RenderBox
 
   int get column => _column;
   int _column;
+
   set column(int value) {
     if (column == value) return;
     _column = value;
@@ -133,6 +137,7 @@ class CustomRenderWrap extends RenderBox
 
   bool get symmetry => _symmetry;
   bool _symmetry;
+
   set symmetry(bool value) {
     if (symmetry == value) return;
     _symmetry = value;
@@ -141,6 +146,7 @@ class CustomRenderWrap extends RenderBox
 
   Axis get direction => _direction;
   Axis _direction;
+
   set direction(Axis value) {
     assert(value != null);
     if (_direction == value) return;
@@ -150,6 +156,7 @@ class CustomRenderWrap extends RenderBox
 
   WrapAlignment get alignment => _alignment;
   WrapAlignment _alignment;
+
   set alignment(WrapAlignment value) {
     assert(value != null);
     if (_alignment == value) return;
@@ -159,6 +166,7 @@ class CustomRenderWrap extends RenderBox
 
   double get spacing => _spacing;
   double _spacing;
+
   set spacing(double value) {
     assert(value != null);
     if (_spacing == value) return;
@@ -168,6 +176,7 @@ class CustomRenderWrap extends RenderBox
 
   WrapAlignment get runAlignment => _runAlignment;
   WrapAlignment _runAlignment;
+
   set runAlignment(WrapAlignment value) {
     assert(value != null);
     if (_runAlignment == value) return;
@@ -177,6 +186,7 @@ class CustomRenderWrap extends RenderBox
 
   double get runSpacing => _runSpacing;
   double _runSpacing;
+
   set runSpacing(double value) {
     assert(value != null);
     if (_runSpacing == value) return;
@@ -186,6 +196,7 @@ class CustomRenderWrap extends RenderBox
 
   WrapCrossAlignment get crossAxisAlignment => _crossAxisAlignment;
   WrapCrossAlignment _crossAxisAlignment;
+
   set crossAxisAlignment(WrapCrossAlignment value) {
     assert(value != null);
     if (_crossAxisAlignment == value) return;
@@ -195,6 +206,7 @@ class CustomRenderWrap extends RenderBox
 
   TextDirection get textDirection => _textDirection;
   TextDirection _textDirection;
+
   set textDirection(TextDirection value) {
     if (_textDirection != value) {
       _textDirection = value;
@@ -204,6 +216,7 @@ class CustomRenderWrap extends RenderBox
 
   VerticalDirection get verticalDirection => _verticalDirection;
   VerticalDirection _verticalDirection;
+
   set verticalDirection(VerticalDirection value) {
     if (_verticalDirection != value) {
       _verticalDirection = value;

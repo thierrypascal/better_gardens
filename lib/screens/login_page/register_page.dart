@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 
 /// On this page you can choose which provider you want to use to register
 class RegisterPage extends StatelessWidget {
+  /// On this page you can choose which provider you want to use to register
+  RegisterPage({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     // TODO use screen_with_logo_and_waves.dart
@@ -43,7 +46,7 @@ class RegisterPage extends StatelessWidget {
                           ),
                           const SizedBox(height: 20),
                           const Text(
-                            "Registrieren mit",
+                            'Registrieren mit',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 20),
                           ),
@@ -54,7 +57,7 @@ class RegisterPage extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => RegisterEmailPage())),
-                            child: const Text("E-Mail"),
+                            child: const Text('E-Mail'),
                           ),
                           RaisedButton(
                             elevation: 5,
@@ -63,7 +66,7 @@ class RegisterPage extends StatelessWidget {
                                 MaterialPageRoute(
                                     builder: (context) =>
                                         RegisterGooglePage())),
-                            child: const Text("Google"),
+                            child: const Text('Google'),
                           ),
                           RaisedButton(
                             elevation: 5,
@@ -72,14 +75,14 @@ class RegisterPage extends StatelessWidget {
                                 MaterialPageRoute(
                                     builder: (context) =>
                                         RegisterFacebookPage())),
-                            child: const Text("Facebook"),
+                            child: const Text('Facebook'),
                           ),
                           RaisedButton(
                             elevation: 5,
                             onPressed: () {
                               //TODO add Twitter login
                             },
-                            child: const Text("Twitter"),
+                            child: const Text('Twitter'),
                           ),
                         ],
                       ),

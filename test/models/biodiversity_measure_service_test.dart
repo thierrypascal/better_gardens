@@ -3,15 +3,15 @@ import 'package:cloud_firestore_mocks/cloud_firestore_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test("test fetch all data", () async {
+  test('test fetch all data', () async {
     final firestore = MockFirestoreInstance();
-    await firestore.doc("biodiversityMeasures/testObject").set({
-      "name": "testObject",
-      "type": "test",
+    await firestore.doc('biodiversityMeasures/testObject').set({
+      'name': 'testObject',
+      'type': 'test',
     });
     final service = BiodiversityService(firestore);
-    expect(await service.getBiodiversityObjectList("None"), isA<List>());
-    expect(await service.getTypeOfObject("testObject"), equals("test"));
-    expect(await service.getTypeOfObject("anotherThing"), equals("unknown"));
+    expect(await service.getBiodiversityObjectList('None'), isA<List>());
+    expect(await service.getTypeOfObject('testObject'), equals('test'));
+    expect(await service.getTypeOfObject('anotherThing'), equals('unknown'));
   });
 }

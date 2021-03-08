@@ -6,7 +6,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
+/// Displays the page where the user can see his own garden
 class MyGarden extends StatefulWidget {
+  /// Displays the page where the user can see his own garden
+  MyGarden({Key key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return _MyGardenState();
@@ -18,7 +22,7 @@ class _MyGardenState extends State<MyGarden> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: AppBar(title: const Text("Mein Garten")),
+      appBar: AppBar(title: const Text('Mein Garten')),
       drawer: MyDrawer(),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('gardens').snapshots(),
@@ -36,8 +40,7 @@ class _MyGardenState extends State<MyGarden> {
 
 Widget _buildBody(BuildContext context, List<DocumentSnapshot> snapshot) {
   final garden = Garden.fromSnapshot(snapshot.first);
-  final TextEditingController _textController =
-      TextEditingController(text: garden.name);
+  final _textController = TextEditingController(text: garden.name);
 
   void _onSaveGarden() {
     if (garden.name != _textController.text.trim()) {
@@ -66,9 +69,8 @@ Widget _buildBody(BuildContext context, List<DocumentSnapshot> snapshot) {
                 textAlign: TextAlign.center,
                 softWrap: true,
                 textScaleFactor: 2,
-                style: const TextStyle(
-                    color: Color.fromRGBO(255, 255, 255,
-                        0.8)), //TODO Color might depend on the kind of picture, thus maybe not the best idea
+                style:
+                    const TextStyle(color: Color.fromRGBO(255, 255, 255, 0.8)),
               ),
             ),
           ],
@@ -79,17 +81,17 @@ Widget _buildBody(BuildContext context, List<DocumentSnapshot> snapshot) {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                "Dein Garten enthält bereits:\n",
+                'Dein Garten enthält bereits:\n',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              _ElementCounterCard("Anzahl Strukturelemente:",
+              _ElementCounterCard('Anzahl Strukturelemente:',
                   garden.numberOfStructureElements, const Icon(MdiIcons.wall)),
-              _ElementCounterCard("Anzahl Pflanzen:", garden.numberOfPlants,
+              _ElementCounterCard('Anzahl Pflanzen:', garden.numberOfPlants,
                   const Icon(MdiIcons.nature)),
-              _ElementCounterCard("Anzahl Methoden:", garden.numberOfMethods,
+              _ElementCounterCard('Anzahl Methoden:', garden.numberOfMethods,
                   const Icon(MdiIcons.meteor)),
               const Text(
-                "Mein Garten durchsuchen...",
+                'Mein Garten durchsuchen...',
                 style: TextStyle(backgroundColor: Colors.grey, fontSize: 14),
               ),
             ],
@@ -121,10 +123,9 @@ Widget _buildBody(BuildContext context, List<DocumentSnapshot> snapshot) {
               ListView.separated(
                 shrinkWrap: true,
                 itemCount: garden.ownedObjects.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final String name =
-                      garden.ownedObjects.entries.elementAt(index).key;
-                  final int count =
+                itemBuilder: (context, index) {
+                  final name = garden.ownedObjects.entries.elementAt(index).key;
+                  final count =
                       garden.ownedObjects.entries.elementAt(index).value;
 
                   return _ElementCard(
@@ -132,10 +133,10 @@ Widget _buildBody(BuildContext context, List<DocumentSnapshot> snapshot) {
                       count,
                       garden,
                       //TODO implement a more save to load the images
-                      AssetImage("res/$name.jpg"),
-                      "Beschreibung von $name");
+                      AssetImage('res/$name.jpg'),
+                      'Beschreibung von $name');
                 },
-                separatorBuilder: (BuildContext context, int index) {
+                separatorBuilder: (context, index) {
                   return const SizedBox(height: 3);
                 },
               ),
@@ -218,7 +219,7 @@ class _ElementCard extends StatelessWidget {
                       Text(name,
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 16)),
-                      Text("Anzahl: $count"),
+                      Text('Anzahl: $count'),
                     ],
                   ),
                   Row(

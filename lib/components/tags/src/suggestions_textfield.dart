@@ -5,6 +5,11 @@ import 'package:flutter/material.dart';
 // I will soon implement a list with suggestions
 // Credit Dn-a -> https://github.com/Dn-a
 
+// ignore_for_file: public_member_api_docs, omit_local_variable_types,
+// ignore_for_file: curly_braces_in_flow_control_structures, lines_longer_than_80_chars,
+// ignore_for_file: avoid_returning_null, prefer_single_quotes, prefer_collection_literals,
+// ignore_for_file: unnecessary_lambdas, avoid_types_on_closure_parameters
+
 /// Used by [SuggestionsTextField.onChanged].
 typedef OnChangedCallback = void Function(String string);
 

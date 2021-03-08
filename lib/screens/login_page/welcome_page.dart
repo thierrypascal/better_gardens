@@ -8,19 +8,22 @@ import 'package:provider/provider.dart';
 /// A page to redirect the user after the login.
 /// It shows some basic infos
 class WelcomePage extends StatelessWidget {
+  /// A page to redirect the user after the login.
+  WelcomePage({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return LogoAndWavesScreen(
-      title: "Willkommen",
+      title: 'Willkommen',
       children: [
         Text(
-          "Hallo ${Provider.of<User>(context).nickname}",
+          'Hallo ${Provider.of<User>(context).nickname}',
           style: const TextStyle(fontSize: 30),
           textAlign: TextAlign.center,
         ),
         if (!Provider.of<User>(context).hasConfirmedEmail)
-          const Text("Bitte bestätige deine Email Adresse "
-              "mit dem Link den du per Email bekommen hast."),
+          const Text('Bitte bestätige deine Email Adresse '
+              'mit dem Link den du per Email bekommen hast.'),
       ],
     );
   }

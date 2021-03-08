@@ -5,9 +5,12 @@ import 'package:biodiversity/screens/information_list_page/biodiversity_measures
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// Shows the details of a BiodiversityMeasure
 class DetailViewPageMeasure extends StatefulWidget {
+  /// The BiodiversityMeasure element which will be displayed
   final BiodiversityMeasure element;
 
+  /// Shows the details of a BiodiversityMeasure
   const DetailViewPageMeasure(this.element, {Key key}) : super(key: key);
 
   @override
@@ -18,7 +21,7 @@ class _DetailViewPageMeasureState extends State<DetailViewPageMeasure> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Details: ${widget.element.name}")),
+      appBar: AppBar(title: Text('Details: ${widget.element.name}')),
       drawer: MyDrawer(),
       body: SingleChildScrollView(
         child: Column(
@@ -44,9 +47,9 @@ class _DetailViewPageMeasureState extends State<DetailViewPageMeasure> {
                       ),
                       Row(children: [
                         Consumer<User>(
-                          builder: (BuildContext context, user, Widget child) {
+                          builder: (context, user, child) {
                             if (user == null) {
-                              return const Text("");
+                              return const Text('');
                             }
                             return IconButton(
                               icon: user.doesLikeElement(widget.element.name)
@@ -69,10 +72,10 @@ class _DetailViewPageMeasureState extends State<DetailViewPageMeasure> {
                               Navigator.canPop(context)
                                   ? Navigator.pop(context)
                                   : Navigator.push(
-                                      context,
+                                context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              InformationListPage()),
+                                              HabitatelementListPage()),
                                     );
                             }),
                       ])
@@ -86,7 +89,7 @@ class _DetailViewPageMeasureState extends State<DetailViewPageMeasure> {
                     height: 20,
                   ),
                   const Text(
-                    "Bauanleitung",
+                    'Bauanleitung',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   ),
                   Text(widget.element.goodTogetherWith.length.toString()),
@@ -94,7 +97,7 @@ class _DetailViewPageMeasureState extends State<DetailViewPageMeasure> {
                     height: 20,
                   ),
                   const Text(
-                    "Gut für die folgenden Tiere:",
+                    'Gut für die folgenden Tiere:',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   ),
                   Text(widget.element.beneficialFor),

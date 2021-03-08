@@ -4,7 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
+/// Small Map widget which displays the selection
+/// stored in [MapInteractionContainer]
 class SubMap extends StatefulWidget {
+  /// Small Map widget which displays the selection
+  /// stored in [MapInteractionContainer]
+  SubMap({Key key}) : super(key: key);
+
   @override
   _SubMapState createState() => _SubMapState();
 }
@@ -32,10 +38,9 @@ class _SubMapState extends State<SubMap> {
                   child: FutureBuilder(
                     future: Provider.of<MapInteractionContainer>(context)
                         .getAddressOfSelectedLocation(),
-                    builder:
-                        (BuildContext context, AsyncSnapshot<String> snapshot) {
+                    builder: (context, snapshot) {
                       if (!snapshot.hasData) {
-                        return const Text("");
+                        return const Text('');
                       }
                       return Text(
                         snapshot.data,
@@ -65,7 +70,7 @@ class _SubMapState extends State<SubMap> {
                       Marker(
                         position: Provider.of<MapInteractionContainer>(context)
                             .selectedLocation,
-                        markerId: MarkerId("subMapMarker"),
+                        markerId: MarkerId('subMapMarker'),
                       )
                     }
                   : <Marker>{},

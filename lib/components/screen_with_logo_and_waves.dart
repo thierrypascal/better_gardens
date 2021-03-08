@@ -20,9 +20,11 @@ class LogoAndWavesScreen extends StatelessWidget {
   /// the provided children will be displayed beneath the logo
   LogoAndWavesScreen(
       {this.children,
-      this.title = "",
+      this.title = '',
       this.logoSize = 180,
-      this.borderInsets = 30}) {
+      this.borderInsets = 30,
+      Key key})
+      : super(key: key) {
     if (logoSize > 0) {
       children.insert(
           0,

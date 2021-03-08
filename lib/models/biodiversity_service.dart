@@ -36,8 +36,7 @@ class BiodiversityService extends ChangeNotifier {
 
   /// returns the complete list of [BiodiversityMeasure]
   List<BiodiversityMeasure> getFullBiodiversityObjectList() {
-    return _measures
-        .toList();
+    return _measures.toList();
   }
 
   /// returns the type of a [BiodiversityMeasure] identified by the given name
@@ -50,12 +49,13 @@ class BiodiversityService extends ChangeNotifier {
     if (element != null) {
       return element.type;
     } else {
-      return "unknown";
+      return 'unknown';
     }
   }
 
   /// returns the [BiodiversityMeasure] identified by the provided reference
-  BiodiversityMeasure getBiodiversityMeasureByReference(DocumentReference reference) {
+  BiodiversityMeasure getBiodiversityMeasureByReference(
+      DocumentReference reference) {
     return _measures.where((element) => element.reference == reference).first;
   }
 
