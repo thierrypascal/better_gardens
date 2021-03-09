@@ -11,20 +11,23 @@ final ButtonStyle _buttonStyle = ButtonStyle(
     backgroundColor: MaterialStateProperty.all(Colors.white),
     foregroundColor: MaterialStateProperty.all(Colors.black),
     textStyle: MaterialStateProperty.all(
-        TextStyle(fontWeight: FontWeight.w500, fontSize: 22)));
+        const TextStyle(fontWeight: FontWeight.w500, fontSize: 22)));
 
 /// The screen where you can select which method you want to use to sign in
 class LoginPage extends StatelessWidget {
+  /// The screen where you can select which method you want to use to sign in
+  LoginPage({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return LogoAndWavesScreen(
-      title: "Login",
+      title: 'Login',
       children: [
         const SizedBox(
           height: 20,
         ),
         const Text(
-          "Login mit",
+          'Login mit',
           textScaleFactor: 1.5,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
@@ -38,26 +41,26 @@ class LoginPage extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(flex: 1, child: Icon(FontAwesomeIcons.envelope)),
+              const Expanded(flex: 1, child: Icon(FontAwesomeIcons.envelope)),
               Expanded(
                   flex: 9,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("E-mail"),
+                      const Text('E-mail'),
                     ],
                   )),
             ],
           ),
         ),
         SignInButton(
-          name: "Google",
+          name: 'Google',
           icon: FontAwesomeIcons.google,
           signInFunction:
               Provider.of<User>(context, listen: false).signInWithGoogle,
         ),
         SignInButton(
-          name: "Facebook",
+          name: 'Facebook',
           icon: FontAwesomeIcons.facebook,
           signInFunction:
               Provider.of<User>(context, listen: false).signInWithFacebook,
@@ -89,7 +92,9 @@ class SignInButton extends StatelessWidget {
   SignInButton(
       {@required this.signInFunction,
       @required this.name,
-      @required this.icon});
+      @required this.icon,
+      Key key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -117,15 +122,15 @@ class SignInButton extends StatelessWidget {
       {@required Function() signInFunction}) async {
     final result = await signInFunction();
     if (result == null) {
-      Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text("Anmeldung erfolgreich"),
+      Scaffold.of(context).showSnackBar(const SnackBar(
+        content: Text('Anmeldung erfolgreich'),
       ));
       return;
     }
     if (!result.isRegistered) {
-      Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text("Du bist noch nicht registriert mit deinem account.\n"
-              "Bitte registriere dich zuerst, bevor du dich anmeldest.")));
+      Scaffold.of(context).showSnackBar(const SnackBar(
+          content: Text('Du bist noch nicht registriert mit deinem account.\n'
+              'Bitte registriere dich zuerst, bevor du dich anmeldest.')));
     } else {
       Scaffold.of(context).showSnackBar(SnackBar(
         content: Text(result.message),

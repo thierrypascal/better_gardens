@@ -3,60 +3,50 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Container class for a species
 class Species {
+  /// class of the specie e.g. Säugetier
+  final String speciesClass;
+
   /// name of the specie e.g. Hedgehog
   final String name;
 
   /// short description of the species
-  final String short;
+  final String shortDescription;
 
   /// detailed description of the species
   final String description;
 
-  /// tips on how to support the species
-  final String tips;
-
-  /// links to further information
-  final String links;
+  /// other species which
+  final List<String> _connectedTo;
 
   /// type of the species e.g. Säugetiere
   final String type;
-  final Map<String, bool> _supportedBy;
-
-  /// reference to a image of the species
-  final String imageSource;
+  final List<String> _supportedBy;
 
   /// reference to the store location in the database
   final DocumentReference reference;
 
-  /// create a new empty species. Should not be used in production,
-  /// since all Species are loaded from the database
-  //TODO remove this maybe ?
-  Species(this.name,
-      this.short,
-      this.description,
-      this.tips,
-      this.links,
-      this.type,
-      this._supportedBy,
-      this.reference,
-      this.imageSource,);
+  /// reference to an imageSource of the species
+  final String imageSource;
 
   /// creates a Species object from a Map
   Species.fromMap(Map<String, dynamic> map, {this.reference})
-      : name = map.containsKey('name') ? map['name'] as String : "",
-        short = map.containsKey('short') ? map['short'] as String : "",
+      : speciesClass = map.containsKey('class') ? map['class'] as String : '',
+        name = map.containsKey('name') ? map['name'] as String : '',
+        shortDescription = map.containsKey('shortDescription')
+            ? map['shortDescription'] as String
+            : '',
+        imageSource = map.containsKey('imageSource')
+            ? map['imageSource'] as String
+            : 'res/logo.png',
         description =
-            map.containsKey('description') ? map['description'] as String : "",
-        tips = map.containsKey('tips') ? map['tips'] as String : "",
-        links = map.containsKey('links') ? map['links'] as String : "",
-        type = map.containsKey('type') ? map['type'] as String : "",
+            map.containsKey('description') ? map['description'] as String : '',
+        type = map.containsKey('type') ? map['type'] as String : '',
+        _connectedTo = map.containsKey('connectedTo')
+            ? map['connectedTo'].cast<String>()
+            : [],
         _supportedBy = map.containsKey('supportedBy')
-            ? Map<String, bool>.from(map['supportedBy'] as Map)
-            : Map<String, bool>.identity(),
-        imageSource =
-            map.containsKey('image') ? map['image'] as String : 'res/logo.png' {
-    _supportedBy.removeWhere((key, value) => !value);
-  }
+            ? map['supportedBy'].cast<String>()
+            : [];
 
   /// creates a Species object from a database snapshot
   Species.fromSnapshot(DocumentSnapshot snapshot)
@@ -64,16 +54,22 @@ class Species {
 
   /// returns a formatted string with the [BiodiversityMeasure]
   /// supporting the species
-  String supportedBy() {
-    final string = StringBuffer("(");
-    for (final s in _supportedBy.keys) {
-      string.write("$s, ");
+  String supportedBy() => _getCommaSeparatedString(_supportedBy);
+
+  /// returns a formatted string with other [Species]
+  /// which go well together with this
+  String connectedTo() => _getCommaSeparatedString(_connectedTo);
+
+  String _getCommaSeparatedString(Iterable<String> elements) {
+    final string = StringBuffer();
+    for (final s in elements) {
+      string.write('$s, ');
     }
     final s = string.toString();
     if (s.length > 1) {
-      return "${s.substring(0, s.length - 2)})";
+      return s.substring(0, s.length - 2);
     } else {
-      return "nichts";
+      return 'nichts';
     }
   }
 }

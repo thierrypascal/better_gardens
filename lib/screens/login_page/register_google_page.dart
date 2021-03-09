@@ -7,6 +7,10 @@ import 'package:provider/provider.dart';
 /// Page that handles the registration with google.
 /// The page itself doesn't contain any content
 class RegisterGooglePage extends StatefulWidget {
+  /// Page that handles the registration with google.
+  /// The page itself doesn't contain any content
+  RegisterGooglePage({Key key}) : super(key: key);
+
   @override
   _RegisterGooglePageState createState() => _RegisterGooglePageState();
 }
@@ -25,16 +29,16 @@ class _RegisterGooglePageState extends State<RegisterGooglePage> {
     return LogoAndWavesScreen(
       title: 'Registrieren mit Google',
       children: [
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         if (_errorText != null)
           Text(
             _errorText,
             textScaleFactor: 1.2,
-            style: TextStyle(color: Colors.red),
+            style: const TextStyle(color: Colors.red),
           ),
-        if (_errorText != null) SizedBox(height: 10),
+        if (_errorText != null) const SizedBox(height: 10),
         ElevatedButton(
-          child: Text("Registrieren"),
+          child: const Text('Registrieren'),
           onPressed: () => _handleRegistration(context),
         ),
       ],

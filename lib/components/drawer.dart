@@ -10,6 +10,10 @@ import 'package:provider/provider.dart';
 
 /// The Drawer which is located at the right side of the screen
 class MyDrawer extends StatelessWidget {
+  /// The Drawer which is located at the right side of the screen,
+  /// default constructor
+  MyDrawer({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -74,7 +78,7 @@ class MyDrawer extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => InformationListPage()),
+                              builder: (context) => HabitatelementListPage()),
                         );
                       },
                     ),
@@ -139,17 +143,17 @@ class MyDrawer extends StatelessWidget {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: const Text("ausloggen ?"),
+          title: const Text('ausloggen ?'),
               content: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context, true),
-                    child: const Text("Ausloggen"),
+                    child: const Text('Ausloggen'),
                   ),
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text("Abbrechen"),
+                    child: const Text('Abbrechen'),
                   ),
                 ],
               ),

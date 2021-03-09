@@ -12,7 +12,7 @@ class ExpandableSpeciesElementCard extends StatefulWidget {
   final Species species;
 
   /// display a expandable card with the provided species
-  ExpandableSpeciesElementCard(this.species);
+  ExpandableSpeciesElementCard(this.species, {Key key}) : super(key: key);
 
   @override
   _ExpandableSpeciesElementCardState createState() =>
@@ -69,7 +69,7 @@ class _ExpandableSpeciesElementCardState
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 16)),
                         Text(
-                          "Mag: ${widget.species.supportedBy()}",
+                          'Mag: ${widget.species.supportedBy()}',
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],
@@ -104,13 +104,13 @@ class _ExpandableSpeciesElementCardState
                         }
                       },
                       child: const Text(
-                        "Weitere infos",
+                        'Weitere infos',
                         style: TextStyle(decoration: TextDecoration.underline),
                       ),
                     ),
                   Consumer<User>(builder: (context, user, child) {
                     if (user == null) {
-                      return const Text("");
+                      return const Text('');
                     }
                     return IconButton(
                       icon: Icon(
@@ -133,7 +133,7 @@ class _ExpandableSpeciesElementCardState
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 5, 5, 50),
                 child: Text(
-                  widget.species.short,
+                  widget.species.shortDescription,
                   textAlign: TextAlign.left,
                 ),
               ),
