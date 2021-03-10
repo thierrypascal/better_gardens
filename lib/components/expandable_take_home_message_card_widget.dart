@@ -1,6 +1,7 @@
-import 'package:biodiversity/models/biodiversity_measure.dart';
+import 'package:biodiversity/models/take_home_message.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/detailview_page/detailview_page_measure.dart';
+import 'package:biodiversity/screens/detailview_page/detailview_page_take_home_message.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +10,7 @@ import 'package:provider/provider.dart';
 /// And shows more information about the message
 class ExpandableTakeHomeMessageCard extends StatefulWidget {
   /// which message the cards shows
-  final BiodiversityMeasure element;
+  final TakeHomeMessage element;
 
   /// show a card to the provided element
   ExpandableTakeHomeMessageCard(this.element, {Key key}) : super(key: key);
@@ -65,12 +66,15 @@ class _ExpandableTakeHomeMessageCardState
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(widget.element.name,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16)),
-                        Text(
-                          'Gut für: ${widget.element.beneficialFor}',
-                          overflow: TextOverflow.ellipsis,
+                        //I changed the fontSize from 16 to 20
+                        //Code to put the Merken and the Hinzufügen
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(widget.element.title,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 20)),
+                          ],
                         ),
                       ],
                     ),
@@ -86,46 +90,9 @@ class _ExpandableTakeHomeMessageCardState
               secondChild: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(widget.element.name,
+                  Text(widget.element.title,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 16)),
-                  if (widget.element != null)
-                    FlatButton(
-                      onPressed: () {
-                        if (_expanded) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    DetailViewPageMeasure(widget.element)),
-                          ).then((value) {
-                            setState(() {});
-                          });
-                        }
-                      },
-                      child: const Text(
-                        'Weitere infos',
-                        style: TextStyle(decoration: TextDecoration.underline),
-                      ),
-                    ),
-                  Consumer<User>(builder: (context, user, child) {
-                    if (user == null) {
-                      return const Text('');
-                    }
-                    return IconButton(
-                      icon: Icon(
-                        Icons.favorite,
-                        color: user.doesLikeElement(widget.element.name)
-                            ? Colors.red
-                            : Colors.black38,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          user.likeUnlikeElement(widget.element.name);
-                        });
-                      },
-                    );
-                  }),
                 ],
               ),
             ),
@@ -137,6 +104,35 @@ class _ExpandableTakeHomeMessageCardState
                   textAlign: TextAlign.left,
                 ),
               ),
+              if (widget.element != null)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10.0),
+                      child: FlatButton(
+                        onPressed: () {
+                          if (_expanded) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      DetailViewPageTakeHomeMessage(widget.element)),
+                            ).then((value) {
+                              setState(() {});
+                            });
+                          }
+                        },
+                        child: const Text(
+                          "Weitere infos",
+                          style: TextStyle(
+                              decoration: TextDecoration.underline
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
             ],
           ),
         ],

@@ -1,8 +1,23 @@
 import 'package:biodiversity/components/drawer.dart';
+import 'package:biodiversity/components/expandable_take_home_message_card_widget.dart';
+import 'package:biodiversity/models/take_home_message.dart';
 import 'package:flutter/material.dart';
 
-class TakeHomeMessagePage extends StatelessWidget {
-  TakeHomeMessagePage({Key key}) : super(key: key);
+class TakeHomeMessagePage extends StatefulWidget {
+  TakeHomeMessagePage({Key key})
+      : super(key: key);
+
+  @override
+  _TakeHomeMessagePageState createState() => _TakeHomeMessagePageState();
+}
+
+class _TakeHomeMessagePageState extends State<TakeHomeMessagePage> {
+  List<TakeHomeMessage> items = List<TakeHomeMessage>();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +41,7 @@ class TakeHomeMessagePage extends StatelessWidget {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: filteredItems.isEmpty
+        child: items.isEmpty
             ? Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -44,10 +59,10 @@ class TakeHomeMessagePage extends StatelessWidget {
           ),
         )
             : ListView.separated(
-          itemCount: filteredItems.length,
+          itemCount: items.length,
           itemBuilder: (context, index) {
-            final element = filteredItems.elementAt(index);
-            return ExpandableMeasureElementCard(element);
+            final element = items.elementAt(index);
+            return ExpandableTakeHomeMessageCard(element);
           },
           separatorBuilder: (context, index) {
             return const SizedBox(height: 5);
