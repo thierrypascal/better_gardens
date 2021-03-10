@@ -11,25 +11,29 @@ class TakeHomeMessage {
   /// a description of the element
   String description;
 
+  /// a reference to the image
+  final String imageSource;
+
   /// the reference to the location in the database
   final DocumentReference reference;
 
   final _storage = FirebaseStorage.instance;
-  final _descriptionPath = "takeHomeMessage/body/";
+  final _descriptionPath = "takeHomeMessages/body/";
 
   /// creates a [TakeHomeMessage] from the provided map
   /// used to load elements from the database and for testing
   TakeHomeMessage.fromMap(Map<String, dynamic> map, {this.reference})
-      : title = map.containsKey('title') ? map['title'] as String : "" {
+      : title = map.containsKey('title') ? map['title'] as String : "",
+        imageSource =
+            map.containsKey('image') ? map['image'] as String : 'res/logo.png' {
     _loadDescription();
   }
 
   Future<void> _loadDescription() async {
     final folder = await _storage.ref(_descriptionPath).listAll();
     if (folder.items.contains("$title.md")) {
-      final data = await _storage
-          .ref("takeHomeMessage/body/$title.md")
-          .getData();
+      final data =
+          await _storage.ref("takeHomeMessages/body/$title.md").getData();
       description = Utf8Decoder().convert(data);
     }
   }
@@ -37,5 +41,4 @@ class TakeHomeMessage {
   /// load a [TakeHomeMessage] form a database snapshot
   TakeHomeMessage.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data(), reference: snapshot.reference);
-
 }

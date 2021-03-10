@@ -1,6 +1,7 @@
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/expandable_take_home_message_card_widget.dart';
 import 'package:biodiversity/models/take_home_message.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class TakeHomeMessagePage extends StatefulWidget {
@@ -12,11 +13,20 @@ class TakeHomeMessagePage extends StatefulWidget {
 }
 
 class _TakeHomeMessagePageState extends State<TakeHomeMessagePage> {
-  List<TakeHomeMessage> items = List<TakeHomeMessage>();
+  List items = [];
+  CollectionReference _collectionRef =
+  FirebaseFirestore.instance.collection('takeHomeMessage');
 
   @override
   void initState() {
     super.initState();
+    loadTakeHomeMessages();
+  }
+
+  Future<void> loadTakeHomeMessages() async {
+    QuerySnapshot querySnapshot = await _collectionRef.get();
+
+    items = querySnapshot.docs.map((doc) => doc.data()).toList();
   }
 
   @override
