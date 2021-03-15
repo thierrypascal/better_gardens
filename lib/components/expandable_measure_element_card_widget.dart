@@ -3,6 +3,7 @@ import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/detailview_page/detailview_page_measure.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
 
 /// A Card which shows a habitat element. If you tap on the card it extends.
@@ -157,10 +158,7 @@ class _ExpandableMeasureElementCardState
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 5, 5, 50),
-                child: Text(
-                  widget.element.description,
-                  textAlign: TextAlign.left,
-                ),
+                child: MarkdownBody(data: widget.element.description),
               ),
               if (widget.element != null)
                Row(
