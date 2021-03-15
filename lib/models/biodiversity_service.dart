@@ -59,6 +59,11 @@ class BiodiversityService extends ChangeNotifier {
     return _measures.where((element) => element.reference == reference).first;
   }
 
+  /// returns the [BiodiversityMeasure] identified by the name
+  BiodiversityMeasure getBiodiversityMeasureByName(String name) {
+    return _measures.where((element) => element.name == name).first;
+  }
+
   /// returns a list of all distinct classes all species are in
   List<String> getAllClasses() {
     if (_classes.isNotEmpty) {

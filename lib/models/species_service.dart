@@ -58,6 +58,11 @@ class SpeciesService extends ChangeNotifier {
     return _species.where((element) => element.reference == reference).first;
   }
 
+  /// returns a single Species referenced by the provided reference
+  Species getSpeciesByName(String name) {
+    return _species.where((element) => element.name == name).first;
+  }
+
   /// returns a list of all distinct classes all species are in
   List<String> getAllClasses() {
     if (_classes.isNotEmpty) {

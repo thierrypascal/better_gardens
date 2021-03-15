@@ -1,6 +1,9 @@
 import 'package:biodiversity/components/drawer.dart';
+import 'package:biodiversity/components/tags/flutter_tags.dart';
 import 'package:biodiversity/models/biodiversity_measure.dart';
+import 'package:biodiversity/models/species_service.dart';
 import 'package:biodiversity/models/user.dart';
+import 'package:biodiversity/screens/detailview_page/detailview_page_species.dart';
 import 'package:biodiversity/screens/information_list_page/habitat_elements_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -106,11 +109,33 @@ class _DetailViewPageMeasureState extends State<DetailViewPageMeasure> {
                       height: 20,
                     ),
                     const Text(
-                      "Gut für die folgenden Tiere:",
+                      'Gut für die folgenden Tiere:',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                     ),
-                    //Text(widget.element.beneficialFor),
+                    Tags(
+                        itemCount: widget.element.beneficialFor.length,
+                        spacing: 4,
+                        runSpacing: -2,
+                        itemBuilder: (index) {
+                          return ElevatedButton(
+                              child: Text(widget.element.beneficialFor[index]),
+                              style: const ButtonStyle(
+                                visualDensity: VisualDensity.compact,
+                              ),
+                              onPressed: () {
+                                final element = Provider.of<SpeciesService>(
+                                        context,
+                                        listen: false)
+                                    .getSpeciesByName(
+                                        widget.element.beneficialFor[index]);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            DetailViewPageSpecies(element)));
+                              });
+                        }),
                   ],
                 ),
               ),
