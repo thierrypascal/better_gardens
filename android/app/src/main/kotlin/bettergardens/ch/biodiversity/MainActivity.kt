@@ -1,4 +1,4 @@
-package local.ch.biodiversity
+package bettergardens.ch.biodiversity
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -3,18 +3,25 @@ import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/detailview_page/detailview_page_measure.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
 
+/// A Card which shows a habitat element. If you tap on the card it extends.
+/// And shows more information about the element
 class ExpandableMeasureElementCard extends StatefulWidget {
+  /// which element the cards shows
   final BiodiversityMeasure element;
 
-  const ExpandableMeasureElementCard(this.element);
+  /// show a card to the provided element
+  ExpandableMeasureElementCard(this.element, {Key key}) : super(key: key);
 
   @override
-  _ExpandableMeasureElementCardState createState() => _ExpandableMeasureElementCardState();
+  _ExpandableMeasureElementCardState createState() =>
+      _ExpandableMeasureElementCardState();
 }
 
-class _ExpandableMeasureElementCardState extends State<ExpandableMeasureElementCard> {
+class _ExpandableMeasureElementCardState
+    extends State<ExpandableMeasureElementCard> {
   bool _expanded = false;
 
   @override
@@ -54,21 +61,61 @@ class _ExpandableMeasureElementCardState extends State<ExpandableMeasureElementC
               firstChild: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Flexible(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(widget.element.name,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16)),
-                        Text(
-                          "Gut für: ${widget.element.beneficialFor()}",
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+                  Expanded(
+                    child: Text(
+                      widget.element.name,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16),
+                      softWrap: true,
                     ),
                   ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      FlatButton(
+                        onPressed: () {},
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        padding: const EdgeInsets.all(2),
+                        child: Row(
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(right: 8.0),
+                              child: Icon(
+                                Icons.add,
+                                size: 20,
+                              ),
+                            ),
+                            const Text('hinzufügen'),
+                          ],
+                        ),
+                      ),
+                      FlatButton(
+                        onPressed: () =>
+                            Provider.of<User>(context, listen: false)
+                                .likeUnlikeElement(widget.element.name),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        padding: const EdgeInsets.all(2),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Icon(
+                                Icons.favorite,
+                                color: Provider.of<User>(context)
+                                        .doesLikeElement(widget.element.name)
+                                    ? Colors.red
+                                    : Colors.black,
+                                size: 20,
+                              ),
+                            ),
+                            const Text('merken'),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(width: 4),
                   Image(
                     width: 60,
                     height: 60,
@@ -83,41 +130,32 @@ class _ExpandableMeasureElementCardState extends State<ExpandableMeasureElementC
                   Text(widget.element.name,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 16)),
-                  if (widget.element != null)
-                    FlatButton(
-                      onPressed: () {
-                        if (_expanded) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    DetailViewPageMeasure(widget.element)),
-                          ).then((value) {
-                            setState(() {});
-                          });
-                        }
-                      },
-                      child: const Text(
-                        "Weitere infos",
-                        style: TextStyle(decoration: TextDecoration.underline),
-                      ),
-                    ),
                   Consumer<User>(builder: (context, user, child) {
                     if (user == null) {
-                      return const Text("");
+                      return const Text('');
                     }
-                    return IconButton(
-                      icon: Icon(
-                        Icons.favorite,
-                        color: user.doesLikeElement(widget.element.name)
-                            ? Colors.red
-                            : Colors.black38,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          user.likeUnlikeElement(widget.element.name);
-                        });
-                      },
+                    return Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(
+                            Icons.add,
+                          ),
+                          onPressed: () {},
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.favorite,
+                            color: user.doesLikeElement(widget.element.name)
+                                ? Colors.red
+                                : Colors.black38,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              user.likeUnlikeElement(widget.element.name);
+                            });
+                          },
+                        ),
+                      ],
                     );
                   }),
                 ],
@@ -126,11 +164,36 @@ class _ExpandableMeasureElementCardState extends State<ExpandableMeasureElementC
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 5, 5, 50),
-                child: Text(
-                  widget.element.description,
-                  textAlign: TextAlign.left,
-                ),
+                child: MarkdownBody(data: widget.element.description),
               ),
+              if (widget.element != null)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10.0),
+                      child: FlatButton(
+                        onPressed: () {
+                          if (_expanded) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      DetailViewPageMeasure(widget.element)),
+                            ).then((value) {
+                              setState(() {});
+                            });
+                          }
+                        },
+                        child: const Text(
+                          'Weitere infos',
+                          style:
+                              TextStyle(decoration: TextDecoration.underline),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
             ],
           ),
         ],

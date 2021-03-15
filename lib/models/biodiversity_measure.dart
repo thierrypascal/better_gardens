@@ -1,71 +1,84 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/services.dart';
+
+/// A container class of a Measure to improve biodiversity.
+/// Example: A pile of branches
 class BiodiversityMeasure {
+  /// name of the element e.g. meadow
   final String name;
-  final String description;
-  final String buildInstructions;
+
+  /// a description of the element
+  String description;
+
+  /// a short description of the element
+  final String shortDescription;
+
+  /// which type the element belongs to e.g. Structure
   final String type;
-  final Map<String, bool> _beneficialFor;
-  final Map<String, bool> _badFor;
+
+  /// A list with all Species this Biodiversitymeasure is good for
+  final List<String> beneficialFor;
+
+  /// All other measures which work well together with this measure
+  final List<String> goodTogetherWith;
+
+  /// a reference to the image
   final String imageSource;
+
+  /// the reference to the location in the database
   final DocumentReference reference;
 
-  BiodiversityMeasure(
-      this.name,
-      this.description,
-      this.buildInstructions,
-      this.type,
-      this._beneficialFor,
-      this.reference,
-      this.imageSource,
-      this._badFor);
+  final _storage = FirebaseStorage.instance;
+  final _descriptionPath = "biodiversityMeasures/descriptions/";
 
+  /// creates a [BiodiversityMeasure] from the provided map
+  /// used to load elements from the database and for testing
   BiodiversityMeasure.fromMap(Map<String, dynamic> map, {this.reference})
-      : name = map.containsKey('name') ? map['name'] as String : "",
-        description =
-            map.containsKey('description') ? map['description'] as String : "",
-        buildInstructions = map.containsKey('buildInstructions')
-            ? map['buildInstructions'] as String
-            : "",
-        type = map.containsKey('type') ? map['type'] as String : "",
-        _beneficialFor = map.containsKey('beneficialFor')
-            ? Map<String, bool>.from(map['beneficialFor'] as Map)
-            : Map<String, bool>.identity(),
-        _badFor = map.containsKey('beneficialFor')
-            ? Map<String, bool>.from(map['beneficialFor'] as Map)
-            : Map<String, bool>.identity(),
+      : name = map.containsKey('name') ? map['name'] as String : '',
+        shortDescription = map.containsKey('shortDescription')
+            ? map['shortDescription'] as String
+            : '',
+        type = map.containsKey('type') ? map['type'] as String : '',
+        beneficialFor = map.containsKey('beneficialFor')
+            ? map['beneficialFor'].cast<String>()
+            : [],
+        goodTogetherWith = map.containsKey('goodTogetherWith')
+            ? map['goodTogetherWith'].cast<String>()
+            : [],
         imageSource =
-        map.containsKey('image') ? map['image'] as String : 'res/logo.png' {
-    _beneficialFor.removeWhere((key, value) => !value);
-    _badFor.removeWhere((key, value) => value);
+            map.containsKey('image') ? map['image'] as String : 'res/logo.png' {
+    _loadDescription();
   }
 
+  Future<void> _loadDescription() async {
+    try {
+      final data = await _storage
+          .ref()
+          .child("biodiversityMeasures/descriptions/$name.md")
+          .getData(1024 * 1024);
+      description = Utf8Decoder().convert(data);
+    } on PlatformException {
+      description = "Fehler: keine Beschreibung gefunden.";
+    }
+  }
+
+  /// load a [BiodiversityMeasure] form a database snapshot
   BiodiversityMeasure.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data(), reference: snapshot.reference);
 
-  String beneficialFor() {
-    final StringBuffer string = StringBuffer("(");
-    for (final String s in _beneficialFor.keys) {
-      string.write("$s, ");
+  String _getCommaSeparatedString(Iterable<String> elements) {
+    final string = StringBuffer();
+    for (final s in elements) {
+      string.write('$s, ');
     }
-    final String s = string.toString();
+    final s = string.toString();
     if (s.length > 1) {
-      return "${s.substring(0, s.length - 2)})";
+      return s.substring(0, s.length - 2);
     } else {
-      return "nichts";
-    }
-  }
-
-  String badFor() {
-    final StringBuffer string = StringBuffer("(");
-    for (final String s in _badFor.keys) {
-      string.write("$s, ");
-    }
-    final String s = string.toString();
-    if (s.length > 1) {
-      return "${s.substring(0, s.length - 2)})";
-    } else {
-      return "nichts";
+      return 'nichts';
     }
   }
 }

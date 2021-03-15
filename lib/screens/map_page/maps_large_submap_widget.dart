@@ -4,7 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
+/// displays a map widget
 class LargeSubMap extends StatefulWidget {
+  /// displays a map widget
+  LargeSubMap({Key key}) : super(key: key);
+
   @override
   _LargeSubMapState createState() => _LargeSubMapState();
 }
@@ -36,9 +40,7 @@ class _LargeSubMapState extends State<LargeSubMap> {
         onTap: () {},
         draggable: true,
       ));
-      Provider
-          .of<MapInteractionContainer>(context)
-          .selectedLocation = tapPos;
+      Provider.of<MapInteractionContainer>(context).selectedLocation = tapPos;
     });
   }
 
@@ -53,7 +55,7 @@ class _LargeSubMapState extends State<LargeSubMap> {
             FutureBuilder<String>(
               future: Provider.of<MapInteractionContainer>(context)
                   .getAddressOfSelectedLocation(),
-              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+              builder: (context, snapshot) {
                 return Padding(
                   padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
                   child: Row(
@@ -77,19 +79,12 @@ class _LargeSubMapState extends State<LargeSubMap> {
               },
             ),
             SizedBox(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width,
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height / 3,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height / 3,
               child: GoogleMap(
                 onMapCreated: _onMapCreated,
                 initialCameraPosition: CameraPosition(
-                  target: Provider
-                      .of<MapInteractionContainer>(context)
+                  target: Provider.of<MapInteractionContainer>(context)
                       .selectedLocation,
                   zoom: 18.0,
                 ),

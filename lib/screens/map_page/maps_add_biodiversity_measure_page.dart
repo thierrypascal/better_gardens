@@ -10,7 +10,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// Page to add a BiodiversityMeasure to a location on the map
 class AddBiodiversityMeasure extends StatefulWidget {
+  /// Page to add a BiodiversityMeasure to a location on the map
   AddBiodiversityMeasure({
     Key key,
   }) : super(key: key);
@@ -24,7 +26,7 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Element hinzufügen'),
+        title: const Text('Lebensraum hinzufügen'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -51,7 +53,7 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => SelectionList())),
-                          child: const Text("Element auswählen"),
+                          child: const Text('Element auswählen'),
                         );
                       } else {
                         return SimpleMeasureElementCard(
@@ -94,15 +96,15 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
           title: const Text('Achtung'),
           content: SingleChildScrollView(
             child: ListBody(
               children: const <Widget>[
                 Text('Der Standort oder das Element wurde noch nicht erfasst.'),
-                Text(
-                    'Beides muss erfasst sein, um einen neuen Karteneintrag zu machen.'),
+                Text('Beides muss erfasst sein,'
+                    ' um einen neuen Karteneintrag zu machen.'),
               ],
             ),
           ),

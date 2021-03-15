@@ -1,14 +1,20 @@
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/account_page/account_page.dart';
-import 'package:biodiversity/screens/information_list_page/biodiversity_measures_page.dart';
+import 'package:biodiversity/screens/information_list_page/habitat_elements_list_page.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
 import 'package:biodiversity/screens/species_list_page/species_list_page.dart';
+import 'package:biodiversity/screens/take_home_message_page/take_home_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// The Drawer which is located at the right side of the screen
 class MyDrawer extends StatelessWidget {
+  /// The Drawer which is located at the right side of the screen,
+  /// default constructor
+  MyDrawer({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -25,8 +31,7 @@ class MyDrawer extends StatelessWidget {
             )),
         child: Scaffold(
           appBar: AppBar(),
-          body: LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
+          body: LayoutBuilder(builder: (context, constraints) {
             return SingleChildScrollView(
               child: ConstrainedBox(
                 constraints: BoxConstraints(
@@ -69,17 +74,17 @@ class MyDrawer extends StatelessWidget {
                       onTap: () {},
                     ),
                     ListTile(
-                      title: const Text('Biodiversität Massnahmen'),
+                      title: const Text('Lebensräume'),
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => InformationListPage()),
+                              builder: (context) => HabitatElementListPage()),
                         );
                       },
                     ),
                     ListTile(
-                      title: const Text('Spezien'),
+                      title: const Text('Arten'),
                       onTap: () {
                         Navigator.push(
                           context,
@@ -93,15 +98,17 @@ class MyDrawer extends StatelessWidget {
                       onTap: () {},
                     ),
                     ListTile(
-                      leading: Icon(
-                        Icons.arrow_forward,
-                        color: Colors.white.withOpacity(0.8),
-                      ),
-                      title: const Text('Stadtwildtiere'),
-                      onTap: () {},
+                      title: const Text('Take Home Messages'),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => TakeHomeMessagePage()),
+                        );
+                      },
                     ),
                     // ignore: prefer_if_elements_to_conditional_expressions
-                    _loginLogoutButton(),
+                    _loginLogoutButton(context),
 
                     const Image(
                       image: AssetImage('res/gardenDrawer.png'),
@@ -117,16 +124,8 @@ class MyDrawer extends StatelessWidget {
       ),
     );
   }
-}
 
-class _loginLogoutButton extends StatefulWidget {
-  @override
-  _loginLogoutButtonState createState() => _loginLogoutButtonState();
-}
-
-class _loginLogoutButtonState extends State<_loginLogoutButton> {
-  @override
-  Widget build(BuildContext context) {
+  Widget _loginLogoutButton(BuildContext context) {
     if (Provider.of<User>(context).isLoggedIn) {
       return ListTile(
         title: const Text('Logout'),
@@ -147,17 +146,17 @@ class _loginLogoutButtonState extends State<_loginLogoutButton> {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: const Text("ausloggen ?"),
+          title: const Text('ausloggen ?'),
               content: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context, true),
-                    child: const Text("Ausloggen"),
+                    child: const Text('Ausloggen'),
                   ),
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text("Abbrechen"),
+                    child: const Text('Abbrechen'),
                   ),
                 ],
               ),
