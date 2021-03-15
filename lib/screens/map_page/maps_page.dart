@@ -9,10 +9,14 @@ import 'package:biodiversity/screens/map_page/maps_selection_list_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:provider/provider.dart';
 
+/// Display the map with the markers
 class MapsPage extends StatefulWidget {
+  /// Display the map with the markers
+  MapsPage({Key key}) : super(key: key);
+
   @override
   _MapsPageState createState() => _MapsPageState();
 }
@@ -21,7 +25,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   GoogleMapController mapController;
   LatLng _focusedLocation;
   AnimationController _fabController;
-  String _biodiversityMeasure = "none";
+  String _biodiversityMeasure = 'none';
   static const List<IconData> icons = [
     IconsBiodiversity.wish,
     Icons.playlist_add,
@@ -33,12 +37,11 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     Provider.of<MapMarkerService>(context, listen: false).getMarkerSet(
-        onTapCallback: (String element) {
+        onTapCallback: (element) {
       setState(() {
         _biodiversityMeasure = element;
       });
       displayModalBottomSheet(context);
-
     }).then((markers) {
       setState(() {
         _markers = markers;
@@ -54,7 +57,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Map'),
+        title: const Text('Karte'),
       ),
       drawer: MyDrawer(),
       body: Stack(
@@ -72,9 +75,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             markers: _markers,
             onCameraIdle: () {
               mapController.getVisibleRegion().then((bounds) {
-                final double lat =
+                final lat =
                     (bounds.southwest.latitude + bounds.northeast.latitude) / 2;
-                final double long =
+                final long =
                     (bounds.southwest.longitude + bounds.northeast.longitude) /
                         2;
                 _focusedLocation = LatLng(lat, long);
@@ -102,10 +105,10 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               },
               child: AnimatedBuilder(
                 animation: _fabController,
-                builder: (BuildContext context, Widget child) {
+                builder: (context, child) {
                   return Transform(
-                    transform:
-                        Matrix4.rotationZ(_fabController.value * 0.75 * math.pi),
+                    transform: Matrix4.rotationZ(
+                        _fabController.value * 0.75 * math.pi),
                     alignment: FractionalOffset.center,
                     child: Icon(
                       _fabController.isDismissed ? Icons.add : Icons.add,
@@ -131,24 +134,24 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 _TitleDividerCard(
-                  title: "Element",
+                  title: 'Element',
                   detail: _biodiversityMeasure,
                 ),
-                _TitleDividerCard(
-                  title: "Garten Spitzname",
-                  detail: "Spitzname",
+                const _TitleDividerCard(
+                  title: 'Garten Spitzname',
+                  detail: 'Spitzname',
                 ),
-                _TitleDividerCard(
-                  title: "Garten Typ",
-                  detail: "Normaler Garten",
+                const _TitleDividerCard(
+                  title: 'Garten Typ',
+                  detail: 'Normaler Garten',
                 ),
-                _TitleDividerCard(
-                  title: "Adresse",
-                  detail: "Adresse",
+                const _TitleDividerCard(
+                  title: 'Adresse',
+                  detail: 'Adresse',
                 ),
-                _TitleDividerCard(
-                  title: "Besitzer",
-                  detail: "Greenday",
+                const _TitleDividerCard(
+                  title: 'Besitzer',
+                  detail: 'Greenway',
                 ),
               ],
             ),
@@ -170,7 +173,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           ),
           child: FloatingActionButton(
             heroTag: null,
-            tooltip: 'Wunsch hinzufügen',
+            tooltip: 'Vernetzungsprojekt starten',
             backgroundColor: Theme.of(context).cardColor,
             //TODO add onPressed functionality
             onPressed: () {},
@@ -190,7 +193,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           ),
           child: FloatingActionButton(
             heroTag: null,
-            tooltip: 'Element hinzufügen',
+            tooltip: 'Lebensraum hinzufügen',
             backgroundColor: Theme.of(context).cardColor,
             onPressed: () {
               Provider.of<MapInteractionContainer>(context, listen: false)
