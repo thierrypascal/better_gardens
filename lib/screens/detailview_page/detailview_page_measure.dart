@@ -6,9 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
 
+/// Shows the details of a BiodiversityMeasure
 class DetailViewPageMeasure extends StatefulWidget {
+  /// The BiodiversityMeasure element which will be displayed
   final BiodiversityMeasure element;
 
+  /// Shows the details of a BiodiversityMeasure
   const DetailViewPageMeasure(this.element, {Key key}) : super(key: key);
 
   @override
@@ -19,7 +22,7 @@ class _DetailViewPageMeasureState extends State<DetailViewPageMeasure> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Details: ${widget.element.name}")),
+      appBar: AppBar(title: Text('Details: ${widget.element.name}')),
       drawer: MyDrawer(),
       body: Column(
         children: [
@@ -67,6 +70,22 @@ class _DetailViewPageMeasureState extends State<DetailViewPageMeasure> {
                               fontWeight: FontWeight.bold, fontSize: 20),
                         ),
                         Consumer<User>(
+                          builder: (context, user, child) {
+                            if (user == null) {
+                              return const Text('');
+                            }
+                            return IconButton(
+                              icon: user.doesLikeElement(widget.element.name)
+                                  ? const Icon(Icons.favorite)
+                                  : const Icon(Icons.favorite_border),
+                              color: user.doesLikeElement(widget.element.name)
+                                  ? Colors.red
+                                  : Colors.black38,
+                              onPressed: () {
+                                setState(() {
+                                  user.likeUnlikeElement(widget.element.name);
+                                });
+                              },
                           builder: (context, user, child) {
                             return Row(
                               children: [

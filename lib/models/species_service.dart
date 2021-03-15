@@ -33,6 +33,12 @@ class SpeciesService extends ChangeNotifier {
         .toList();
   }
 
+  ///returns all Species
+  List<Species> getFullSpeciesObjectList() {
+    return _species
+        .toList();
+  }
+
   /// returns the type of a given Species
   Future<String> getTypeOfObject(String name) async {
     while (!_initialized) {
@@ -43,7 +49,7 @@ class SpeciesService extends ChangeNotifier {
     if (element != null) {
       return element.type;
     } else {
-      return "unknown";
+      return 'unknown';
     }
   }
 
@@ -58,8 +64,8 @@ class SpeciesService extends ChangeNotifier {
       return _classes.toList();
     }
     for (final s in _species) {
-      if (!_classes.contains(s.name)) {
-        _classes.add(s.name);
+      if (!_classes.contains(s.speciesClass)) {
+        _classes.add(s.speciesClass);
       }
     }
     return _classes.toList();

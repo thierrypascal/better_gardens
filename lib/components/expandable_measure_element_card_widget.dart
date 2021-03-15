@@ -13,7 +13,7 @@ class ExpandableMeasureElementCard extends StatefulWidget {
   final BiodiversityMeasure element;
 
   /// show a card to the provided element
-  ExpandableMeasureElementCard(this.element);
+  ExpandableMeasureElementCard(this.element, {Key key}) : super(key: key);
 
   @override
   _ExpandableMeasureElementCardState createState() =>
@@ -126,7 +126,7 @@ class _ExpandableMeasureElementCardState
                           fontWeight: FontWeight.bold, fontSize: 16)),
                   Consumer<User>(builder: (context, user, child) {
                     if (user == null) {
-                      return const Text("");
+                      return const Text('');
                     }
                     return Row(
                       children: [

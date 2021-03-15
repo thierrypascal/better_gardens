@@ -8,6 +8,9 @@ import 'package:flutter/services.dart' show rootBundle;
 /// Only used for admin purposes, should not be used in production
 /// The page provides the possibility to upload new data into the database
 class LoadData extends StatefulWidget {
+  /// default constructor
+  LoadData({Key key}) : super(key: key);
+
   @override
   _LoadDataState createState() => _LoadDataState();
 }
@@ -26,13 +29,13 @@ class _LoadDataState extends State<LoadData> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Text(
-              "This page should only be used by developers.\n"
-              "The content of the Excel file stored in the repo under:\n"
-              "res/data/Lebensraume-und-Arten.xlsx\n"
-              "is not checked if the content is correct\n\n"
-              "Always make sure the data in the Excel file is correct "
-              "before uploading !",
+            const Text(
+              'This page should only be used by developers.\n'
+              'The content of the Excel file stored in the repo under:\n'
+              'res/data/Lebensraume-und-Arten.xlsx\n'
+              'is not checked if the content is correct\n\n'
+              'Always make sure the data in the Excel file is correct '
+              'before uploading !',
               style: TextStyle(fontSize: 18),
             ),
             Column(
@@ -42,17 +45,17 @@ class _LoadDataState extends State<LoadData> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.backup_rounded),
-                      SizedBox(width: 10),
-                      Text("load and update data"),
+                      const Icon(Icons.backup_rounded),
+                      const SizedBox(width: 10),
+                      const Text('load and update data'),
                     ],
                   ),
                 ),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 LinearProgressIndicator(value: _progress),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 if (_progress == 1)
-                  Text("All data loaded and saved to the server :)"),
+                  const Text('All data loaded and saved to the server :)'),
               ],
             ),
           ],
@@ -63,32 +66,32 @@ class _LoadDataState extends State<LoadData> {
 
   Future<void> _loadData() async {
     List _data;
-    final file = await rootBundle.load("res/data/Lebensraume-und-Arten.xlsx");
+    final file = await rootBundle.load('res/data/Lebensraume-und-Arten.xlsx');
     final byteData = file.buffer.asUint8List();
     final excel = Excel.decodeBytes(byteData);
-    assert(excel.sheets.containsKey("Liste Lebensräume"));
-    assert(excel.sheets.containsKey("Arten-by-Lebensraum"));
-    assert(excel.sheets.containsKey("Lebensraum-by-Lebensraum"));
-    assert(excel.sheets.containsKey("Arten-by-Arten"));
+    assert(excel.sheets.containsKey('Liste Lebensräume'));
+    assert(excel.sheets.containsKey('Arten-by-Lebensraum'));
+    assert(excel.sheets.containsKey('Lebensraum-by-Lebensraum'));
+    assert(excel.sheets.containsKey('Arten-by-Arten'));
     setState(() => _progress = 0);
 
     // Load data about the Lebensräume
-    _data = excel.tables["Liste Lebensräume"].rows;
+    _data = excel.tables['Liste Lebensräume'].rows;
     setState(() => _progress += 0.1);
     for (final List line in _data.skip(1)) {
       if (line[0] == '') continue;
       final updateMap = {
-        "type": line[1],
-        "name": line[2],
-        "dimension": line[3],
-        "unit": line[4]
+        'type': line[1],
+        'name': line[2],
+        'dimension': line[3],
+        'unit': line[4]
       };
-      await _upload(updateMap, "biodiversityMeasures", line[2]);
+      await _upload(updateMap, 'biodiversityMeasures', line[2]);
     }
     setState(() => _progress += 0.1);
 
     // load data about the Arten - Lebensräume relationship
-    _data = excel.tables["Arten-by-Lebensraum"].rows;
+    _data = excel.tables['Arten-by-Lebensraum'].rows;
     setState(() => _progress += 0.1);
     var _lebensraume = Map<String, List<String>>.fromIterable(_data[0].skip(4),
         key: (v) => v, value: (v) => []);
@@ -102,42 +105,42 @@ class _LoadDataState extends State<LoadData> {
         }
       }
       final updateMap = {
-        "name": line[3],
-        "type": line[2],
-        "class": line[1],
-        "supportedBy": supportedBy
+        'name': line[3],
+        'type': line[2],
+        'class': line[1],
+        'supportedBy': supportedBy
       };
-      await _upload(updateMap, "species", line[3]);
+      await _upload(updateMap, 'species', line[3]);
     }
     setState(() => _progress += 0.1);
     // also load the data to the Lebensräume
     for (final lebensraum in _lebensraume.keys) {
       final map = {
-        "beneficialFor": _lebensraume[lebensraum],
-        "name": lebensraum
+        'beneficialFor': _lebensraume[lebensraum],
+        'name': lebensraum
       };
-      await _upload(map, "biodiversityMeasures", lebensraum);
+      await _upload(map, 'biodiversityMeasures', lebensraum);
     }
     setState(() => _progress += 0.1);
 
     // Load data about the relationship between two Lebensräume
-    _data = excel.tables["Lebensraum-by-Lebensraum"].rows;
+    _data = excel.tables['Lebensraum-by-Lebensraum'].rows;
     setState(() => _progress += 0.1);
     var goodTogetherWith = _readMatrix(_data);
     for (final habitat in goodTogetherWith.keys) {
       final updateMap = {
-        "goodTogetherWith": goodTogetherWith[habitat].toList()
+        'goodTogetherWith': goodTogetherWith[habitat].toList()
       };
-      await _upload(updateMap, "biodiversityMeasures", habitat);
+      await _upload(updateMap, 'biodiversityMeasures', habitat);
     }
 
     // load data about the relationship between two arten
-    _data = excel.tables["Arten-by-Arten"].rows;
+    _data = excel.tables['Arten-by-Arten'].rows;
     setState(() => _progress += 0.1);
     final connectedTo = _readMatrix(_data);
     for (final art in connectedTo.keys) {
-      final updateMap = {"connectedTo": connectedTo[art].toList()};
-      await _upload(updateMap, "species", art);
+      final updateMap = {'connectedTo': connectedTo[art].toList()};
+      await _upload(updateMap, 'species', art);
     }
     setState(() => _progress = 1);
   }
@@ -160,14 +163,14 @@ class _LoadDataState extends State<LoadData> {
   Future<void> _upload(Map updateMap, String collection, String docName) async {
     //logging.log("Would upload to $collection/$docName: $updateMap");
     final doc =
-        await FirebaseFirestore.instance.doc("$collection/$docName").get();
+        await FirebaseFirestore.instance.doc('$collection/$docName').get();
     if (doc.exists) {
       await FirebaseFirestore.instance
-          .doc("$collection/$docName")
+          .doc('$collection/$docName')
           .update(updateMap);
     } else {
       await FirebaseFirestore.instance
-          .doc("$collection/$docName")
+          .doc('$collection/$docName')
           .set(updateMap);
     }
   }

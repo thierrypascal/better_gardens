@@ -34,11 +34,11 @@ class BiodiversityMeasure {
   /// creates a [BiodiversityMeasure] from the provided map
   /// used to load elements from the database and for testing
   BiodiversityMeasure.fromMap(Map<String, dynamic> map, {this.reference})
-      : name = map.containsKey('name') ? map['name'] as String : "",
+      : name = map.containsKey('name') ? map['name'] as String : '',
         shortDescription = map.containsKey('shortDescription')
             ? map['shortDescription'] as String
-            : "",
-        type = map.containsKey('type') ? map['type'] as String : "",
+            : '',
+        type = map.containsKey('type') ? map['type'] as String : '',
         _beneficialFor = map.containsKey('beneficialFor')
             ? map['beneficialFor'].cast<String>()
             : [],
@@ -70,13 +70,13 @@ class BiodiversityMeasure {
   String _getCommaSeparatedString(Iterable<String> elements) {
     final string = StringBuffer();
     for (final s in elements) {
-      string.write("$s, ");
+      string.write('$s, ');
     }
     final s = string.toString();
     if (s.length > 1) {
       return s.substring(0, s.length - 2);
     } else {
-      return "nichts";
+      return 'nichts';
     }
   }
 }

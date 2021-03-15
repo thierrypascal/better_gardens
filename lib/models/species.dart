@@ -3,6 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Container class for a species
 class Species {
+  /// class of the specie e.g. Säugetier
+  final String speciesClass;
+
   /// name of the specie e.g. Hedgehog
   final String name;
 
@@ -27,16 +30,17 @@ class Species {
 
   /// creates a Species object from a Map
   Species.fromMap(Map<String, dynamic> map, {this.reference})
-      : name = map.containsKey('name') ? map['name'] as String : "",
+      : speciesClass = map.containsKey('class') ? map['class'] as String : '',
+        name = map.containsKey('name') ? map['name'] as String : '',
         shortDescription = map.containsKey('shortDescription')
             ? map['shortDescription'] as String
-            : "",
+            : '',
         imageSource = map.containsKey('imageSource')
             ? map['imageSource'] as String
-            : "res/logo.png",
+            : 'res/logo.png',
         description =
-            map.containsKey('description') ? map['description'] as String : "",
-        type = map.containsKey('type') ? map['type'] as String : "",
+            map.containsKey('description') ? map['description'] as String : '',
+        type = map.containsKey('type') ? map['type'] as String : '',
         _connectedTo = map.containsKey('connectedTo')
             ? map['connectedTo'].cast<String>()
             : [],
@@ -59,13 +63,13 @@ class Species {
   String _getCommaSeparatedString(Iterable<String> elements) {
     final string = StringBuffer();
     for (final s in elements) {
-      string.write("$s, ");
+      string.write('$s, ');
     }
     final s = string.toString();
     if (s.length > 1) {
       return s.substring(0, s.length - 2);
     } else {
-      return "nichts";
+      return 'nichts';
     }
   }
 }

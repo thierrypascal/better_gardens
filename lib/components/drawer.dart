@@ -5,11 +5,16 @@ import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
 import 'package:biodiversity/screens/species_list_page/species_list_page.dart';
+import 'package:biodiversity/screens/take_home_message_page/take_home_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 /// The Drawer which is located at the right side of the screen
 class MyDrawer extends StatelessWidget {
+  /// The Drawer which is located at the right side of the screen,
+  /// default constructor
+  MyDrawer({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -74,7 +79,7 @@ class MyDrawer extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => InformationListPage()),
+                              builder: (context) => HabitatelementListPage()),
                         );
                       },
                     ),
@@ -93,12 +98,14 @@ class MyDrawer extends StatelessWidget {
                       onTap: () {},
                     ),
                     ListTile(
-                      leading: Icon(
-                        Icons.arrow_forward,
-                        color: Colors.white.withOpacity(0.8),
-                      ),
-                      title: const Text('Stadtwildtiere'),
-                      onTap: () {},
+                      title: const Text('Take Home Messages'),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => TakeHomeMessagePage()),
+                        );
+                      },
                     ),
                     // ignore: prefer_if_elements_to_conditional_expressions
                     _loginLogoutButton(context),
@@ -139,17 +146,17 @@ class MyDrawer extends StatelessWidget {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: const Text("ausloggen ?"),
+          title: const Text('ausloggen ?'),
               content: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context, true),
-                    child: const Text("Ausloggen"),
+                    child: const Text('Ausloggen'),
                   ),
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text("Abbrechen"),
+                    child: const Text('Abbrechen'),
                   ),
                 ],
               ),

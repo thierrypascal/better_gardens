@@ -2,10 +2,15 @@ import 'package:biodiversity/models/biodiversity_service.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/map_marker_service.dart';
 import 'package:biodiversity/models/species_service.dart';
+import 'package:biodiversity/models/take_home_message_service.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -13,6 +18,7 @@ void main() {
 }
 
 /// The mainActivity of the flutter app
+// ignore: use_key_in_widget_constructors
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -24,22 +30,32 @@ class MyApp extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return const Center(
-            child: Text("Something went wrong"),
+            child: Text('Something went wrong'),
           );
         }
         if (snapshot.connectionState == ConnectionState.done) {
           return MultiProvider(
             providers: [
               ChangeNotifierProvider(
-                create: (context) => User.empty(),
+                create: (context) => User.empty(
+                    auth.FirebaseAuth.instance,
+                    FirebaseFirestore.instance,
+                    GoogleSignIn(),
+                    FacebookAuth.instance),
                 lazy: false,
               ),
               ChangeNotifierProvider(
-                create: (context) => BiodiversityService(),
+                create: (context) =>
+                    BiodiversityService(FirebaseFirestore.instance),
                 lazy: false,
               ),
               ChangeNotifierProvider(
                 create: (context) => SpeciesService(),
+                lazy: false,
+              ),
+              ChangeNotifierProvider(
+                create: (context) =>
+                    TakeHomeMessageService(FirebaseFirestore.instance),
                 lazy: false,
               ),
               ChangeNotifierProvider(
@@ -69,7 +85,6 @@ class MyApp extends StatelessWidget {
                 visualDensity: VisualDensity.adaptivePlatformDensity,
               ),
               home: LoginPage(),
-              //home: LoadData(),
             ),
           );
         }
