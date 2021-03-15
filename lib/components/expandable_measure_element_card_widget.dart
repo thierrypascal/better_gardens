@@ -70,40 +70,43 @@ class _ExpandableMeasureElementCardState
                     ),
                   ),
                   Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: Icon(
-                              Icons.add,
-                              color: Provider.of<User>(context)
-                                      .doesLikeElement(widget.element.name)
-                                  ? Colors.red
-                                  : Colors.black,
+                      FlatButton(
+                        onPressed: () {},
+                        child: Row(
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(right: 8.0),
+                              child: Icon(
+                                Icons.add,
+                                size: 20,
+                              ),
                             ),
-                            iconSize: 20,
-                            constraints:
-                                BoxConstraints.loose(const Size.square(40)),
-                            onPressed: () {},
-                          ),
-                          const Text('hinzufügen'),
-                        ],
+                            const Text('hinzufügen'),
+                          ],
+                        ),
                       ),
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: const Icon(
-                              Icons.favorite,
+                      FlatButton(
+                        onPressed: () =>
+                            Provider.of<User>(context, listen: false)
+                                .likeUnlikeElement(widget.element.name),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Icon(
+                                Icons.favorite,
+                                color: Provider.of<User>(context)
+                                        .doesLikeElement(widget.element.name)
+                                    ? Colors.red
+                                    : Colors.black,
+                                size: 20,
+                              ),
                             ),
-                            iconSize: 20,
-                            constraints:
-                                BoxConstraints.loose(const Size.square(40)),
-                            onPressed: () {},
-                          ),
-                          const Text('merken'),
-                        ],
+                            const Text('merken'),
+                          ],
+                        ),
                       ),
                     ],
                   ),
