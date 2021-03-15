@@ -1,12 +1,8 @@
 import 'package:biodiversity/components/drawer.dart';
-import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/take_home_message.dart';
-import 'package:biodiversity/models/user.dart';
-import 'package:biodiversity/screens/information_list_page/biodiversity_measures_page.dart';
 import 'package:biodiversity/screens/take_home_message_page/take_home_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:provider/provider.dart';
 
 /// Shows the details of a BiodiversityMeasure
 class DetailViewPageTakeHomeMessage extends StatefulWidget {
@@ -14,13 +10,16 @@ class DetailViewPageTakeHomeMessage extends StatefulWidget {
   final TakeHomeMessage element;
 
   /// Shows the details of a BiodiversityMeasure
-  const DetailViewPageTakeHomeMessage(this.element, {Key key}) : super(key: key);
+  const DetailViewPageTakeHomeMessage(this.element, {Key key})
+      : super(key: key);
 
   @override
-  _DetailViewPageTakeHomeMessageState createState() => _DetailViewPageTakeHomeMessageState();
+  _DetailViewPageTakeHomeMessageState createState() =>
+      _DetailViewPageTakeHomeMessageState();
 }
 
-class _DetailViewPageTakeHomeMessageState extends State<DetailViewPageTakeHomeMessage> {
+class _DetailViewPageTakeHomeMessageState
+    extends State<DetailViewPageTakeHomeMessage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,11 +41,15 @@ class _DetailViewPageTakeHomeMessageState extends State<DetailViewPageTakeHomeMe
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        widget.element.title,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20),
+                      Expanded(
+                        child: Text(
+                          widget.element.title,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20),
+                          softWrap: true,
+                        ),
                       ),
                       Row(children: [
                         IconButton(

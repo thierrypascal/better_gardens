@@ -1,6 +1,6 @@
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/account_page/account_page.dart';
-import 'package:biodiversity/screens/information_list_page/biodiversity_measures_page.dart';
+import 'package:biodiversity/screens/information_list_page/habitat_elements_list_page.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
@@ -79,7 +79,7 @@ class MyDrawer extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => HabitatelementListPage()),
+                              builder: (context) => HabitatElementListPage()),
                         );
                       },
                     ),

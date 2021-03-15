@@ -92,9 +92,11 @@ class _ExpandableTakeHomeMessageCardState
               secondChild: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(widget.element.title,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16)),
+                  Expanded(
+                    child: Text(widget.element.title,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16), softWrap: true,),
+                  ),
                   Text(widget.element.readTime,
                       style: const TextStyle(fontSize: 14)),
                 ],
@@ -104,11 +106,6 @@ class _ExpandableTakeHomeMessageCardState
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 5, 5, 50),
                 child: MarkdownBody(data: widget.element.shortDescription),
-                  // child: Text(
-                  //   widget.element.description,
-                  //   textAlign: TextAlign.left,
-                  //   overflow: TextOverflow.fade,
-                  // ),
               ),
               if (widget.element != null)
                 Row(
