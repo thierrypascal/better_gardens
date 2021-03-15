@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/services.dart';
 
 /// A container class of a Measure to improve biodiversity.
 /// Example: A pile of branches
@@ -51,10 +52,13 @@ class BiodiversityMeasure {
   }
 
   Future<void> _loadDescription() async {
-    try{
-      final data = await _storage.ref().child("biodiversityMeasures/descriptions/$name.md").getData(1024*1024);
+    try {
+      final data = await _storage
+          .ref()
+          .child("biodiversityMeasures/descriptions/$name.md")
+          .getData(1024 * 1024);
       description = Utf8Decoder().convert(data);
-    }catch(e){
+    } on PlatformException {
       description = "Fehler: keine Beschreibung gefunden.";
     }
   }
