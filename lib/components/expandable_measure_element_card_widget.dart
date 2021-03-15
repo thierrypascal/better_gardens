@@ -186,7 +186,7 @@ class _ExpandableMeasureElementCardState
                           }
                         },
                         child: const Text(
-                          "Weitere infos",
+                          'Weitere infos',
                           style:
                               TextStyle(decoration: TextDecoration.underline),
                         ),

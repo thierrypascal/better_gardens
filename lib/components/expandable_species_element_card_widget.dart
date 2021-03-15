@@ -86,28 +86,32 @@ class _ExpandableSpeciesElementCardState
               secondChild: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(widget.species.name,
+                  Expanded(
+                    child: Text(
+                      widget.species.name,
                       style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16)),
-                  if (widget.species != null)
-                    FlatButton(
-                      onPressed: () {
-                        if (_expanded) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    DetailViewPageSpecies(widget.species)),
-                          ).then((value) {
-                            setState(() {});
-                          });
-                        }
-                      },
-                      child: const Text(
-                        'Weitere infos',
-                        style: TextStyle(decoration: TextDecoration.underline),
-                      ),
+                          fontWeight: FontWeight.bold, fontSize: 16),
+                      softWrap: true,
                     ),
+                  ),
+                  FlatButton(
+                    onPressed: () {
+                      if (_expanded) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  DetailViewPageSpecies(widget.species)),
+                        ).then((value) {
+                          setState(() {});
+                        });
+                      }
+                    },
+                    child: const Text(
+                      'Weitere infos',
+                      style: TextStyle(decoration: TextDecoration.underline),
+                    ),
+                  ),
                   Consumer<User>(builder: (context, user, child) {
                     if (user == null) {
                       return const Text('');
