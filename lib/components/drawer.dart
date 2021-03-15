@@ -5,6 +5,7 @@ import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
 import 'package:biodiversity/screens/species_list_page/species_list_page.dart';
+import 'package:biodiversity/screens/take_home_message_page/take_home_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -97,12 +98,14 @@ class MyDrawer extends StatelessWidget {
                       onTap: () {},
                     ),
                     ListTile(
-                      leading: Icon(
-                        Icons.arrow_forward,
-                        color: Colors.white.withOpacity(0.8),
-                      ),
-                      title: const Text('Stadtwildtiere'),
-                      onTap: () {},
+                      title: const Text('Take Home Messages'),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => TakeHomeMessagePage()),
+                        );
+                      },
                     ),
                     // ignore: prefer_if_elements_to_conditional_expressions
                     _loginLogoutButton(context),

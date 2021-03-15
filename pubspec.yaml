@@ -29,6 +29,7 @@ dependencies:
   firebase_core:
 
   cloud_firestore:
+  firebase_storage:
 
   modal_bottom_sheet:
   flutter_markdown:
