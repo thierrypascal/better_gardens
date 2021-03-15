@@ -71,9 +71,12 @@ class _ExpandableMeasureElementCardState
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       FlatButton(
                         onPressed: () {},
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        padding: const EdgeInsets.all(2),
                         child: Row(
                           children: [
                             const Padding(
@@ -91,6 +94,8 @@ class _ExpandableMeasureElementCardState
                         onPressed: () =>
                             Provider.of<User>(context, listen: false)
                                 .likeUnlikeElement(widget.element.name),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        padding: const EdgeInsets.all(2),
                         child: Row(
                           children: [
                             Padding(
@@ -110,6 +115,7 @@ class _ExpandableMeasureElementCardState
                       ),
                     ],
                   ),
+                  const SizedBox(width: 4),
                   Image(
                     width: 60,
                     height: 60,
