@@ -6,6 +6,9 @@ linter:
     prefer_relative_imports: false
     package_api_docs: true
     public_member_api_docs: true
+    prefer_single_quotes: true
+    use_key_in_widget_constructors: true
+    prefer_const_constructors: true
 
 
 analyzer:
@@ -50,6 +53,8 @@ analyzer:
     sort_child_properties_last: warning
     sort_constructors_first: warning
     sort_unnamed_constructors_first: warning
+    prefer_double_quotes: warning
+
 
     missing_required_param: error
     deprecated_member_use: error

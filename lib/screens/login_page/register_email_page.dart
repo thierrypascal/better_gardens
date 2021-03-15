@@ -10,6 +10,9 @@ import 'package:provider/provider.dart';
 
 /// The page where you can insert your data to register with email and password
 class RegisterEmailPage extends StatefulWidget {
+  ///The page where you can insert your data to register with email and password
+  RegisterEmailPage({Key key}) : super(key: key);
+
   @override
   _RegisterEmailPageState createState() => _RegisterEmailPageState();
 }
@@ -18,7 +21,7 @@ class _RegisterEmailPageState extends State<RegisterEmailPage> {
   @override
   Widget build(BuildContext context) {
     return LogoAndWavesScreen(
-      title: "Registrieren mit Email",
+      title: 'Registrieren mit Email',
       logoSize: 0,
       children: [
         RegisterForm(),
@@ -29,6 +32,9 @@ class _RegisterEmailPageState extends State<RegisterEmailPage> {
 
 /// The form which displays the input fields for the registration
 class RegisterForm extends StatefulWidget {
+  /// The form which displays the input fields for the registration
+  RegisterForm({Key key}) : super(key: key);
+
   @override
   _RegisterFormState createState() => _RegisterFormState();
 }
@@ -49,62 +55,62 @@ class _RegisterFormState extends State<RegisterForm> {
       child: Column(
         children: [
           TextFormField(
-            decoration: const InputDecoration(labelText: "Nickname"),
+            decoration: const InputDecoration(labelText: 'Nickname'),
             onSaved: (value) => _nickname = value,
             validator: (value) =>
-                value.isEmpty ? "Bitte ein Nickname eingeben" : null,
+                value.isEmpty ? 'Bitte ein Nickname eingeben' : null,
           ),
           TextFormField(
-            decoration: const InputDecoration(labelText: "Name"),
+            decoration: const InputDecoration(labelText: 'Name'),
             onSaved: (value) => _name = value,
             validator: (value) =>
-                value.isEmpty ? "Bitte ein Name eingeben" : null,
+                value.isEmpty ? 'Bitte ein Name eingeben' : null,
           ),
           TextFormField(
-            decoration: const InputDecoration(labelText: "Nachname"),
+            decoration: const InputDecoration(labelText: 'Nachname'),
             onSaved: (value) => _surname = value,
             validator: (value) =>
-                value.isEmpty ? "Bitte ein Nachname eingeben" : null,
+                value.isEmpty ? 'Bitte ein Nachname eingeben' : null,
           ),
           TextFormField(
-              decoration: const InputDecoration(labelText: "Email"),
+              decoration: const InputDecoration(labelText: 'Email'),
               onSaved: (value) => _email = value,
               keyboardType: TextInputType.emailAddress,
               validator: (value) {
                 if (value.isEmpty) {
-                  return "Bitte geben Sie eine Email Adresse ein";
+                  return 'Bitte geben Sie eine Email Adresse ein';
                   //match valid email addresses https://stackoverflow.com/a/16888554
                 } else if (!RegExp(
                         "^[a-zA-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*\$")
                     .hasMatch(value)) {
-                  return "Bitte geben Sie eine gültige Email Adresse ein";
+                  return 'Bitte geben Sie eine gültige Email Adresse ein';
                 } else {
                   return null;
                 }
               }),
           TextFormField(
-              decoration: const InputDecoration(labelText: "Passwort"),
+              decoration: const InputDecoration(labelText: 'Passwort'),
               obscureText: true,
               onSaved: (value) => _password = value,
               onChanged: (value) => _password = value,
               validator: (value) {
                 if (value.isEmpty) {
-                  return "Gib bitte ein Passwort ein";
+                  return 'Gib bitte ein Passwort ein';
                 } else if (value.length < 6) {
-                  return "Dein Passwort muss mindestens 6 Zeichen lang sein";
+                  return 'Dein Passwort muss mindestens 6 Zeichen lang sein';
                 } else {
                   return null;
                 }
               }),
           TextFormField(
               decoration:
-                  const InputDecoration(labelText: "Passwort wiederholen"),
+                  const InputDecoration(labelText: 'Passwort wiederholen'),
               obscureText: true,
               validator: (value) {
                 if (value.isEmpty) {
-                  return "Gib bitte ein Passwort ein";
+                  return 'Gib bitte ein Passwort ein';
                 } else if (value != _password) {
-                  return "Die Passwörter stimmen nicht überein";
+                  return 'Die Passwörter stimmen nicht überein';
                 } else {
                   return null;
                 }
@@ -127,7 +133,7 @@ class _RegisterFormState extends State<RegisterForm> {
                             });
                           },
                           child: const Text(
-                              "Ich habe das Privacy-Agreement gelesen."),
+                              'Ich habe das Privacy-Agreement gelesen.'),
                         ),
                         Checkbox(
                           value: field.value,
@@ -145,13 +151,13 @@ class _RegisterFormState extends State<RegisterForm> {
                 );
               },
               validator: (value) =>
-                  value ? null : "Bitte lies das Privacy, agreement"),
+                  value ? null : 'Bitte lies das Privacy, agreement'),
           const SizedBox(
             height: 40,
           ),
           ElevatedButton(
             onPressed: () => _registerWithEmail(context).then((value) => null),
-            child: const Text("Registrieren"),
+            child: const Text('Registrieren'),
           ),
         ],
       ),

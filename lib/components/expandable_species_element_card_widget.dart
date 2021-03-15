@@ -3,18 +3,25 @@ import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/detailview_page/detailview_page_species.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
 
+/// A Card which shows an animal. If you tap on the card it extends.
+/// And shows more information about the animal
 class ExpandableSpeciesElementCard extends StatefulWidget {
-  final Species element;
+  ///which species will be displayed
+  final Species species;
 
-  const ExpandableSpeciesElementCard(this.element);
+  /// display a expandable card with the provided species
+  ExpandableSpeciesElementCard(this.species, {Key key}) : super(key: key);
 
   @override
-  _ExpandableSpeciesElementCardState createState() => _ExpandableSpeciesElementCardState();
+  _ExpandableSpeciesElementCardState createState() =>
+      _ExpandableSpeciesElementCardState();
 }
 
-class _ExpandableSpeciesElementCardState extends State<ExpandableSpeciesElementCard> {
+class _ExpandableSpeciesElementCardState
+    extends State<ExpandableSpeciesElementCard> {
   bool _expanded = false;
 
   @override
@@ -36,7 +43,7 @@ class _ExpandableSpeciesElementCardState extends State<ExpandableSpeciesElementC
               height: _expanded ? 100 : 0,
               foregroundDecoration: BoxDecoration(
                   image: DecorationImage(
-                      image: AssetImage(widget.element.imageSource),
+                      image: AssetImage(widget.species.imageSource),
                       fit: BoxFit.fitWidth)),
             ),
           ),
@@ -54,70 +61,101 @@ class _ExpandableSpeciesElementCardState extends State<ExpandableSpeciesElementC
               firstChild: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Flexible(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(widget.element.name,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16)),
-                        Text(
-                          "Mag: ${widget.element.supportedBy()}",
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+                  Expanded(
+                    child: Text(
+                      widget.species.name,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16),
+                      softWrap: true,
                     ),
                   ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      FlatButton(
+                        onPressed: () {},
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        padding: const EdgeInsets.all(2),
+                        child: Row(
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(right: 8.0),
+                              child: Icon(
+                                Icons.add,
+                                size: 20,
+                              ),
+                            ),
+                            const Text('hinzufügen'),
+                          ],
+                        ),
+                      ),
+                      FlatButton(
+                        onPressed: () =>
+                            Provider.of<User>(context, listen: false)
+                                .likeUnlikeElement(widget.species.name),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        padding: const EdgeInsets.all(2),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Icon(
+                                Icons.favorite,
+                                color: Provider.of<User>(context)
+                                    .doesLikeElement(widget.species.name)
+                                    ? Colors.red
+                                    : Colors.black,
+                                size: 20,
+                              ),
+                            ),
+                            const Text('merken'),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(width: 4),
                   Image(
                     width: 60,
                     height: 60,
                     fit: BoxFit.cover,
-                    image: AssetImage(widget.element.imageSource),
+                    image: AssetImage(widget.species.imageSource),
                   ),
                 ],
               ),
               secondChild: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(widget.element.name,
+                  Text(widget.species.name,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 16)),
-                  if (widget.element != null)
-                    FlatButton(
-                      onPressed: () {
-                        if (_expanded) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    DetailViewPageSpecies(widget.element)),
-                          ).then((value) {
-                            setState(() {});
-                          });
-                        }
-                      },
-                      child: const Text(
-                        "Weitere infos",
-                        style: TextStyle(decoration: TextDecoration.underline),
-                      ),
-                    ),
                   Consumer<User>(builder: (context, user, child) {
                     if (user == null) {
-                      return const Text("");
+                      return const Text('');
                     }
-                    return IconButton(
-                      icon: Icon(
-                        Icons.favorite,
-                        color: user.doesLikeElement(widget.element.name)
-                            ? Colors.red
-                            : Colors.black38,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          user.likeUnlikeElement(widget.element.name);
-                        });
-                      },
+                    return Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(
+                            Icons.add,
+                          ),
+                          onPressed: () {},
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.favorite,
+                            color: user.doesLikeElement(widget.species.name)
+                                ? Colors.red
+                                : Colors.black38,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              user.likeUnlikeElement(widget.species.name);
+                            });
+                          },
+                        ),
+                      ],
                     );
                   }),
                 ],
@@ -126,11 +164,36 @@ class _ExpandableSpeciesElementCardState extends State<ExpandableSpeciesElementC
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 5, 5, 50),
-                child: Text(
-                  widget.element.short,
-                  textAlign: TextAlign.left,
-                ),
+                child: MarkdownBody(data: widget.species.description),
               ),
+              if (widget.species != null)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10.0),
+                      child: FlatButton(
+                        onPressed: () {
+                          if (_expanded) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      DetailViewPageSpecies(widget.species)),
+                            ).then((value) {
+                              setState(() {});
+                            });
+                          }
+                        },
+                        child: const Text(
+                          'Weitere infos',
+                          style:
+                          TextStyle(decoration: TextDecoration.underline),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
             ],
           ),
         ],
