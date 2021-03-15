@@ -5,6 +5,7 @@ import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/information_list_page/biodiversity_measures_page.dart';
 import 'package:biodiversity/screens/take_home_message_page/take_home_messages.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
 
 /// Shows the details of a BiodiversityMeasure
@@ -63,12 +64,9 @@ class _DetailViewPageTakeHomeMessageState extends State<DetailViewPageTakeHomeMe
                       ])
                     ],
                   ),
+                  MarkdownBody(data: widget.element.description),
                   const SizedBox(
                     height: 10,
-                  ),
-                  Text(widget.element.description),
-                  const SizedBox(
-                    height: 20,
                   ),
                 ],
               ),

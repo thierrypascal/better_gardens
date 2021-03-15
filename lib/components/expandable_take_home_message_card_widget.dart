@@ -4,6 +4,7 @@ import 'package:biodiversity/screens/detailview_page/detailview_page_measure.dar
 import 'package:biodiversity/screens/detailview_page/detailview_page_take_home_message.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
 
 /// A Card which shows a take home message. If you tap on the card it extends.
@@ -66,14 +67,15 @@ class _ExpandableTakeHomeMessageCardState
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        //I changed the fontSize from 16 to 20
-                        //Code to put the Merken and the Hinzufügen
-                        Row(
+                        Column(
                           mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(widget.element.title,
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 20)),
+                                    fontWeight: FontWeight.bold, fontSize: 16)),
+                            Text(widget.element.readTime,
+                                style: const TextStyle(fontSize: 14)),
                           ],
                         ),
                       ],
@@ -93,16 +95,20 @@ class _ExpandableTakeHomeMessageCardState
                   Text(widget.element.title,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text(widget.element.readTime,
+                      style: const TextStyle(fontSize: 14)),
                 ],
               ),
             ),
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 5, 5, 50),
-                child: Text(
-                  widget.element.description,
-                  textAlign: TextAlign.left,
-                ),
+                child: MarkdownBody(data: widget.element.shortDescription),
+                  // child: Text(
+                  //   widget.element.description,
+                  //   textAlign: TextAlign.left,
+                  //   overflow: TextOverflow.fade,
+                  // ),
               ),
               if (widget.element != null)
                 Row(

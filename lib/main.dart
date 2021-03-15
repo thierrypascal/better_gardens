@@ -2,6 +2,7 @@ import 'package:biodiversity/models/biodiversity_service.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/map_marker_service.dart';
 import 'package:biodiversity/models/species_service.dart';
+import 'package:biodiversity/models/take_home_message_service.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -50,6 +51,11 @@ class MyApp extends StatelessWidget {
               ),
               ChangeNotifierProvider(
                 create: (context) => SpeciesService(),
+                lazy: false,
+              ),
+              ChangeNotifierProvider(
+                create: (context) =>
+                    TakeHomeMessageService(FirebaseFirestore.instance),
                 lazy: false,
               ),
               ChangeNotifierProvider(
