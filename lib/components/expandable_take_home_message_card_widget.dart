@@ -92,9 +92,11 @@ class _ExpandableTakeHomeMessageCardState
               secondChild: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(widget.element.title,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16)),
+                  Expanded(
+                    child: Text(widget.element.title,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16), softWrap: true,),
+                  ),
                   Text(widget.element.readTime,
                       style: const TextStyle(fontSize: 14)),
                 ],
