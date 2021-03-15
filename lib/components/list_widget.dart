@@ -51,7 +51,7 @@ class _ListWidgetState extends State<ListWidget> {
             .getAllClasses();
 
     for (String s in categories) {
-      _tagItems.add(TagItem(s, true));
+      _tagItems.add(TagItem(s, false));
     }
   }
 
