@@ -49,7 +49,7 @@ class _DetailViewPageMeasureState extends State<DetailViewPageMeasure> {
                         : Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => InformationListPage()),
+                                builder: (context) => HabitatelementListPage()),
                           );
                   }),
             ],
@@ -70,22 +70,6 @@ class _DetailViewPageMeasureState extends State<DetailViewPageMeasure> {
                               fontWeight: FontWeight.bold, fontSize: 20),
                         ),
                         Consumer<User>(
-                          builder: (context, user, child) {
-                            if (user == null) {
-                              return const Text('');
-                            }
-                            return IconButton(
-                              icon: user.doesLikeElement(widget.element.name)
-                                  ? const Icon(Icons.favorite)
-                                  : const Icon(Icons.favorite_border),
-                              color: user.doesLikeElement(widget.element.name)
-                                  ? Colors.red
-                                  : Colors.black38,
-                              onPressed: () {
-                                setState(() {
-                                  user.likeUnlikeElement(widget.element.name);
-                                });
-                              },
                           builder: (context, user, child) {
                             return Row(
                               children: [
