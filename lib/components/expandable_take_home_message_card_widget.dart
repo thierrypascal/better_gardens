@@ -104,11 +104,6 @@ class _ExpandableTakeHomeMessageCardState
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 5, 5, 50),
                 child: MarkdownBody(data: widget.element.shortDescription),
-                  // child: Text(
-                  //   widget.element.description,
-                  //   textAlign: TextAlign.left,
-                  //   overflow: TextOverflow.fade,
-                  // ),
               ),
               if (widget.element != null)
                 Row(

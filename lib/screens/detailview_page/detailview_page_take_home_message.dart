@@ -41,11 +41,13 @@ class _DetailViewPageTakeHomeMessageState
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         widget.element.title,
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 20),
+                        softWrap: true,
                       ),
                       Row(children: [
                         IconButton(
