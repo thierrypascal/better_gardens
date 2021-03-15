@@ -1,7 +1,7 @@
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/user.dart';
-import 'package:biodiversity/screens/information_list_page/biodiversity_measures_page.dart';
+import 'package:biodiversity/screens/information_list_page/habitat_elements_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
@@ -39,17 +39,17 @@ class _DetailViewPageMeasureState extends State<DetailViewPageMeasure> {
                   child: Row(
                     children: [
                       const Icon(Icons.arrow_back),
-                      SizedBox(width: 5),
-                      Text("Zurück zur Liste"),
+                      const SizedBox(width: 5),
+                      const Text('Zurück zur Liste'),
                     ],
                   ),
                   onPressed: () {
                     Navigator.canPop(context)
                         ? Navigator.pop(context)
                         : Navigator.push(
-                            context,
+                      context,
                             MaterialPageRoute(
-                                builder: (context) => HabitatelementListPage()),
+                                builder: (context) => HabitatElementListPage()),
                           );
                   }),
             ],
@@ -74,7 +74,7 @@ class _DetailViewPageMeasureState extends State<DetailViewPageMeasure> {
                             return Row(
                               children: [
                                 IconButton(
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.add,
                                   ),
                                   onPressed: () {},
@@ -110,7 +110,7 @@ class _DetailViewPageMeasureState extends State<DetailViewPageMeasure> {
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                     ),
-                    Text(widget.element.beneficialFor),
+                    //Text(widget.element.beneficialFor),
                   ],
                 ),
               ),

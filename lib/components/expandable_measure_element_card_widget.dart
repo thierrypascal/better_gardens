@@ -61,54 +61,52 @@ class _ExpandableMeasureElementCardState
               firstChild: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Flexible(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        //I changed the fontSize from 16 to 20
-                        //Code to put the Merken and the Hinzufügen
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(widget.element.name,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 20)),
-                            Column(
-                              //mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 25.0),
-                                      child: IconButton(
-                                        icon: Icon(
-                                          Icons.add,
-                                        ),
-                                        onPressed: () {},
-                                      ),
-                                    ),
-                                    Text("hinzufügen"),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      icon: Icon(
-                                        Icons.favorite,
-                                      ),
-                                      onPressed: () {},
-                                    ),
-                                    Text("merken"),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
+                  Container(
+                    width: 150,
+                    child: Text(
+                      widget.element.name,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16),
+                      overflow: TextOverflow.ellipsis,
                     ),
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              Icons.add,
+                              color: Provider.of<User>(context)
+                                      .doesLikeElement(widget.element.name)
+                                  ? Colors.red
+                                  : Colors.black,
+                            ),
+                            iconSize: 20,
+                            constraints:
+                                BoxConstraints.loose(const Size.square(40)),
+                            onPressed: () {},
+                          ),
+                          const Text('hinzufügen'),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(
+                              Icons.favorite,
+                            ),
+                            iconSize: 20,
+                            constraints:
+                                BoxConstraints.loose(const Size.square(40)),
+                            onPressed: () {},
+                          ),
+                          const Text('merken'),
+                        ],
+                      ),
+                    ],
                   ),
                   Image(
                     width: 60,
@@ -130,12 +128,12 @@ class _ExpandableMeasureElementCardState
                     }
                     return Row(
                       children: [
-                         IconButton(
-                          icon: Icon(
+                        IconButton(
+                          icon: const Icon(
                             Icons.add,
                           ),
-                          onPressed: (){},
-                          ),
+                          onPressed: () {},
+                        ),
                         IconButton(
                           icon: Icon(
                             Icons.favorite,
@@ -161,34 +159,33 @@ class _ExpandableMeasureElementCardState
                 child: MarkdownBody(data: widget.element.description),
               ),
               if (widget.element != null)
-               Row(
-                 mainAxisAlignment: MainAxisAlignment.start,
-                 children: [
-                   Padding(
-                     padding: const EdgeInsets.only(bottom: 10.0),
-                     child: FlatButton(
-                            onPressed: () {
-                              if (_expanded) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          DetailViewPageMeasure(widget.element)),
-                                ).then((value) {
-                                  setState(() {});
-                                });
-                              }
-                            },
-                            child: const Text(
-                              "Weitere infos",
-                              style: TextStyle(
-                                decoration: TextDecoration.underline
-                                ),
-                            ),
-                          ),
-                   ),
-                 ],
-               ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10.0),
+                      child: FlatButton(
+                        onPressed: () {
+                          if (_expanded) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      DetailViewPageMeasure(widget.element)),
+                            ).then((value) {
+                              setState(() {});
+                            });
+                          }
+                        },
+                        child: const Text(
+                          "Weitere infos",
+                          style:
+                              TextStyle(decoration: TextDecoration.underline),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
             ],
           ),
         ],

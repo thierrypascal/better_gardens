@@ -2,8 +2,8 @@ import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/list_widget.dart';
 import 'package:flutter/material.dart';
 
-class HabitatelementListPage extends StatelessWidget {
-  HabitatelementListPage({Key key}) : super(key: key);
+class HabitatElementListPage extends StatelessWidget {
+  HabitatElementListPage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

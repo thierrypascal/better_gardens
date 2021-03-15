@@ -18,7 +18,9 @@ class BiodiversityMeasure {
 
   /// which type the element belongs to e.g. Structure
   final String type;
-  final List<String> _beneficialFor;
+
+  /// A list with all Species this Biodiversitymeasure is good for
+  final List<String> beneficialFor;
 
   /// All other measures which work well together with this measure
   final List<String> goodTogetherWith;
@@ -40,7 +42,7 @@ class BiodiversityMeasure {
             ? map['shortDescription'] as String
             : '',
         type = map.containsKey('type') ? map['type'] as String : '',
-        _beneficialFor = map.containsKey('beneficialFor')
+        beneficialFor = map.containsKey('beneficialFor')
             ? map['beneficialFor'].cast<String>()
             : [],
         goodTogetherWith = map.containsKey('goodTogetherWith')
@@ -66,10 +68,6 @@ class BiodiversityMeasure {
   /// load a [BiodiversityMeasure] form a database snapshot
   BiodiversityMeasure.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data(), reference: snapshot.reference);
-
-  /// returns a formatted string which holds all species
-  /// which this element is good for
-  String get beneficialFor => _getCommaSeparatedString(_beneficialFor);
 
   String _getCommaSeparatedString(Iterable<String> elements) {
     final string = StringBuffer();
