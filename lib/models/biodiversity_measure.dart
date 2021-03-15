@@ -51,14 +51,11 @@ class BiodiversityMeasure {
   }
 
   Future<void> _loadDescription() async {
-    final folder = await _storage.ref(_descriptionPath).listAll();
-    if (folder.items.contains("$name.md")) {
-      final data = await _storage
-          .ref("biodiversityMeasures/descriptions/$name.md")
-          .getData();
+    try{
+      final data = await _storage.ref().child("takeHomeMessages/body/$name.md").getData(1024*1024);
       description = Utf8Decoder().convert(data);
-    } else {
-      description = shortDescription;
+    }catch(e){
+      description = "Fehler: keine Beschreibung gefunden.";
     }
   }
 
