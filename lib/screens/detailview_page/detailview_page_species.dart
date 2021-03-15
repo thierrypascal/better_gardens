@@ -1,6 +1,10 @@
 import 'package:biodiversity/components/drawer.dart';
+import 'package:biodiversity/components/tags/flutter_tags.dart';
+import 'package:biodiversity/models/biodiversity_service.dart';
 import 'package:biodiversity/models/species.dart';
+import 'package:biodiversity/models/species_service.dart';
 import 'package:biodiversity/models/user.dart';
+import 'package:biodiversity/screens/detailview_page/detailview_page_measure.dart';
 import 'package:biodiversity/screens/information_list_page/habitat_elements_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -106,12 +110,66 @@ class _DetailViewPageSpeciesState extends State<DetailViewPageSpecies> {
                       height: 20,
                     ),
                     const Text(
-                      "Wird unterstützt durch die folgenden Lebensräume:",
+                      "Unterstützt durch die folgenden Lebensräume:",
                       style:
                       TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                       softWrap: true,
                     ),
-                    //Text(widget.element.beneficialFor),
+                    Tags(
+                        itemCount: widget.element.supportedBy.length,
+                        spacing: 4,
+                        runSpacing: -2,
+                        itemBuilder: (index) {
+                          return ElevatedButton(
+                              child: Text(widget.element.supportedBy[index]),
+                              style: const ButtonStyle(
+                                visualDensity: VisualDensity.compact,
+                              ),
+                              onPressed: () {
+                                final element = Provider.of<BiodiversityService>(
+                                    context,
+                                    listen: false)
+                                    .getBiodiversityMeasureByName(
+                                    widget.element.supportedBy[index]);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            DetailViewPageMeasure(element)));
+                              });
+                        }),
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                      child: Text(
+                        "Verbunden mit:",
+                        style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                        softWrap: true,
+                      ),
+                    ),
+                    Tags(
+                        itemCount: widget.element.connectedTo.length,
+                        spacing: 4,
+                        runSpacing: -2,
+                        itemBuilder: (index) {
+                          return ElevatedButton(
+                              child: Text(widget.element.connectedTo[index]),
+                              style: const ButtonStyle(
+                                visualDensity: VisualDensity.compact,
+                              ),
+                              onPressed: () {
+                                final element = Provider.of<SpeciesService>(
+                                    context,
+                                    listen: false)
+                                    .getSpeciesByName(
+                                    widget.element.connectedTo[index]);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            DetailViewPageSpecies(element)));
+                              });
+                        }),
                   ],
                 ),
               ),

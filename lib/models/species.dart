@@ -16,11 +16,11 @@ class Species {
   final String description;
 
   /// other species which
-  final List<String> _connectedTo;
+  final List<String> connectedTo;
 
   /// type of the species e.g. Säugetiere
   final String type;
-  final List<String> _supportedBy;
+  final List<String> supportedBy;
 
   /// reference to the store location in the database
   final DocumentReference reference;
@@ -41,10 +41,10 @@ class Species {
         description =
             map.containsKey('description') ? map['description'] as String : '',
         type = map.containsKey('type') ? map['type'] as String : '',
-        _connectedTo = map.containsKey('connectedTo')
+        connectedTo = map.containsKey('connectedTo')
             ? map['connectedTo'].cast<String>()
             : [],
-        _supportedBy = map.containsKey('supportedBy')
+        supportedBy = map.containsKey('supportedBy')
             ? map['supportedBy'].cast<String>()
             : [];
 
@@ -54,11 +54,11 @@ class Species {
 
   /// returns a formatted string with the [BiodiversityMeasure]
   /// supporting the species
-  String supportedBy() => _getCommaSeparatedString(_supportedBy);
+  String getSupportedBy() => _getCommaSeparatedString(supportedBy);
 
   /// returns a formatted string with other [Species]
   /// which go well together with this
-  String connectedTo() => _getCommaSeparatedString(_connectedTo);
+  String getConnectedTo() => _getCommaSeparatedString(connectedTo);
 
   String _getCommaSeparatedString(Iterable<String> elements) {
     final string = StringBuffer();
