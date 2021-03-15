@@ -61,13 +61,12 @@ class _ExpandableMeasureElementCardState
               firstChild: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    width: 150,
+                  Expanded(
                     child: Text(
                       widget.element.name,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 16),
-                      overflow: TextOverflow.ellipsis,
+                      softWrap: true,
                     ),
                   ),
                   Column(
