@@ -1,4 +1,3 @@
-import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/take_home_message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';

@@ -51,10 +51,10 @@ class _DetailViewPageSpeciesState extends State<DetailViewPageSpecies> {
                     Navigator.canPop(context)
                         ? Navigator.pop(context)
                         : Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => HabitatElementListPage()),
-                    );
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HabitatElementListPage()),
+                          );
                   }),
             ],
           ),
@@ -85,13 +85,13 @@ class _DetailViewPageSpeciesState extends State<DetailViewPageSpecies> {
                                 ),
                                 IconButton(
                                   icon:
-                                  user.doesLikeElement(widget.element.name)
-                                      ? const Icon(Icons.favorite)
-                                      : const Icon(Icons.favorite_border),
+                                      user.doesLikeElement(widget.element.name)
+                                          ? const Icon(Icons.favorite)
+                                          : const Icon(Icons.favorite_border),
                                   color:
-                                  user.doesLikeElement(widget.element.name)
-                                      ? Colors.red
-                                      : Colors.black38,
+                                      user.doesLikeElement(widget.element.name)
+                                          ? Colors.red
+                                          : Colors.black38,
                                   onPressed: () {
                                     setState(() {
                                       user.likeUnlikeElement(
@@ -110,9 +110,9 @@ class _DetailViewPageSpeciesState extends State<DetailViewPageSpecies> {
                       height: 20,
                     ),
                     const Text(
-                      "Unterstützt durch die folgenden Lebensräume:",
+                      'Unterstützt durch die folgenden Lebensräume:',
                       style:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                       softWrap: true,
                     ),
                     Tags(
@@ -126,11 +126,11 @@ class _DetailViewPageSpeciesState extends State<DetailViewPageSpecies> {
                                 visualDensity: VisualDensity.compact,
                               ),
                               onPressed: () {
-                                final element = Provider.of<BiodiversityService>(
-                                    context,
-                                    listen: false)
-                                    .getBiodiversityMeasureByName(
-                                    widget.element.supportedBy[index]);
+                                final element =
+                                    Provider.of<BiodiversityService>(context,
+                                            listen: false)
+                                        .getBiodiversityMeasureByName(
+                                            widget.element.supportedBy[index]);
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -141,9 +141,9 @@ class _DetailViewPageSpeciesState extends State<DetailViewPageSpecies> {
                     const Padding(
                       padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                       child: Text(
-                        "Verbunden mit:",
-                        style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                        'Verbunden mit:',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 15),
                         softWrap: true,
                       ),
                     ),
@@ -159,10 +159,10 @@ class _DetailViewPageSpeciesState extends State<DetailViewPageSpecies> {
                               ),
                               onPressed: () {
                                 final element = Provider.of<SpeciesService>(
-                                    context,
-                                    listen: false)
+                                        context,
+                                        listen: false)
                                     .getSpeciesByName(
-                                    widget.element.connectedTo[index]);
+                                        widget.element.connectedTo[index]);
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(

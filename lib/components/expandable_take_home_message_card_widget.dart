@@ -1,11 +1,8 @@
 import 'package:biodiversity/models/take_home_message.dart';
-import 'package:biodiversity/models/user.dart';
-import 'package:biodiversity/screens/detailview_page/detailview_page_measure.dart';
 import 'package:biodiversity/screens/detailview_page/detailview_page_take_home_message.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:provider/provider.dart';
 
 /// A Card which shows a take home message. If you tap on the card it extends.
 /// And shows more information about the message
@@ -93,9 +90,12 @@ class _ExpandableTakeHomeMessageCardState
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: Text(widget.element.title,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16), softWrap: true,),
+                    child: Text(
+                      widget.element.title,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16),
+                      softWrap: true,
+                    ),
                   ),
                   Text(widget.element.readTime,
                       style: const TextStyle(fontSize: 14)),
@@ -120,17 +120,17 @@ class _ExpandableTakeHomeMessageCardState
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      DetailViewPageTakeHomeMessage(widget.element)),
+                                      DetailViewPageTakeHomeMessage(
+                                          widget.element)),
                             ).then((value) {
                               setState(() {});
                             });
                           }
                         },
                         child: const Text(
-                          "Weitere infos",
-                          style: TextStyle(
-                              decoration: TextDecoration.underline
-                          ),
+                          'Weitere infos',
+                          style:
+                              TextStyle(decoration: TextDecoration.underline),
                         ),
                       ),
                     ),

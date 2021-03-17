@@ -32,7 +32,7 @@ class BiodiversityMeasure {
   final DocumentReference reference;
 
   final _storage = FirebaseStorage.instance;
-  final _descriptionPath = "biodiversityMeasures/descriptions/";
+  final _descriptionPath = 'biodiversityMeasures/descriptions/';
 
   /// creates a [BiodiversityMeasure] from the provided map
   /// used to load elements from the database and for testing
@@ -57,11 +57,11 @@ class BiodiversityMeasure {
     try {
       final data = await _storage
           .ref()
-          .child("biodiversityMeasures/descriptions/$name.md")
+          .child('biodiversityMeasures/descriptions/$name.md')
           .getData(1024 * 1024);
-      description = Utf8Decoder().convert(data);
+      description = const Utf8Decoder().convert(data);
     } on PlatformException {
-      description = "Fehler: keine Beschreibung gefunden.";
+      description = 'Fehler: keine Beschreibung gefunden.';
     }
   }
 

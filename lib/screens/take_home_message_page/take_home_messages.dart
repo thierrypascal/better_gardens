@@ -2,7 +2,6 @@ import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/expandable_take_home_message_card_widget.dart';
 import 'package:biodiversity/models/take_home_message.dart';
 import 'package:biodiversity/models/take_home_message_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -27,7 +26,7 @@ class _TakeHomeMessagePageState extends State<TakeHomeMessagePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Take-Home Messages")),
+      appBar: AppBar(title: const Text('Take-Home Messages')),
       drawer: MyDrawer(),
       body: Column(
         children: [
