@@ -1,18 +1,19 @@
 import 'package:biodiversity/models/biodiversity_measure.dart';
+import 'package:biodiversity/models/storage_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
 /// a service which loads all [BiodiversityMeasure] at once and stores them
 class BiodiversityService extends ChangeNotifier {
-  final FirebaseFirestore _firestore;
+  final StorageProvider _storage;
   final List<BiodiversityMeasure> _measures = [];
   final List<String> _classes = [];
   bool _initialized = false;
 
   /// initializer for the service
-  BiodiversityService(this._firestore) {
-    _firestore
+  BiodiversityService(this._storage) {
+    _storage.database
         .collection('biodiversityMeasures')
         .snapshots()
         .listen(_updateElements);
@@ -21,7 +22,7 @@ class BiodiversityService extends ChangeNotifier {
   void _updateElements(QuerySnapshot snapshots) {
     _measures.clear();
     for (final DocumentSnapshot snapshot in snapshots.docs) {
-      _measures.add(BiodiversityMeasure.fromSnapshot(snapshot));
+      _measures.add(BiodiversityMeasure.fromSnapshot(snapshot, _storage));
     }
     notifyListeners();
     _initialized = true;

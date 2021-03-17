@@ -1,7 +1,7 @@
 import 'dart:convert';
 
+import 'package:biodiversity/models/storage_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
 
 /// A container class of a Measure to improve biodiversity.
@@ -31,12 +31,13 @@ class BiodiversityMeasure {
   /// the reference to the location in the database
   final DocumentReference reference;
 
-  final _storage = FirebaseStorage.instance;
+  final StorageProvider _storage;
   final _descriptionPath = 'biodiversityMeasures/descriptions/';
 
   /// creates a [BiodiversityMeasure] from the provided map
   /// used to load elements from the database and for testing
-  BiodiversityMeasure.fromMap(Map<String, dynamic> map, {this.reference})
+  BiodiversityMeasure.fromMap(Map<String, dynamic> map, this._storage,
+      {this.reference})
       : name = map.containsKey('name') ? map['name'] as String : '',
         shortDescription = map.containsKey('shortDescription')
             ? map['shortDescription'] as String
@@ -55,7 +56,7 @@ class BiodiversityMeasure {
 
   Future<void> _loadDescription() async {
     try {
-      final data = await _storage
+      final data = await _storage.fileStorage
           .ref()
           .child('biodiversityMeasures/descriptions/$name.md')
           .getData(1024 * 1024);
@@ -66,8 +67,9 @@ class BiodiversityMeasure {
   }
 
   /// load a [BiodiversityMeasure] form a database snapshot
-  BiodiversityMeasure.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data(), reference: snapshot.reference);
+  BiodiversityMeasure.fromSnapshot(
+      DocumentSnapshot snapshot, StorageProvider storage)
+      : this.fromMap(snapshot.data(), storage, reference: snapshot.reference);
 
   String _getCommaSeparatedString(Iterable<String> elements) {
     final string = StringBuffer();

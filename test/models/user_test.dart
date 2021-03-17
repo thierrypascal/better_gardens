@@ -4,7 +4,7 @@ import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
 
-import '../facebook_mock/facebook_auth_mock.dart';
+import '../facebook_mock/mock_storage_provider.dart';
 
 const name = 'Gabriel';
 const pw = '123456';
@@ -14,8 +14,7 @@ void main() {
   final google = MockGoogleSignIn();
   final auth = MockFirebaseAuth();
   final firebase = MockFirestoreInstance();
-  final testUser = User.empty(auth, firebase, google,
-      FacebookAuthMock(mockUser: FacebookMockUser(name, pw, email)));
+  final testUser = User.empty(MockStorageProvider());
 
   test('User test', () async {
     testUser.updateUserData(

@@ -5,15 +5,12 @@ import 'package:biodiversity/models/species_service.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/login_page/email_login_page.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
-import 'package:cloud_firestore_mocks/cloud_firestore_mocks.dart';
-import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
 import 'package:provider/provider.dart';
 
-import '../facebook_mock/facebook_auth_mock.dart';
+import '../facebook_mock/mock_storage_provider.dart';
 
 final _globalKey = GlobalKey();
 
@@ -21,25 +18,20 @@ Widget loadProviders(Widget widget,
     {String name = 'Gabriel',
     String password = '123456',
     String email = 'gabriel@tester.com'}) {
-  final firebase = MockFirestoreInstance();
+  final storage = MockStorageProvider();
   return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => User.empty(
-            MockFirebaseAuth(),
-            firebase,
-            MockGoogleSignIn(),
-            FacebookAuthMock(mockUser: FacebookMockUser(name, password, email)),
-          ),
+          create: (context) => User.empty(storage),
           lazy: false,
         ),
         ChangeNotifierProvider(
-            create: (context) => BiodiversityService(firebase)),
-        ChangeNotifierProvider(create: (context) => SpeciesService()),
+            create: (context) => BiodiversityService(storage)),
+        ChangeNotifierProvider(create: (context) => SpeciesService(storage)),
         ChangeNotifierProvider(
             create: (context) => MapInteractionContainer.empty()),
         ChangeNotifierProvider(
-          create: (context) => MapMarkerService(context),
+          create: (context) => MapMarkerService(context, storage),
         ),
       ],
       child: MaterialApp(

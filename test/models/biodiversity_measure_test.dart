@@ -1,6 +1,8 @@
 import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../facebook_mock/mock_storage_provider.dart';
+
 /// This test class makes sure no invalid data
 /// can be retrieved from the database
 void main() {
@@ -9,6 +11,7 @@ void main() {
 
   Map<String, dynamic> measureAttributes;
   BiodiversityMeasure validMeasure;
+  final firestore = MockStorageProvider();
 
   test('Valid biodiversity measures', () {
     measureAttributes = {
@@ -20,7 +23,7 @@ void main() {
       'goodTogetherWith': ['birds'],
       'imageSource': 'some/path'
     };
-    validMeasure = BiodiversityMeasure.fromMap(measureAttributes);
+    validMeasure = BiodiversityMeasure.fromMap(measureAttributes, firestore);
     expect(validMeasure, isA<BiodiversityMeasure>());
 
     measureAttributes = {
@@ -32,7 +35,7 @@ void main() {
       '_badFor': null,
       'imageSource': null
     };
-    validMeasure = BiodiversityMeasure.fromMap(measureAttributes);
+    validMeasure = BiodiversityMeasure.fromMap(measureAttributes, firestore);
     expect(validMeasure, isA<BiodiversityMeasure>());
   });
 
@@ -46,7 +49,7 @@ void main() {
       '_badFor': {'birds': false},
       'imageSource': 'some/path'
     };
-    expect(() => BiodiversityMeasure.fromMap(measureAttributes),
+    expect(() => BiodiversityMeasure.fromMap(measureAttributes, firestore),
         throwsA(isA<TypeError>()));
 
     measureAttributes = {
@@ -58,7 +61,7 @@ void main() {
       '_badFor': {'birds': false},
       'imageSource': 'some/path'
     };
-    expect(() => BiodiversityMeasure.fromMap(measureAttributes),
+    expect(() => BiodiversityMeasure.fromMap(measureAttributes, firestore),
         throwsA(isA<TypeError>()));
 
     measureAttributes = {
@@ -70,7 +73,7 @@ void main() {
       '_badFor': {'birds': false},
       'imageSource': 'some/path'
     };
-    expect(() => BiodiversityMeasure.fromMap(measureAttributes),
+    expect(() => BiodiversityMeasure.fromMap(measureAttributes, firestore),
         throwsA(isA<TypeError>()));
 
     measureAttributes = {
@@ -82,7 +85,7 @@ void main() {
       '_badFor': {'birds': false},
       'imageSource': 'some/path'
     };
-    expect(() => BiodiversityMeasure.fromMap(measureAttributes),
+    expect(() => BiodiversityMeasure.fromMap(measureAttributes, firestore),
         throwsA(isA<TypeError>()));
   });
 }
