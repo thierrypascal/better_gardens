@@ -1,7 +1,7 @@
 import 'dart:convert';
 
+import 'package:biodiversity/models/storage_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
 
 /// A container class of a Measure to improve biodiversity.
@@ -19,7 +19,7 @@ class BiodiversityMeasure {
   /// which type the element belongs to e.g. Structure
   final String type;
 
-  /// A list with all Species this Biodiversitymeasure is good for
+  /// A list with all Species this BiodiversityMeasure is good for
   final List<String> beneficialFor;
 
   /// All other measures which work well together with this measure
@@ -31,21 +31,24 @@ class BiodiversityMeasure {
   /// the reference to the location in the database
   final DocumentReference reference;
 
-  final _storage = FirebaseStorage.instance;
-  final _descriptionPath = "biodiversityMeasures/descriptions/";
+  final StorageProvider _storage;
+  final _descriptionPath = 'biodiversityMeasures/descriptions';
 
   /// creates a [BiodiversityMeasure] from the provided map
   /// used to load elements from the database and for testing
-  BiodiversityMeasure.fromMap(Map<String, dynamic> map, {this.reference})
+  BiodiversityMeasure.fromMap(Map<String, dynamic> map, this._storage,
+      {this.reference})
       : name = map.containsKey('name') ? map['name'] as String : '',
         shortDescription = map.containsKey('shortDescription')
             ? map['shortDescription'] as String
             : '',
         type = map.containsKey('type') ? map['type'] as String : '',
-        beneficialFor = map.containsKey('beneficialFor')
-            ? map['beneficialFor'].cast<String>()
-            : [],
-        goodTogetherWith = map.containsKey('goodTogetherWith')
+        beneficialFor =
+            map.containsKey('beneficialFor') && map['beneficialFor'] is List
+                ? map['beneficialFor'].cast<String>()
+                : [],
+        goodTogetherWith = map.containsKey('goodTogetherWith') &&
+                map['goodTogetherWith'] is List
             ? map['goodTogetherWith'].cast<String>()
             : [],
         imageSource =
@@ -55,19 +58,24 @@ class BiodiversityMeasure {
 
   Future<void> _loadDescription() async {
     try {
-      final data = await _storage
+      final data = await _storage.fileStorage
           .ref()
-          .child("biodiversityMeasures/descriptions/$name.md")
+          .child('$_descriptionPath/$name.md')
           .getData(1024 * 1024);
-      description = Utf8Decoder().convert(data);
+      if (data != null) {
+        description = const Utf8Decoder().convert(data);
+      } else {
+        description = shortDescription;
+      }
     } on PlatformException {
-      description = "Fehler: keine Beschreibung gefunden.";
+      description = 'Fehler: keine Beschreibung gefunden.';
     }
   }
 
   /// load a [BiodiversityMeasure] form a database snapshot
-  BiodiversityMeasure.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data(), reference: snapshot.reference);
+  BiodiversityMeasure.fromSnapshot(
+      DocumentSnapshot snapshot, StorageProvider storage)
+      : this.fromMap(snapshot.data(), storage, reference: snapshot.reference);
 
   String _getCommaSeparatedString(Iterable<String> elements) {
     final string = StringBuffer();

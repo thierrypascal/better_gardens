@@ -1,9 +1,12 @@
 import 'dart:core';
 
+import 'package:biodiversity/models/storage_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 /// Container class for the garden
-class Garden {
+//TODO change garden to a useful object
+class Garden extends ChangeNotifier {
   /// nickname of the garden
   String name;
 
@@ -17,11 +20,20 @@ class Garden {
   int numberOfMethods;
 
   /// reference where the object is stored in the database
-  final DocumentReference reference;
+  DocumentReference reference;
 
   /// which [BiodiversityMeasure] are contained in this garden,
   /// referenced by name
   Map<String, int> ownedObjects;
+
+  final StorageProvider _storage;
+
+  /// creates an empty garden as placeholder
+  Garden.empty(this._storage) {
+    name = '';
+    street = '';
+    city = '';
+  }
 
   /// create a new garden
   Garden(
@@ -31,12 +43,12 @@ class Garden {
       this.numberOfStructureElements,
       this.numberOfMethods,
       this.numberOfPlants,
-      this.reference,
-      this.ownedObjects);
+      this.ownedObjects,
+      this._storage);
 
   /// creates a Garden from the provided Map.
   /// Used for database loading and testing
-  Garden.fromMap(Map<String, dynamic> map, {this.reference})
+  Garden.fromMap(Map<String, dynamic> map, this._storage, {this.reference})
       : assert(map['name'] != null),
         assert(map['city'] != null),
         assert(map['street'] != null),
@@ -53,19 +65,19 @@ class Garden {
         ownedObjects = Map<String, int>.from(map['ownedObjects'] as Map);
 
   /// loads a garden form a database snapshot
-  Garden.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data(), reference: snapshot.reference);
+  Garden.fromSnapshot(DocumentSnapshot snapshot, StorageProvider storage)
+      : this.fromMap(snapshot.data(), storage, reference: snapshot.reference);
 
   /// saves a specific detail to the database
   /// this method will fail if the garden does not exist in the database
   void saveGardenDetail(String field, dynamic value) {
-    FirebaseFirestore.instance.doc(reference.id).update({field: value});
+    _storage.database.doc(reference.id).update({field: value});
   }
 
   /// saves the garden object to the database
   /// any information already present on the database will be overridden
   Future<void> saveGarden() async {
-    return FirebaseFirestore.instance.doc(reference.path).set({
+    return _storage.database.doc(reference.path).set({
       'name': name,
       'street': street,
       'city': city,

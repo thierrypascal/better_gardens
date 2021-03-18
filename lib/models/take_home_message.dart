@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/services.dart';
 
 /// A container class of a take home message.
 class TakeHomeMessage {
@@ -25,28 +25,31 @@ class TakeHomeMessage {
   final DocumentReference reference;
 
   final _storage = FirebaseStorage.instance;
-  final _descriptionPath = "takeHomeMessages/body/";
+  final _descriptionPath = 'takeHomeMessages/body/';
 
   /// creates a [TakeHomeMessage] from the provided map
   /// used to load elements from the database and for testing
   TakeHomeMessage.fromMap(Map<String, dynamic> map, {this.reference})
-      : title = map.containsKey('title') ? map['title'] as String : "",
-        readTime = map.containsKey('readTime') ? map['readTime'] as String : "",
+      : title = map.containsKey('title') ? map['title'] as String : '',
+        readTime = map.containsKey('readTime') ? map['readTime'] as String : '',
         imageSource =
             map.containsKey('image') ? map['image'] as String : 'res/logo.png' {
     _loadDescription();
   }
 
   Future<void> _loadDescription() async {
-    try{
-      final data = await _storage.ref().child("takeHomeMessages/body/$title.md").getData(1024*1024);
-      description = Utf8Decoder().convert(data);
-    }catch(e){
-      description = "Fehler: keine Beschreibung gefunden.";
+    try {
+      final data = await _storage
+          .ref()
+          .child('takeHomeMessages/body/$title.md')
+          .getData(1024 * 1024);
+      description = const Utf8Decoder().convert(data);
+    } on PlatformException {
+      description = 'Fehler: keine Beschreibung gefunden.';
     }
 
     //TODO: make a nicer shortDescription
-    shortDescription = description.substring(0, 400) + "...";
+    shortDescription = '${description.substring(0, 400)}...';
   }
 
   /// load a [TakeHomeMessage] form a database snapshot
