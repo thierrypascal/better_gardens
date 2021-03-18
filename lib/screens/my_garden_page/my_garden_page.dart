@@ -5,6 +5,7 @@ import 'package:biodiversity/models/garden.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
 
 /// Displays the page where the user can see his own garden
 class MyGarden extends StatefulWidget {
@@ -39,7 +40,7 @@ class _MyGardenState extends State<MyGarden> {
 }
 
 Widget _buildBody(BuildContext context, List<DocumentSnapshot> snapshot) {
-  final garden = Garden.fromSnapshot(snapshot.first);
+  final garden = Provider.of<Garden>(context);
   final _textController = TextEditingController(text: garden.name);
 
   void _onSaveGarden() {

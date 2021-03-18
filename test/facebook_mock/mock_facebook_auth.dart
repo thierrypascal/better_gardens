@@ -3,26 +3,26 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:uuid/uuid.dart';
 
-class FacebookMockUser {
+class MockFacebookUser {
   String name;
   String password;
   String email;
   final String uuid;
   bool signedIn;
 
-  FacebookMockUser(this.name, this.password, this.email)
+  MockFacebookUser(this.name, this.password, this.email)
       : uuid = Uuid().v1(),
         signedIn = false;
 }
 
 /// Mocks a FacebookAuth instance with a single User provided at construction
-class FacebookAuthMock extends Mock implements FacebookAuth {
+class MockFacebookAuth extends Mock implements FacebookAuth {
   /// mock User
-  FacebookMockUser mockUser =
-      FacebookMockUser('tester', '123456', 'tester@test.com');
+  MockFacebookUser mockUser =
+      MockFacebookUser('tester', '123456', 'tester@test.com');
 
   /// provide the mocked User which will be used to perform all actions
-  FacebookAuthMock({mockUser});
+  MockFacebookAuth({mockUser});
 
   AccessToken _getAccessToken({
     List<String> permissions = const ['email', 'public_profile'],

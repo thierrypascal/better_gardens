@@ -1,8 +1,5 @@
 import 'package:biodiversity/models/user.dart';
-import 'package:cloud_firestore_mocks/cloud_firestore_mocks.dart';
-import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
 
 import '../facebook_mock/mock_storage_provider.dart';
 
@@ -11,9 +8,6 @@ const pw = '123456';
 const email = 'gabriel@tester.com';
 
 void main() {
-  final google = MockGoogleSignIn();
-  final auth = MockFirebaseAuth();
-  final firebase = MockFirestoreInstance();
   final testUser = User.empty(MockStorageProvider());
 
   test('User test', () async {

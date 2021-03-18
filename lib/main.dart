@@ -1,4 +1,5 @@
 import 'package:biodiversity/models/biodiversity_service.dart';
+import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/map_marker_service.dart';
 import 'package:biodiversity/models/species_service.dart';
@@ -37,6 +38,9 @@ class MyApp extends StatelessWidget {
               ChangeNotifierProvider(
                 create: (context) => User.empty(storage),
                 lazy: false,
+              ),
+              ChangeNotifierProvider(
+                create: (context) => Garden.empty(storage),
               ),
               ChangeNotifierProvider(
                 create: (context) => BiodiversityService(storage),
