@@ -1,17 +1,20 @@
+import 'package:biodiversity/models/image_service.dart';
 import 'package:biodiversity/models/take_home_message.dart';
 import 'package:biodiversity/screens/detailview_page/detailview_page_take_home_message.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:provider/provider.dart';
 
 /// A Card which shows a take home message. If you tap on the card it extends.
 /// And shows more information about the message
 class ExpandableTakeHomeMessageCard extends StatefulWidget {
   /// which message the cards shows
-  final TakeHomeMessage element;
+  final TakeHomeMessage takeHomeMessage;
 
   /// show a card to the provided element
-  ExpandableTakeHomeMessageCard(this.element, {Key key}) : super(key: key);
+  ExpandableTakeHomeMessageCard(this.takeHomeMessage, {Key key})
+      : super(key: key);
 
   @override
   _ExpandableTakeHomeMessageCardState createState() =>
@@ -37,13 +40,10 @@ class _ExpandableTakeHomeMessageCardState
             borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(5), topRight: Radius.circular(4)),
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              height: _expanded ? 100 : 0,
-              foregroundDecoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage(widget.element.imageSource),
-                      fit: BoxFit.fitWidth)),
-            ),
+                duration: const Duration(milliseconds: 200),
+                height: _expanded ? 100 : 0,
+                child: Provider.of<ImageService>(context, listen: false)
+                    .getImage(widget.takeHomeMessage.title, 'takeHomeMessage')),
           ),
           ExpansionTile(
             onExpansionChanged: (value) {
@@ -61,29 +61,20 @@ class _ExpandableTakeHomeMessageCardState
                 children: [
                   Flexible(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(widget.element.title,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16)),
-                            Text(widget.element.readTime,
-                                style: const TextStyle(fontSize: 14)),
-                          ],
-                        ),
+                        Text(widget.takeHomeMessage.title,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16)),
+                        Text(widget.takeHomeMessage.readTime,
+                            style: const TextStyle(fontSize: 14)),
                       ],
                     ),
                   ),
-                  Image(
-                    width: 60,
-                    height: 60,
-                    fit: BoxFit.cover,
-                    image: AssetImage(widget.element.imageSource),
-                  ),
+                  Provider.of<ImageService>(context, listen: false).getImage(
+                      widget.takeHomeMessage.title, 'takeHomeMessage',
+                      width: 50, height: 50, fit: BoxFit.fill)
                 ],
               ),
               secondChild: Row(
@@ -91,13 +82,13 @@ class _ExpandableTakeHomeMessageCardState
                 children: [
                   Expanded(
                     child: Text(
-                      widget.element.title,
+                      widget.takeHomeMessage.title,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 16),
                       softWrap: true,
                     ),
                   ),
-                  Text(widget.element.readTime,
+                  Text(widget.takeHomeMessage.readTime,
                       style: const TextStyle(fontSize: 14)),
                 ],
               ),
@@ -105,15 +96,16 @@ class _ExpandableTakeHomeMessageCardState
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 5, 5, 50),
-                child: MarkdownBody(data: widget.element.shortDescription),
+                child:
+                    MarkdownBody(data: widget.takeHomeMessage.shortDescription),
               ),
-              if (widget.element != null)
+              if (widget.takeHomeMessage != null)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10.0),
-                      child: FlatButton(
+                      child: TextButton(
                         onPressed: () {
                           if (_expanded) {
                             Navigator.push(
@@ -121,7 +113,7 @@ class _ExpandableTakeHomeMessageCardState
                               MaterialPageRoute(
                                   builder: (context) =>
                                       DetailViewPageTakeHomeMessage(
-                                          widget.element)),
+                                          widget.takeHomeMessage)),
                             ).then((value) {
                               setState(() {});
                             });

@@ -1,5 +1,6 @@
 import 'package:biodiversity/models/biodiversity_service.dart';
 import 'package:biodiversity/models/garden.dart';
+import 'package:biodiversity/models/image_service.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/map_marker_service.dart';
 import 'package:biodiversity/models/species_service.dart';
@@ -36,6 +37,9 @@ class MyApp extends StatelessWidget {
           return MultiProvider(
             providers: [
               ChangeNotifierProvider(
+                create: (context) => ImageService(storage),
+              ),
+              ChangeNotifierProvider(
                 create: (context) => User.empty(storage),
                 lazy: false,
               ),
@@ -66,7 +70,7 @@ class MyApp extends StatelessWidget {
                 // This is the theme of your application.
                 primarySwatch: Colors.green,
                 disabledColor:
-                Theme.of(context).colorScheme.onPrimary.withOpacity(0.5),
+                    Theme.of(context).colorScheme.onPrimary.withOpacity(0.5),
                 dividerColor: Colors.grey,
                 bottomSheetTheme: const BottomSheetThemeData(
                     backgroundColor: Colors.green,

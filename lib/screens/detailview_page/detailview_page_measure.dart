@@ -1,6 +1,7 @@
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/tags/flutter_tags.dart';
 import 'package:biodiversity/models/biodiversity_measure.dart';
+import 'package:biodiversity/models/image_service.dart';
 import 'package:biodiversity/models/species_service.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/detailview_page/detailview_page_species.dart';
@@ -29,16 +30,13 @@ class _DetailViewPageMeasureState extends State<DetailViewPageMeasure> {
       drawer: MyDrawer(),
       body: Column(
         children: [
-          Image(
-            image: AssetImage(widget.element.imageSource),
-            fit: BoxFit.fitWidth,
-            height: 150,
-            width: MediaQuery.of(context).size.width,
-          ),
+          Provider.of<ImageService>(context).getImage(
+              widget.element.name, widget.element.type,
+              height: 150, width: MediaQuery.of(context).size.width),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              FlatButton(
+              TextButton(
                   child: Row(
                     children: [
                       const Icon(Icons.arrow_back),

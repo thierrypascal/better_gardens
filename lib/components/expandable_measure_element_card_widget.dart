@@ -1,4 +1,5 @@
 import 'package:biodiversity/models/biodiversity_measure.dart';
+import 'package:biodiversity/models/image_service.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/detailview_page/detailview_page_measure.dart';
 import 'package:flutter/cupertino.dart';
@@ -39,13 +40,12 @@ class _ExpandableMeasureElementCardState
             borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(5), topRight: Radius.circular(4)),
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              height: _expanded ? 100 : 0,
-              foregroundDecoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage(widget.element.imageSource),
-                      fit: BoxFit.fitWidth)),
-            ),
+                duration: const Duration(milliseconds: 200),
+                height: _expanded ? 100 : 0,
+                child: Provider.of<ImageService>(context).getImage(
+                  widget.element.name,
+                  widget.element.type,
+                )),
           ),
           ExpansionTile(
             onExpansionChanged: (value) {
@@ -73,10 +73,10 @@ class _ExpandableMeasureElementCardState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      FlatButton(
+                      TextButton(
                         onPressed: () {},
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        padding: const EdgeInsets.all(2),
+                        style: const ButtonStyle(
+                            visualDensity: VisualDensity.compact),
                         child: Row(
                           children: [
                             const Padding(
@@ -90,12 +90,12 @@ class _ExpandableMeasureElementCardState
                           ],
                         ),
                       ),
-                      FlatButton(
+                      TextButton(
                         onPressed: () =>
                             Provider.of<User>(context, listen: false)
                                 .likeUnlikeElement(widget.element.name),
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        padding: const EdgeInsets.all(2),
+                        style: const ButtonStyle(
+                            visualDensity: VisualDensity.compact),
                         child: Row(
                           children: [
                             Padding(
@@ -116,12 +116,9 @@ class _ExpandableMeasureElementCardState
                     ],
                   ),
                   const SizedBox(width: 4),
-                  Image(
-                    width: 60,
-                    height: 60,
-                    fit: BoxFit.cover,
-                    image: AssetImage(widget.element.imageSource),
-                  ),
+                  Provider.of<ImageService>(context).getImage(
+                      widget.element.name, widget.element.type,
+                      height: 60, width: 60, fit: BoxFit.cover),
                 ],
               ),
               secondChild: Row(
@@ -172,7 +169,7 @@ class _ExpandableMeasureElementCardState
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10.0),
-                      child: FlatButton(
+                      child: TextButton(
                         onPressed: () {
                           if (_expanded) {
                             Navigator.push(
