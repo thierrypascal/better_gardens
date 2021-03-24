@@ -18,16 +18,14 @@ class MyDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      elevation: 5,
       child: Theme(
         data: ThemeData(
-            primarySwatch: Colors.green,
-            primaryColor: Colors.green[700],
+            appBarTheme: AppBarTheme(color: Theme.of(context).primaryColorDark),
             scaffoldBackgroundColor: Theme.of(context).colorScheme.primary,
             textTheme: TextTheme(
               bodyText1: TextStyle(
-                  color:
-                      Theme.of(context).colorScheme.onPrimary.withOpacity(0.8),
-                  fontSize: 16),
+                  color: Theme.of(context).colorScheme.onPrimary, fontSize: 16),
             )),
         child: Scaffold(
           appBar: AppBar(),
@@ -39,15 +37,111 @@ class MyDrawer extends StatelessWidget {
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    ListTile(
-                      title: const Text('Karte'),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => MapsPage()),
-                        );
-                      },
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15.0),
+                      child: Column(children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              const Image(
+                                  width: 50,
+                                  height: 50,
+                                  image: AssetImage('res/logo.png')),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Better Gardens',
+                                      style: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onPrimary,
+                                          fontWeight: FontWeight.w600)),
+                                  Text(
+                                    "Let's talk about Better Gardens!",
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onPrimary),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        ListTile(
+                          title: const Text('Karte'),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MapsPage()),
+                            );
+                          },
+                        ),
+                        ListTile(
+                          title: const Text('Account'),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AccountPage()),
+                            );
+                          },
+                        ),
+                        ListTile(
+                          title: const Text('Mein Garten'),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MyGarden()),
+                            );
+                            // ...
+                          },
+                        ),
+                        ListTile(
+                          title: const Text('Nachrichten'),
+                          onTap: () {},
+                        ),
+                        ListTile(
+                          title: const Text('Lebensräume'),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      HabitatElementListPage()),
+                            );
+                          },
+                        ),
+                        ListTile(
+                          title: const Text('Arten'),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SpeciesListPage()),
+                            );
+                          },
+                        ),
+                        ListTile(
+                          title: const Text('Merkliste'),
+                          onTap: () {},
+                        ),
+                        ListTile(
+                          leading: Icon(
+                            Icons.arrow_forward,
+                            color: Colors.white.withOpacity(0.8),
+                          ),
+                          title: const Text('Stadtwildtiere'),
+                          onTap: () {},
+                        ),
+                        // ignore: prefer_if_elements_to_conditional_expressions
+                        _loginLogoutButton(context),
+                      ]),
                     ),
                     ListTile(
                       title: const Text('Account'),
@@ -146,7 +240,7 @@ class MyDrawer extends StatelessWidget {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('ausloggen ?'),
+              title: const Text('ausloggen ?'),
               content: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
