@@ -34,7 +34,7 @@ dependencies:
   flutter_markdown:
 
   provider:
-
+  cached_network_image:
   http:
 
   #Authentication

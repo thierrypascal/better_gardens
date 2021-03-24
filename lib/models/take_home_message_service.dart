@@ -20,7 +20,7 @@ class TakeHomeMessageService extends ChangeNotifier {
   void _updateElements(QuerySnapshot snapshots) {
     _messages.clear();
     for (final DocumentSnapshot snapshot in snapshots.docs) {
-      _messages.add(TakeHomeMessage.fromSnapshot(snapshot));
+      _messages.add(TakeHomeMessage.fromSnapshot(snapshot, _storage));
     }
     notifyListeners();
   }
