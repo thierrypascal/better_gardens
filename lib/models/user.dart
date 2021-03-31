@@ -30,8 +30,17 @@ class User extends ChangeNotifier {
   /// The surname is the family name of the user like Ineichen
   String surname;
 
-  /// the phone String is a mobile phone number
-  String phone;
+  /// the URL which points to the profile picture
+  String imageURL;
+
+  /// email from the user
+  String mail;
+
+  /// toggle whether to show the username on the map
+  bool showNameOnMap;
+
+  /// toggle whether an image of the garden is visible on the map
+  bool showGardenImageOnMap;
 
   /// Provides an empty User object. This should only be used once at App start.
   User.empty(this._storage)
@@ -39,10 +48,14 @@ class User extends ChangeNotifier {
         _gardens = <DocumentReference>{},
         _favoredObjects = <String>{},
         _addressID = null,
-        nickname = '',
-        name = '',
-        surname = '',
-        phone = '';
+        nickname = 'TestNickname',
+        //TODO remove before commit
+        name = 'TestName',
+        surname = 'TestSurname',
+        imageURL = '',
+        mail = 'test.tester@testing.com',
+        showNameOnMap = true,
+        showGardenImageOnMap = true;
 
   /// Loads the details like nickname, liked objects etc. form the database
   /// After the details are loaded, the listeners are notified
@@ -55,12 +68,14 @@ class User extends ChangeNotifier {
       return false;
     }
     final doc = await _storage.database.doc(documentPath).get();
+    logging.log('doc $documentPath');
     if (!doc.exists) {
       logging.log('Loading failed, no doc found');
       return false;
     }
-    logging.log('load details');
     final map = doc.data();
+    logging.log(map.toString());
+    logging.log('load details');
     if (map.containsKey('nickname') && map['nickname'] is String) {
       nickname = map['nickname'];
     }
@@ -73,14 +88,24 @@ class User extends ChangeNotifier {
     if (map.containsKey('addressID') && map['addressID'] is DocumentReference) {
       _addressID = map['addressID'];
     }
-    if (map.containsKey('phone') && map['phone'] is String) {
-      phone = map['phone'];
+    if (map.containsKey('imageURL') && map['imageURL'] is String) {
+      imageURL = map['imageURL'];
     }
     if (map.containsKey('gardens') && map['gardens'] is List) {
       _gardens = Set<DocumentReference>.from(map['gardens']);
     }
     if (map.containsKey('favoredObjects') && map['favoredObjects'] is List) {
       _favoredObjects = Set.from(map['favoredObjects']);
+    }
+    if (map.containsKey('mail') && map['mail'] is String) {
+      mail = map['mail'];
+    }
+    if (map.containsKey('showNameOnMap') && map['showNameOnMap'] is bool) {
+      showNameOnMap = map['showNameOnMap'];
+    }
+    if (map.containsKey('showGardenImageOnMap') &&
+        map['showGardenImageOnMap'] is bool) {
+      showGardenImageOnMap = map['showGardenImageOnMap'];
     }
     logging.log('loaded User: ${toString()}');
     if (informListeners) {
@@ -99,10 +124,13 @@ class User extends ChangeNotifier {
       'nickname': nickname,
       'name': name,
       'surname': surname,
+      'mail': mail,
       'addressID': _addressID,
-      'phone': phone,
+      'imageURL': imageURL,
       'gardens': _gardens.toList(),
       'favoredObjects': _favoredObjects.toList(),
+      'showNameOnMap': showNameOnMap,
+      'showGardenImageOnMap': showGardenImageOnMap,
     });
     return true;
   }
@@ -114,8 +142,11 @@ class User extends ChangeNotifier {
       {String newName,
       String newSurname,
       String newNickname,
-      String newPhone,
+      String newMail,
+      String newImageURL,
       String newAddress,
+      bool doesShowNameOnMap,
+      bool doesShowGardenImageOnMap,
       bool informListeners = true}) {
     if (newName != null) name = newName;
     if (newSurname != null) surname = newSurname;
@@ -125,9 +156,14 @@ class User extends ChangeNotifier {
         _storage.auth.currentUser.updateProfile(displayName: nickname);
       }
     }
-    if (newPhone != null) phone = newPhone;
+    if (newImageURL != null) imageURL = newImageURL;
     if (newAddress != null) {
       //TODO search for address objects
+    }
+    if (newMail != null) mail = newMail;
+    if (doesShowNameOnMap != null) showNameOnMap = doesShowNameOnMap;
+    if (doesShowGardenImageOnMap != null) {
+      showGardenImageOnMap = doesShowGardenImageOnMap;
     }
     saveUser();
     if (informListeners) {
@@ -176,11 +212,14 @@ class User extends ChangeNotifier {
     nickname = '';
     name = '';
     surname = '';
-    phone = '';
+    imageURL = '';
+    mail = '';
     _addressID = null;
     _gardens = <DocumentReference>{};
     _favoredObjects = <String>{};
     _loggedIn = false;
+    showNameOnMap = true;
+    showGardenImageOnMap = true;
     notifyListeners();
   }
 
@@ -258,6 +297,9 @@ class User extends ChangeNotifier {
         }
         _loggedIn = true;
         await loadDetailsFromLoggedInUser();
+        if (mail.isEmpty && email.isNotEmpty) {
+          updateUserData(newMail: email);
+        }
       } on FirebaseAuthException catch (error) {
         if (error.code == 'invalid-email') {
           return LoginResult('Die eingegebene Email Adresse ist ungültig.');
@@ -405,7 +447,8 @@ class User extends ChangeNotifier {
       final authUser = await _storage.auth.signInWithCredential(credential);
       authUser.user.updateProfile(displayName: displayName);
       authUser.user.updateEmail(email);
-      updateUserData(newNickname: displayName, informListeners: false);
+      updateUserData(
+          newNickname: displayName, informListeners: false, newMail: mail);
       _loggedIn = true;
       await loadDetailsFromLoggedInUser();
       return null;
