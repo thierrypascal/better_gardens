@@ -1,3 +1,4 @@
+import 'package:biodiversity/components/white_redirect_page.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/account_page/account_page.dart';
 import 'package:biodiversity/screens/information_list_page/habitat_elements_list_page.dart';
@@ -146,11 +147,21 @@ class MyDrawer extends StatelessWidget {
                     ListTile(
                       title: const Text('Account'),
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AccountPage()),
-                        );
+                        if (Provider.of<User>(context, listen: false)
+                            .isLoggedIn) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AccountPage()));
+                        } else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => WhiteRedirectPage(
+                                    'Bitte melde dich zuerst an',
+                                    LoginPage())),
+                          );
+                        }
                       },
                     ),
                     ListTile(

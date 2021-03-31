@@ -67,7 +67,10 @@ class MyApp extends StatelessWidget {
             child: MaterialApp(
               title: 'Better Gardens',
               theme: ThemeData(
+                buttonBarTheme: const ButtonBarThemeData(
+                    alignment: MainAxisAlignment.spaceBetween),
                 // This is the theme of your application.
+                //brightness: Brightness.dark, // set this for darkmode
                 primarySwatch: Colors.green,
                 disabledColor:
                     Theme.of(context).colorScheme.onPrimary.withOpacity(0.5),
