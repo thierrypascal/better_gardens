@@ -1,9 +1,12 @@
 import 'dart:developer' as logging;
+import 'dart:io';
 
 import 'package:biodiversity/models/storage_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:path_provider/path_provider.dart';
 
 /// Service which holds the image urls and copyright information
 /// This helps to reduce loading times
@@ -108,6 +111,23 @@ class ImageService extends ChangeNotifier {
     );
   }
 
+  /// Returns the image referenced by the provided URL
+  Widget getImageByUrl(String url,
+      {int imageNr,
+      double width = double.infinity,
+      double height,
+      BoxFit fit = BoxFit.fitWidth,
+      AlignmentGeometry copyrightAlignment = AlignmentDirectional.bottomEnd}) {
+    return CachedNetworkImage(
+      width: width,
+      height: height,
+      fit: fit,
+      imageUrl: url,
+      cacheKey: url,
+      errorWidget: (context, str, error) => getImage('default', 'error'),
+    );
+  }
+
   /// returns the associated download link to the name<br>
   /// Example name: Asthaufen<br>
   /// Example type: biodiversityMeasures
@@ -151,5 +171,28 @@ class ImageService extends ChangeNotifier {
     }
     _copyrightInfo[key] = doc.data()['copyright'];
     return doc.data()['copyright'];
+  }
+
+  /// Handles the upload of an image to firestore.
+  /// Any existing image with the same name will be overridden<br>
+  /// Returns the download URL of the image. <br>
+  /// The bucket parameter will dictate which folder will be used.
+  /// Example: user/{USERID} would create a folder user
+  /// and for each user id another subfolder
+  Future<String> uploadImage(File file, String bucket,
+      {String filename, int quality = 80, int minImageSize = 500}) async {
+    // Resize image to make sure its smaller than the maxSize
+    final tempPath = (await getTemporaryDirectory()).path;
+    var uploadImage = await FlutterImageCompress.compressAndGetFile(
+        file.path, '$tempPath/temp.jpeg',
+        minHeight: minImageSize, minWidth: minImageSize, quality: quality);
+
+    // upload of the file
+    final reference =
+        _storage.fileStorage.ref().child('userUpload/$bucket/$filename');
+    final task = reference.putFile(uploadImage);
+    final docRef = await task.onComplete;
+    File('$tempPath/temp.jpeg').delete();
+    return await docRef.ref.getDownloadURL();
   }
 }

@@ -36,6 +36,8 @@ dependencies:
   provider:
   cached_network_image:
   http:
+  image_picker:
+  flutter_image_compress:
 
   #Authentication
   firebase_auth:
