@@ -92,7 +92,7 @@ class TagsState extends State<Tags> {
   double _width = 0;
 
   ///Not final to let list be editable
-  List<DataList> _list = List();
+  List<DataList> _list = [];
 
   ///Return all TagItems
   List<Item> get getAllItem => _list.toList();
@@ -204,7 +204,7 @@ class TagsState extends State<Tags> {
           )
         : null;
 
-    List<Widget> finalList = List();
+    List<Widget> finalList = [];
 
     List<Widget> itemList = List.generate(widget.itemCount, (i) {
       final Widget item = widget.itemBuilder(i);

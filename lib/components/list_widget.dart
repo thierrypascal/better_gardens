@@ -165,14 +165,14 @@ class _ListWidgetState extends State<ListWidget> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          FlatButton(
+                          TextButton(
                             child: const Text('Alle selektieren'),
                             onPressed: () {
                               _tagStateKey.currentState.setAllItemsActive();
                               filterClassResults();
                             },
                           ),
-                          FlatButton(
+                          TextButton(
                             child: const Text('Selektion aufheben'),
                             onPressed: () {
                               _tagStateKey.currentState.setAllItemsInactive();

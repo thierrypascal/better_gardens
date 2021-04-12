@@ -21,7 +21,8 @@ class ExpandableSpeciesElementCard extends StatefulWidget {
       _ExpandableSpeciesElementCardState();
 }
 
-class _ExpandableSpeciesElementCardState extends State<ExpandableSpeciesElementCard> {
+class _ExpandableSpeciesElementCardState
+    extends State<ExpandableSpeciesElementCard> {
   bool _expanded = false;
 
   @override

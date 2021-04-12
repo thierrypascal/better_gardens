@@ -125,7 +125,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   children: [
                     Row(
                       children: [
-                        FlatButton(
+                        TextButton(
                           onPressed: () async {
                             final _read = await showPrivacyAgreement(context);
                             setState(() {
@@ -176,7 +176,7 @@ class _RegisterFormState extends State<RegisterForm> {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => WelcomePage()));
       } else {
-        Scaffold.of(context)
+        ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(errorMessage)));
       }
     }
