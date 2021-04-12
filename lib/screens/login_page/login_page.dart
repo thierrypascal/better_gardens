@@ -65,7 +65,7 @@ class LoginPage extends StatelessWidget {
           signInFunction:
               Provider.of<User>(context, listen: false).signInWithFacebook,
         ),
-        FlatButton(
+        TextButton(
             onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => RegisterPage()));
@@ -122,17 +122,17 @@ class SignInButton extends StatelessWidget {
       {@required Function() signInFunction}) async {
     final result = await signInFunction();
     if (result == null) {
-      Scaffold.of(context).showSnackBar(const SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Anmeldung erfolgreich'),
       ));
       return;
     }
     if (!result.isRegistered) {
-      Scaffold.of(context).showSnackBar(const SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Du bist noch nicht registriert mit deinem account.\n'
               'Bitte registriere dich zuerst, bevor du dich anmeldest.')));
     } else {
-      Scaffold.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(result.message),
       ));
     }

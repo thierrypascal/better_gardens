@@ -1,4 +1,4 @@
-import 'package:biodiversity/components/drawer.dart';
+import 'package:biodiversity/components/screen_with_logo_and_waves.dart';
 import 'package:biodiversity/screens/login_page/register_email_page.dart';
 import 'package:biodiversity/screens/login_page/register_facebook_page.dart';
 import 'package:biodiversity/screens/login_page/register_google_page.dart';
@@ -12,93 +12,60 @@ class RegisterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO use screen_with_logo_and_waves.dart
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Registrieren'),
-      ),
-      drawer: MyDrawer(),
-      body: LayoutBuilder(
-        builder: (context, constraint) {
-          return SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                  minHeight: constraint.maxHeight,
-                  minWidth: constraint.maxWidth),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(30.0),
-                    child: ButtonTheme(
-                      minWidth: double.infinity,
-                      height: 40,
-                      buttonColor: Colors.white,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Center(
-                            child: Image(
-                              image: AssetImage('res/logo.png'),
-                              width: 180,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          const Text(
-                            'Registrieren mit',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20),
-                          ),
-                          const SizedBox(height: 20),
-                          RaisedButton(
-                            elevation: 5,
-                            onPressed: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => RegisterEmailPage())),
-                            child: const Text('E-Mail'),
-                          ),
-                          RaisedButton(
-                            elevation: 5,
-                            onPressed: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        RegisterGooglePage())),
-                            child: const Text('Google'),
-                          ),
-                          RaisedButton(
-                            elevation: 5,
-                            onPressed: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        RegisterFacebookPage())),
-                            child: const Text('Facebook'),
-                          ),
-                          RaisedButton(
-                            elevation: 5,
-                            onPressed: () {
-                              //TODO add Twitter login
-                            },
-                            child: const Text('Twitter'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const Image(
-                    image: AssetImage('res/gardenDrawer.png'),
-                    width: double.infinity,
-                    fit: BoxFit.fitWidth,
-                  ),
-                ],
-              ),
+    final _buttonStyle = ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(Colors.white),
+        foregroundColor: MaterialStateProperty.all(Colors.black),
+        minimumSize: MaterialStateProperty.all(const Size(double.infinity, 40)),
+        textStyle: MaterialStateProperty.all(
+            const TextStyle(fontWeight: FontWeight.w500, fontSize: 22)));
+
+    return LogoAndWavesScreen(
+      title: 'Registrieren',
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(
+              height: 20,
             ),
-          );
-        },
-      ),
+            const Text(
+              'Registrieren mit',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              style: _buttonStyle,
+              onPressed: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => RegisterEmailPage())),
+              child: const Text('E-Mail'),
+            ),
+            ElevatedButton(
+              style: _buttonStyle,
+              onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => RegisterGooglePage())),
+              child: const Text('Google'),
+            ),
+            ElevatedButton(
+              style: _buttonStyle,
+              onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => RegisterFacebookPage())),
+              child: const Text('Facebook'),
+            ),
+            ElevatedButton(
+              style: _buttonStyle,
+              onPressed: () {
+                //TODO add Twitter login
+              },
+              child: const Text('Twitter'),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

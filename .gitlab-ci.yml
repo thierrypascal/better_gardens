@@ -1,27 +1,32 @@
 stages:
+  - setup
   - test
   - build
   - analyze
+
+setup_phase:
+  stage: setup
+  script:
+    - flutter clean
+    - flutter channel stable
+    - flutter upgrade
+    - flutter pub upgrade
+    - flutter doctor --android-licenses
+    - flutter doctor -v
+
 flutter_test:
   stage: test
   before_script:
-    - whoami
-    - echo $PATH
-    - pwd
-    - flutter doctor -v
+    - flutter clean
+    - flutter pub get
   script:
     - flutter test
 
 build_android_release:
   stage: build
   before_script:
-    - whoami
-    - echo $PATH
-    - flutter packages get
     - flutter clean
-    - flutter doctor --android-licenses
-    - flutter doctor
-    - pwd
+    - flutter pub get
   script:
     - flutter build appbundle --debug
   artifacts:
