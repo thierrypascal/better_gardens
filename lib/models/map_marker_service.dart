@@ -1,5 +1,6 @@
 import 'package:biodiversity/models/address_object.dart';
 import 'package:biodiversity/models/biodiversity_service.dart';
+import 'package:biodiversity/models/storage_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -12,10 +13,11 @@ class MapMarkerService extends ChangeNotifier {
   final List<AddressObject> _markers = [];
   final BuildContext _context;
   bool _initialized = false;
+  final StorageProvider _storage;
 
   ///init of the service, should only be used once
-  MapMarkerService(this._context) {
-    FirebaseFirestore.instance
+  MapMarkerService(this._context, this._storage) {
+    _storage.database
         .collection('locations')
         .snapshots()
         .listen(_updateElements);
@@ -25,7 +27,7 @@ class MapMarkerService extends ChangeNotifier {
   void _updateElements(QuerySnapshot snapshots) {
     _markers.clear();
     for (final DocumentSnapshot snapshot in snapshots.docs) {
-      _markers.add(AddressObject.fromSnapshot(snapshot));
+      _markers.add(AddressObject.fromSnapshot(snapshot, _storage));
     }
     _initialized = true;
     notifyListeners();
@@ -89,7 +91,7 @@ class MapMarkerService extends ChangeNotifier {
     }
     if (addressObject == null) {
       addressObject = AddressObject({element: amount},
-          GeoPoint(coordinate.latitude, coordinate.longitude));
+          GeoPoint(coordinate.latitude, coordinate.longitude), _storage);
       _markers.add(addressObject);
     }
     notifyListeners();

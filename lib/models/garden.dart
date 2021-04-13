@@ -1,9 +1,12 @@
 import 'dart:core';
 
+import 'package:biodiversity/models/biodiversity_measure.dart';
+import 'package:biodiversity/models/storage_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 /// Container class for the garden
-class Garden {
+class Garden extends ChangeNotifier {
   /// nickname of the garden
   String name;
 
@@ -12,74 +15,120 @@ class Garden {
 
   /// city the garden is in
   String city;
-  int numberOfStructureElements;
-  int numberOfPlants;
-  int numberOfMethods;
+
+  /// latitude coordinates of garden placement on map
+  double latitude;
+
+  /// longitude coordinates of garden placement on map
+  double longitude;
 
   /// reference where the object is stored in the database
-  final DocumentReference reference;
+  DocumentReference reference;
 
-  /// which [BiodiversityMeasure] are contained in this garden,
-  /// referenced by name
+  /// which [BiodiversityMeasure] are contained in this garden
   Map<String, int> ownedObjects;
+
+  /// reference to the associated User
+  List<String> owner;
+
+  final StorageProvider _storage;
+
+  /// creates an empty garden as placeholder
+  Garden.empty(this._storage) {
+    name = '';
+    street = '';
+    city = '';
+    owner = [];
+    ownedObjects = {};
+  }
+
+  /// which [Vernetzungsprojekte] are contained in this garden
+  //TODO: Implement Vernetzungsprojekte and switch String to Vernetzungsprojekt
+  List<String> ownedLinkingProjects;
 
   /// create a new garden
   Garden(
       this.name,
       this.street,
       this.city,
-      this.numberOfStructureElements,
-      this.numberOfMethods,
-      this.numberOfPlants,
+      this.latitude,
+      this.longitude,
       this.reference,
-      this.ownedObjects);
+      this.ownedObjects,
+      this.ownedLinkingProjects,
+      this.owner,
+      this._storage);
 
   /// creates a Garden from the provided Map.
   /// Used for database loading and testing
-  Garden.fromMap(Map<String, dynamic> map, {this.reference})
-      : assert(map['name'] != null),
-        assert(map['city'] != null),
-        assert(map['street'] != null),
-        assert(map['numberOfStructureElements'] != null),
-        assert(map['numberOfPlants'] != null),
-        assert(map['numberOfMethods'] != null),
-        assert(map['ownedObjects'] != null),
-        name = map['name'] as String,
-        city = map['city'] as String,
-        street = map['street'] as String,
-        numberOfStructureElements = map['numberOfStructureElements'] as int,
-        numberOfPlants = map['numberOfPlants'] as int,
-        numberOfMethods = map['numberOfMethods'] as int,
-        ownedObjects = Map<String, int>.from(map['ownedObjects'] as Map);
+  Garden.fromMap(Map<String, dynamic> map, this._storage, {this.reference})
+      : name = map.containsKey('name') ? map['name'] as String : '',
+        city = map.containsKey('city') ? map['city'] as String : '',
+        street = map.containsKey('street') ? map['street'] as String : '',
+        latitude = map.containsKey('latitude')
+            ? map['latitude'] as double
+            // FIBL coordinates
+            : 47.516957350645754,
+        longitude = map.containsKey('longitude')
+            ? map['longitude'] as double
+            // FIBL coordinates
+            : 8.025010981051828,
+        ownedObjects = map.containsKey('ownedObjects')
+            ? Map<String, int>.from(map['ownedObjects'] as Map)
+            : {},
+        ownedLinkingProjects = map.containsKey('ownedLinkingProjects')
+            ? Map<String, int>.from(map['ownedLinkingProjects'] as Map)
+            : {};
 
   /// loads a garden form a database snapshot
-  Garden.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data(), reference: snapshot.reference);
-
-  /// saves a specific detail to the database
-  /// this method will fail if the garden does not exist in the database
-  void saveGardenDetail(String field, dynamic value) {
-    FirebaseFirestore.instance.doc(reference.id).update({field: value});
-  }
+  Garden.fromSnapshot(DocumentSnapshot snapshot, StorageProvider storage)
+      : this.fromMap(snapshot.data(), storage, reference: snapshot.reference);
 
   /// saves the garden object to the database
   /// any information already present on the database will be overridden
   Future<void> saveGarden() async {
-    return FirebaseFirestore.instance.doc(reference.path).set({
+    return _storage.database.doc(reference.path).set({
+      'owner': owner,
       'name': name,
       'street': street,
       'city': city,
-      'numberOfPlants': numberOfPlants,
-      'numberOfMethods': numberOfMethods,
-      'numberOfStructureElements': numberOfStructureElements,
+      'latitude': latitude,
+      'longitude': longitude,
       'ownedObjects': ownedObjects,
+      'ownedLinkingProjects': ownedLinkingProjects,
     });
   }
 
-  /// removes a element from the garden
+  /// removes a element from the garden, changes are saved automatically
   void removeFromOwnedObjects(String object) {
     if (ownedObjects.containsKey(object)) {
       ownedObjects.remove(object);
+      saveGarden();
     }
   }
+
+  /// removes a element from the garden, changes are saved automatically
+  void removeFromLinkingProjects(String object) {
+    if (ownedLinkingProjects.contains(object)) {
+      ownedObjects.remove(object);
+      saveGarden();
+    }
+  }
+
+  int _countObjects(String type) {
+    // TODO actually count the different objects
+    return ownedObjects.length;
+  }
+
+  /// count of area objects
+  int get totalAreaObjects => _countObjects('area');
+
+  /// count of point objects
+  int get totalPointObjects => _countObjects('point');
+
+  /// count of point objects
+  int get totalLengthObjects => _countObjects('length');
+
+  /// count of point objects
+  int get totalSupportedSpecies => _countObjects('species');
 }

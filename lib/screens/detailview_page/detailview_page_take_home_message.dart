@@ -1,8 +1,10 @@
 import 'package:biodiversity/components/drawer.dart';
+import 'package:biodiversity/models/image_service.dart';
 import 'package:biodiversity/models/take_home_message.dart';
 import 'package:biodiversity/screens/take_home_message_page/take_home_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:provider/provider.dart';
 
 /// Shows the details of a BiodiversityMeasure
 class DetailViewPageTakeHomeMessage extends StatefulWidget {
@@ -28,9 +30,9 @@ class _DetailViewPageTakeHomeMessageState
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Image(
-              image: AssetImage(widget.element.imageSource),
-              fit: BoxFit.fitWidth,
+            Provider.of<ImageService>(context, listen: false).getImage(
+              widget.element.title,
+              'takeHomeMessage',
               height: 150,
               width: MediaQuery.of(context).size.width,
             ),

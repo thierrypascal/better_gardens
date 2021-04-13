@@ -1,3 +1,4 @@
+import 'package:biodiversity/models/image_service.dart';
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/detailview_page/detailview_page_species.dart';
@@ -41,10 +42,8 @@ class _ExpandableSpeciesElementCardState
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               height: _expanded ? 100 : 0,
-              foregroundDecoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage(widget.species.imageSource),
-                      fit: BoxFit.fitWidth)),
+              child: Provider.of<ImageService>(context, listen: false)
+                  .getImage(widget.species.name, widget.species.type),
             ),
           ),
           ExpansionTile(
@@ -73,10 +72,10 @@ class _ExpandableSpeciesElementCardState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      FlatButton(
+                      TextButton(
                         onPressed: () {},
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        padding: const EdgeInsets.all(2),
+                        style: const ButtonStyle(
+                            visualDensity: VisualDensity.compact),
                         child: Row(
                           children: [
                             const Padding(
@@ -90,12 +89,12 @@ class _ExpandableSpeciesElementCardState
                           ],
                         ),
                       ),
-                      FlatButton(
+                      TextButton(
                         onPressed: () =>
                             Provider.of<User>(context, listen: false)
                                 .likeUnlikeElement(widget.species.name),
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        padding: const EdgeInsets.all(2),
+                        style: const ButtonStyle(
+                            visualDensity: VisualDensity.compact),
                         child: Row(
                           children: [
                             Padding(
@@ -103,7 +102,7 @@ class _ExpandableSpeciesElementCardState
                               child: Icon(
                                 Icons.favorite,
                                 color: Provider.of<User>(context)
-                                    .doesLikeElement(widget.species.name)
+                                        .doesLikeElement(widget.species.name)
                                     ? Colors.red
                                     : Colors.black,
                                 size: 20,
@@ -116,12 +115,9 @@ class _ExpandableSpeciesElementCardState
                     ],
                   ),
                   const SizedBox(width: 4),
-                  Image(
-                    width: 60,
-                    height: 60,
-                    fit: BoxFit.cover,
-                    image: AssetImage(widget.species.imageSource),
-                  ),
+                  Provider.of<ImageService>(context).getImage(
+                      widget.species.name, widget.species.type,
+                      height: 60, width: 60, fit: BoxFit.cover),
                 ],
               ),
               secondChild: Row(
@@ -172,7 +168,7 @@ class _ExpandableSpeciesElementCardState
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10.0),
-                      child: FlatButton(
+                      child: TextButton(
                         onPressed: () {
                           if (_expanded) {
                             Navigator.push(
@@ -188,7 +184,7 @@ class _ExpandableSpeciesElementCardState
                         child: const Text(
                           'Weitere infos',
                           style:
-                          TextStyle(decoration: TextDecoration.underline),
+                              TextStyle(decoration: TextDecoration.underline),
                         ),
                       ),
                     ),

@@ -1,18 +1,19 @@
 import 'package:biodiversity/models/garden.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../environment/mock_storage_provider.dart';
+
 /// This test class makes sure no invalid data
 /// can be retrieved from the database
 void main() {
-
   // DocumentReference does not have to be passed as an argument if it is null
   // DocumentReference dummy = null; // does not really connect to a database
 
   Map<String, dynamic> gardenAttributes;
   Garden validGarden;
+  final storage = MockStorageProvider();
 
   test('Valid gardens', () {
-
     gardenAttributes = {
       'name': "Mr. Lewis' Garden",
       'city': 'Locarno',
@@ -22,7 +23,7 @@ void main() {
       'numberOfMethods': 1,
       'ownedObjects': {'dummy': 9}
     };
-    validGarden = Garden.fromMap(gardenAttributes);
+    validGarden = Garden.fromMap(gardenAttributes, storage);
     expect(validGarden, isA<Garden>());
 
     /* TODO unfortunately, this test passes. It should not.
@@ -38,12 +39,9 @@ void main() {
       "ownedObjects": {}
     };
 */
-
-
   });
 
   test('Invalid gardens', () {
-
     /* TODO this should not be valid: a garden should have a name and an address
          linked to it. A "" just makes no sense.
      */
@@ -56,7 +54,7 @@ void main() {
       'numberOfMethods': 0,
       'ownedObjects': {}
     };
-    // expect(() => Garden.fromMap(gardenAttributes), .....);
+    // expect(() => Garden.fromMap(gardenAttributes, storage), .....);
 
     gardenAttributes = {
       'name': null,
@@ -67,7 +65,8 @@ void main() {
       'numberOfMethods': 1,
       'ownedObjects': {}
     };
-    expect(() => Garden.fromMap(gardenAttributes), throwsAssertionError);
+    expect(
+        () => Garden.fromMap(gardenAttributes, storage), throwsAssertionError);
 
     gardenAttributes = {
       'name': "Mr. Lewis' Garden",
@@ -78,7 +77,8 @@ void main() {
       'numberOfMethods': 1,
       'ownedObjects': {}
     };
-    expect(() => Garden.fromMap(gardenAttributes), throwsAssertionError);
+    expect(
+        () => Garden.fromMap(gardenAttributes, storage), throwsAssertionError);
 
     gardenAttributes = {
       'name': "Mr. Lewis' Garden",
@@ -89,7 +89,8 @@ void main() {
       'numberOfMethods': 1,
       'ownedObjects': {}
     };
-    expect(() => Garden.fromMap(gardenAttributes), throwsAssertionError);
+    expect(
+        () => Garden.fromMap(gardenAttributes, storage), throwsAssertionError);
 
     gardenAttributes = {
       'name': "Mr. Lewis' Garden",
@@ -100,7 +101,8 @@ void main() {
       'numberOfMethods': 1,
       'ownedObjects': {}
     };
-    expect(() => Garden.fromMap(gardenAttributes), throwsA(isA<TypeError>()));
+    expect(() => Garden.fromMap(gardenAttributes, storage),
+        throwsA(isA<TypeError>()));
 
     gardenAttributes = {
       'name': "Mr. Lewis' Garden",
@@ -111,7 +113,8 @@ void main() {
       'numberOfMethods': 1,
       'ownedObjects': {}
     };
-    expect(() => Garden.fromMap(gardenAttributes), throwsAssertionError);
+    expect(
+        () => Garden.fromMap(gardenAttributes, storage), throwsAssertionError);
 
     gardenAttributes = {
       'name': "Mr. Lewis' Garden",
@@ -122,7 +125,8 @@ void main() {
       'numberOfMethods': null,
       'ownedObjects': {}
     };
-    expect(() => Garden.fromMap(gardenAttributes), throwsAssertionError);
+    expect(
+        () => Garden.fromMap(gardenAttributes, storage), throwsAssertionError);
 
     gardenAttributes = {
       'name': "Mr. Lewis' Garden",
@@ -133,8 +137,7 @@ void main() {
       'numberOfMethods': 1,
       'ownedObjects': null
     };
-    expect(() => Garden.fromMap(gardenAttributes), throwsAssertionError);
-
+    expect(
+        () => Garden.fromMap(gardenAttributes, storage), throwsAssertionError);
   });
-
 }
