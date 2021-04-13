@@ -1,6 +1,8 @@
 import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../environment/mock_storage_provider.dart';
+
 /// This test class makes sure no invalid data
 /// can be retrieved from the database
 void main() {
@@ -9,19 +11,23 @@ void main() {
 
   Map<String, dynamic> measureAttributes;
   BiodiversityMeasure validMeasure;
+  final storage = MockStorageProvider();
 
   test('Valid biodiversity measures', () {
     measureAttributes = {
       'name': 'Some name...',
       'description': 'Some description...',
-      'buildInstructions': 'Instructions...',
+      'unit': 'unit...',
       'type': 'dummy',
-      '_beneficialFor': ['birds'],
+      'beneficialFor': ['vogel'],
       'goodTogetherWith': ['birds'],
-      'imageSource': 'some/path'
+      'dimension': 'dimension..',
+      'unusedField': 'xyz'
     };
-    validMeasure = BiodiversityMeasure.fromMap(measureAttributes);
+    validMeasure = BiodiversityMeasure.fromMap(measureAttributes, storage);
     expect(validMeasure, isA<BiodiversityMeasure>());
+    expect(validMeasure.beneficialFor.contains('vogel'), true);
+    expect(validMeasure.goodTogetherWith.contains('birds'), true);
 
     measureAttributes = {
       'name': null,
@@ -32,57 +38,22 @@ void main() {
       '_badFor': null,
       'imageSource': null
     };
-    validMeasure = BiodiversityMeasure.fromMap(measureAttributes);
+    validMeasure = BiodiversityMeasure.fromMap(measureAttributes, storage);
     expect(validMeasure, isA<BiodiversityMeasure>());
-  });
-
-  test('Invalid biodiversity measures', () {
-    measureAttributes = {
-      'name': 1,
-      'description': 'Some description...',
-      'buildInstructions': 'Instructions...',
-      'type': 'dummy',
-      '_beneficialFor': {'birds': true},
-      '_badFor': {'birds': false},
-      'imageSource': 'some/path'
-    };
-    expect(() => BiodiversityMeasure.fromMap(measureAttributes),
-        throwsA(isA<TypeError>()));
-
-    measureAttributes = {
-      'name': 'Some name...',
-      'description': 2.3,
-      'shortDescription': 'Instructions...',
-      'type': 'dummy',
-      '_beneficialFor': {'birds': true},
-      '_badFor': {'birds': false},
-      'imageSource': 'some/path'
-    };
-    expect(() => BiodiversityMeasure.fromMap(measureAttributes),
-        throwsA(isA<TypeError>()));
 
     measureAttributes = {
       'name': 'Some name...',
       'description': 'Some description...',
-      'shortDescription': {'instruction inside a set'},
+      'unit': 'unit...',
       'type': 'dummy',
-      '_beneficialFor': {'birds': true},
-      '_badFor': {'birds': false},
-      'imageSource': 'some/path'
+      'beneficialFor': {'vogel': true},
+      'goodTogetherWith': {'birds': true},
+      'dimension': 'dimension..',
+      'unusedField': 'xyz'
     };
-    expect(() => BiodiversityMeasure.fromMap(measureAttributes),
-        throwsA(isA<TypeError>()));
-
-    measureAttributes = {
-      'name': 'Some name...',
-      'description': 'Some description...',
-      'shortDescription': 'Instructions...',
-      'type': {'no_type': true},
-      '_beneficialFor': {'birds': true},
-      '_badFor': {'birds': false},
-      'imageSource': 'some/path'
-    };
-    expect(() => BiodiversityMeasure.fromMap(measureAttributes),
-        throwsA(isA<TypeError>()));
+    validMeasure = BiodiversityMeasure.fromMap(measureAttributes, storage);
+    expect(validMeasure, isA<BiodiversityMeasure>());
+    expect(validMeasure.beneficialFor.contains('vogel'), false);
+    expect(validMeasure.goodTogetherWith.contains('birds'), false);
   });
 }

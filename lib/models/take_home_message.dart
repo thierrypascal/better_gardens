@@ -1,8 +1,6 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
+import 'package:biodiversity/models/storage_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/services.dart';
 
 /// A container class of a take home message.
 class TakeHomeMessage {
@@ -15,41 +13,42 @@ class TakeHomeMessage {
   /// a short description extracted from the description
   String shortDescription;
 
-  /// a reference to the image
-  final String imageSource;
-
   /// how long the message takes to read
   final String readTime;
 
   /// the reference to the location in the database
   final DocumentReference reference;
 
-  final _storage = FirebaseStorage.instance;
-  final _descriptionPath = "takeHomeMessages/body/";
+  final StorageProvider _storage;
 
   /// creates a [TakeHomeMessage] from the provided map
   /// used to load elements from the database and for testing
-  TakeHomeMessage.fromMap(Map<String, dynamic> map, {this.reference})
-      : title = map.containsKey('title') ? map['title'] as String : "",
-        readTime = map.containsKey('readTime') ? map['readTime'] as String : "",
-        imageSource =
-            map.containsKey('image') ? map['image'] as String : 'res/logo.png' {
+  TakeHomeMessage.fromMap(Map<String, dynamic> map, StorageProvider storage,
+      {this.reference})
+      : _storage = storage,
+        title = map.containsKey('title') ? map['title'] as String : '',
+        readTime = map.containsKey('readTime') ? map['readTime'] as String : '',
+        description = '',
+        shortDescription = '' {
     _loadDescription();
   }
 
   Future<void> _loadDescription() async {
-    try{
-      final data = await _storage.ref().child("takeHomeMessages/body/$title.md").getData(1024*1024);
-      description = Utf8Decoder().convert(data);
-    }catch(e){
-      description = "Fehler: keine Beschreibung gefunden.";
+    try {
+      description = await _storage
+          .getTextFromFileStorage('/takeHomeMessages/body/$title.md');
+    } on PlatformException {
+      description = 'Fehler: keine Beschreibung gefunden.';
     }
 
-    //TODO: make a nicer shortDescription
-    shortDescription = description.substring(0, 400) + "...";
+    var pointIndex = description.indexOf('\.', 400);
+    if (pointIndex == -1) pointIndex = 400;
+    shortDescription = '${description.substring(0, pointIndex)}.';
   }
 
   /// load a [TakeHomeMessage] form a database snapshot
-  TakeHomeMessage.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data(), reference: snapshot.reference);
+  TakeHomeMessage.fromSnapshot(
+      DocumentSnapshot snapshot, StorageProvider storageProvider)
+      : this.fromMap(snapshot.data(), storageProvider,
+            reference: snapshot.reference);
 }

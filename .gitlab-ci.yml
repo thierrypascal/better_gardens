@@ -1,28 +1,35 @@
 stages:
+  - setup
   - test
   - build
   - analyze
+
+setup_phase:
+  stage: setup
+  script:
+    - flutter clean
+    - flutter channel stable
+    - flutter upgrade
+    - flutter pub upgrade
+    - flutter doctor --android-licenses
+    - flutter doctor -v
+    - flutter pub outdated
+
 flutter_test:
   stage: test
   before_script:
-    - whoami
-    - echo $PATH
-    - pwd
-    - flutter doctor -v
+    - flutter clean
+    - flutter pub upgrade
+    - flutter pub get
   script:
-    - flutter test
+    - flutter test --no-null-assertions
 
 build_android_release:
   stage: build
   before_script:
-    - whoami
-    - echo $PATH
-    - pwd
-    - flutter packages get
     - flutter clean
-    - flutter doctor --android-licenses
-    - flutter doctor
-    - pwd
+    - flutter pub upgrade
+    - flutter pub get
   script:
     - flutter build appbundle --debug
   artifacts:
@@ -34,6 +41,7 @@ analyze:sonarqube:
   before_script:
     - export PATH="$PATH:/usr/share/sonar-scanner/bin"
     - export PATH="$PATH:/usr/lib/dart/bin"
+    - flutter pub upgrade
   allow_failure: true
   only:
     - master

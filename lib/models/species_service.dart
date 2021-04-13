@@ -1,4 +1,5 @@
 import 'package:biodiversity/models/species.dart';
+import 'package:biodiversity/models/storage_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -7,14 +8,12 @@ import 'package:flutter/foundation.dart';
 class SpeciesService extends ChangeNotifier {
   final List<Species> _species = [];
   final List<String> _classes = [];
+  final StorageProvider _storage;
   bool _initialized = false;
 
   /// init the service, should only be used once
-  SpeciesService() {
-    FirebaseFirestore.instance
-        .collection('species')
-        .snapshots()
-        .listen(_updateElements);
+  SpeciesService(this._storage) {
+    _storage.database.collection('species').snapshots().listen(_updateElements);
   }
 
   void _updateElements(QuerySnapshot snapshots) {
@@ -35,8 +34,7 @@ class SpeciesService extends ChangeNotifier {
 
   ///returns all Species
   List<Species> getFullSpeciesObjectList() {
-    return _species
-        .toList();
+    return _species.toList();
   }
 
   /// returns the type of a given Species
