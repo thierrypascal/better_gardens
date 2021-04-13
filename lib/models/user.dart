@@ -8,7 +8,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart' as fb_auth;
 
 /// The User class holds all information about the User of the app
 /// The class is built to be used as a singleton,
@@ -259,11 +260,14 @@ class User extends ChangeNotifier {
     if (isLoggedIn) {
       return null;
     }
-    AccessToken token;
+    fb_auth.LoginResult token;
     try {
       token = await _storage.facebookAuth
           .login(loginBehavior: 'dialog', permissions: ['email']);
-    } on FacebookAuthException {
+      if (token.status != fb_auth.FacebookAuthErrorCode.OPERATION_IN_PROGRESS) {
+        return LoginResult('Anmeldung abgebrochen');
+      }
+    } on PlatformException {
       return LoginResult('Anmeldung abgebrochen');
     }
     final data = await _storage.facebookAuth.getUserData(fields: 'email');
@@ -272,7 +276,7 @@ class User extends ChangeNotifier {
       return LoginResult(
           'Name oder Email konnte nicht von Facebook abgerufen werden');
     }
-    final credential = FacebookAuthProvider.credential(token.token);
+    final credential = FacebookAuthProvider.credential(token.accessToken.token);
     final result = await _signInWithCredential(
         credential: credential,
         email: data['email'],
@@ -407,18 +411,21 @@ class User extends ChangeNotifier {
     if (isLoggedIn) {
       return null;
     }
-    AccessToken token;
+    fb_auth.LoginResult token;
     try {
       token = await _storage.facebookAuth
           .login(loginBehavior: 'dialog', permissions: ['email']);
-    } on FacebookAuthException {
+      if (token.status != fb_auth.FacebookAuthErrorCode.OPERATION_IN_PROGRESS) {
+        return 'Registrierung abgebrochen';
+      }
+    } on PlatformException {
       return 'Registrierung abgebrochen';
     }
     final data = await _storage.facebookAuth.getUserData(fields: 'name, email');
     if (!data.containsKey('name') || !data.containsKey('email')) {
       return 'Name oder Email konnte nicht von Facebook abgerufen werden';
     }
-    final credential = FacebookAuthProvider.credential(token.token);
+    final credential = FacebookAuthProvider.credential(token.accessToken.token);
     final result = await _registerWithCredential(
         context: context,
         credential: credential,

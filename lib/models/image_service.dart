@@ -191,7 +191,7 @@ class ImageService extends ChangeNotifier {
     final reference =
         _storage.fileStorage.ref().child('userUpload/$bucket/$filename');
     final task = reference.putFile(uploadImage);
-    final docRef = await task.onComplete;
+    final docRef = await task;
     File('$tempPath/temp.jpeg').delete();
     return await docRef.ref.getDownloadURL();
   }

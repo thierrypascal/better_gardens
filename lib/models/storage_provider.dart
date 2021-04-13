@@ -9,7 +9,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 /// A class which provides a single place where external Storage is accessed
 class StorageProvider {
   /// Reference to the file-storage instance
-  final FirebaseStorage fileStorage = FirebaseStorage();
+  final FirebaseStorage fileStorage = FirebaseStorage.instance;
 
   /// Reference to the database instance
   final FirebaseFirestore database = FirebaseFirestore.instance;

@@ -1,5 +1,6 @@
 import 'package:biodiversity/models/biodiversity_service.dart';
 import 'package:biodiversity/models/garden.dart';
+import 'package:biodiversity/models/garden_service.dart';
 import 'package:biodiversity/models/image_service.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/map_marker_service.dart';
@@ -7,6 +8,7 @@ import 'package:biodiversity/models/species_service.dart';
 import 'package:biodiversity/models/storage_provider.dart';
 import 'package:biodiversity/models/take_home_message_service.dart';
 import 'package:biodiversity/models/user.dart';
+import 'package:biodiversity/screens/account_page/account_page.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +47,10 @@ class MyApp extends StatelessWidget {
               ),
               ChangeNotifierProvider(
                 create: (context) => Garden.empty(storage),
+              ),
+              ChangeNotifierProvider(
+                create: (context) => GardenService(storage),
+                lazy: false,
               ),
               ChangeNotifierProvider(
                 create: (context) => BiodiversityService(storage),
@@ -88,6 +94,7 @@ class MyApp extends StatelessWidget {
                 visualDensity: VisualDensity.adaptivePlatformDensity,
               ),
               home: LoginPage(),
+//              home: AccountPage(),
             ),
           );
         }

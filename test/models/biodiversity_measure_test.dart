@@ -1,7 +1,7 @@
 import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../facebook_mock/mock_storage_provider.dart';
+import '../environment/mock_storage_provider.dart';
 
 /// This test class makes sure no invalid data
 /// can be retrieved from the database

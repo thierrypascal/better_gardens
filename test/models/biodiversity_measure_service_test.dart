@@ -1,7 +1,7 @@
 import 'package:biodiversity/models/biodiversity_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../facebook_mock/mock_storage_provider.dart';
+import '../environment/mock_storage_provider.dart';
 
 void main() {
   test('test fetch all data', () async {
