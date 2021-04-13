@@ -20,11 +20,11 @@ class EmailLoginPage extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            FlatButton(
+            TextButton(
                 onPressed: () => Navigator.push(context,
                     MaterialPageRoute(builder: (context) => RegisterPage())),
                 child: const Text('Sign-Up')),
-            FlatButton(
+            TextButton(
                 onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -122,7 +122,7 @@ class _EmailFormState extends State<EmailForm> {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => WelcomePage()));
     } else {
-      Scaffold.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,

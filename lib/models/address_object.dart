@@ -1,6 +1,7 @@
 import 'dart:core';
 
 import 'package:biodiversity/models/biodiversity_measure.dart';
+import 'package:biodiversity/models/storage_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -20,12 +21,15 @@ class AddressObject {
 
   /// creates a new AddressObject with the provided elements
   /// at the given location
-  AddressObject(this.elements, this.coordinates, {this.reference})
+  AddressObject(this.elements, this.coordinates, this._storage,
+      {this.reference})
       : creationDate = DateTime.now();
+
+  final StorageProvider _storage;
 
   /// create a AddressObject form a database snapshot
   /// Only used to parse objects from the database
-  AddressObject.fromSnapshot(DocumentSnapshot snapshot)
+  AddressObject.fromSnapshot(DocumentSnapshot snapshot, this._storage)
       : reference = snapshot.reference,
         elements = snapshot.data().containsKey('elements')
             ? Map<String, int>.from(snapshot.data()['elements'] as Map)
@@ -42,19 +46,19 @@ class AddressObject {
   /// If the objects exists the details will be overridden
   Future<void> saveAddressObject() async {
     if (reference == null) {
-      final alreadyExisting = await FirebaseFirestore.instance
+      final alreadyExisting = await _storage.database
           .collection('locations')
           .where('coordinates', isEqualTo: coordinates)
           .get();
       if (alreadyExisting.docs.isEmpty) {
-        reference = await FirebaseFirestore.instance
+        reference = await _storage.database
             .collection('locations')
             .add({'coordinates': coordinates});
       } else {
         reference = alreadyExisting.docs.first.reference;
       }
     }
-    return FirebaseFirestore.instance.doc(reference.path).set({
+    return _storage.database.doc(reference.path).set({
       'elements': elements,
       'coordinates': coordinates,
       'creationDate': creationDate,
@@ -68,12 +72,12 @@ class AddressObject {
 
   /// returns all elements present at this location
   Future<List<BiodiversityMeasure>> getElements() async {
-    final collection = await FirebaseFirestore.instance
+    final collection = await _storage.database
         .collection('biodiversityMeasures')
         .where('name', whereIn: elements.keys.toList())
         .get();
     return collection.docs
-        .map((snapshot) => BiodiversityMeasure.fromSnapshot(snapshot))
+        .map((snapshot) => BiodiversityMeasure.fromSnapshot(snapshot, _storage))
         .toList();
   }
 

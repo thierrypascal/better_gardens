@@ -2,25 +2,38 @@ import 'package:biodiversity/components/expandable_measure_element_card_widget.d
 import 'package:biodiversity/components/expandable_species_element_card_widget.dart';
 import 'package:biodiversity/components/simple_measure_element_card_widget.dart';
 import 'package:biodiversity/components/simple_species_element_card_widget.dart';
+
 //import 'package:flutter_tags/flutter_tags.dart';
 import 'package:biodiversity/components/tags/flutter_tags.dart';
 import 'package:biodiversity/models/biodiversity_service.dart';
+import 'package:biodiversity/models/garden_service.dart';
 import 'package:biodiversity/models/species_service.dart';
 import 'package:biodiversity/models/tag_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ListWidget extends StatefulWidget {
+  ///defines if the list uses simple or expandable cards
   final bool useSimpleCard;
+
+  ///defines if the list displays species or not
   final bool isSpeciesList;
 
-  ListWidget({Key key, this.useSimpleCard, this.isSpeciesList})
-      : super(key: key);
+  ///defines if the list is displayed in MyGardenPage
+  final bool isGardenList;
+
+  ListWidget({
+    Key key,
+    this.useSimpleCard,
+    this.isSpeciesList,
+    this.isGardenList,
+  }) : super(key: key);
 
   @override
   _ListWidgetState createState() => _ListWidgetState();
 }
 
+//TODO: Modify for my garden using.
 class _ListWidgetState extends State<ListWidget> {
   final List<TagItem> _tagItems = <TagItem>[];
   TextEditingController editingController = TextEditingController();
@@ -33,11 +46,14 @@ class _ListWidgetState extends State<ListWidget> {
   @override
   void initState() {
     super.initState();
-    widget.isSpeciesList
-        ? items = Provider.of<SpeciesService>(context, listen: false)
-            .getFullSpeciesObjectList()
-        : items = Provider.of<BiodiversityService>(context, listen: false)
-            .getFullBiodiversityObjectList();
+    widget.isGardenList
+        ? items = Provider.of<GardenService>(context, listen: false)
+            .getAllBiodiversityMeasuresFromUsersActiveGarden()
+        : widget.isSpeciesList
+            ? items = Provider.of<SpeciesService>(context, listen: false)
+                .getFullSpeciesObjectList()
+            : items = Provider.of<BiodiversityService>(context, listen: false)
+                .getFullBiodiversityObjectList();
     categorisedItems.addAll(items);
     filteredItems.addAll(categorisedItems);
     createTagItems();
@@ -129,8 +145,9 @@ class _ListWidgetState extends State<ListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
+    return Container(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
@@ -161,18 +178,17 @@ class _ListWidgetState extends State<ListWidget> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
                     child: Container(
-                      height: 24,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          FlatButton(
+                          TextButton(
                             child: const Text('Alle selektieren'),
                             onPressed: () {
                               _tagStateKey.currentState.setAllItemsActive();
                               filterClassResults();
                             },
                           ),
-                          FlatButton(
+                          TextButton(
                             child: const Text('Selektion aufheben'),
                             onPressed: () {
                               _tagStateKey.currentState.setAllItemsInactive();
@@ -254,6 +270,7 @@ class _ListWidgetState extends State<ListWidget> {
                 ),
               )
             : ListView.separated(
+                shrinkWrap: true,
                 itemCount: filteredItems.length,
                 itemBuilder: (context, index) {
                   final element = filteredItems.elementAt(index);

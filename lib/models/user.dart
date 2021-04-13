@@ -3,21 +3,19 @@ import 'dart:developer' as logging;
 
 import 'package:biodiversity/components/privacy_agreement.dart';
 import 'package:biodiversity/models/login_result.dart';
+import 'package:biodiversity/models/storage_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart' as fb_auth;
 
 /// The User class holds all information about the User of the app
 /// The class is built to be used as a singleton,
 /// so only one instance should be used throughout the app.
 class User extends ChangeNotifier {
-  final FirebaseAuth _auth;
-  final FirebaseFirestore _firestore;
-  final GoogleSignIn _googleSignIn;
-  final FacebookAuth _facebookAuth;
+  final StorageProvider _storage;
 
   Set<DocumentReference> _gardens;
   Set<String> _favoredObjects;
@@ -33,20 +31,32 @@ class User extends ChangeNotifier {
   /// The surname is the family name of the user like Ineichen
   String surname;
 
-  /// the phone String is a mobile phone number
-  String phone;
+  /// the URL which points to the profile picture
+  String imageURL;
+
+  /// email from the user
+  String mail;
+
+  /// toggle whether to show the username on the map
+  bool showNameOnMap;
+
+  /// toggle whether an image of the garden is visible on the map
+  bool showGardenImageOnMap;
 
   /// Provides an empty User object. This should only be used once at App start.
-  User.empty(
-      this._auth, this._firestore, this._googleSignIn, this._facebookAuth)
+  User.empty(this._storage)
       : _loggedIn = false,
         _gardens = <DocumentReference>{},
         _favoredObjects = <String>{},
         _addressID = null,
-        nickname = '',
-        name = '',
-        surname = '',
-        phone = '';
+        nickname = 'TestNickname',
+        //TODO remove before commit
+        name = 'TestName',
+        surname = 'TestSurname',
+        imageURL = '',
+        mail = 'test.tester@testing.com',
+        showNameOnMap = true,
+        showGardenImageOnMap = true;
 
   /// Loads the details like nickname, liked objects etc. form the database
   /// After the details are loaded, the listeners are notified
@@ -58,13 +68,15 @@ class User extends ChangeNotifier {
     if (!_loggedIn) {
       return false;
     }
-    final doc = await _firestore.doc(documentPath).get();
+    final doc = await _storage.database.doc(documentPath).get();
+    logging.log('doc $documentPath');
     if (!doc.exists) {
       logging.log('Loading failed, no doc found');
       return false;
     }
-    logging.log('load details');
     final map = doc.data();
+    logging.log(map.toString());
+    logging.log('load details');
     if (map.containsKey('nickname') && map['nickname'] is String) {
       nickname = map['nickname'];
     }
@@ -77,14 +89,24 @@ class User extends ChangeNotifier {
     if (map.containsKey('addressID') && map['addressID'] is DocumentReference) {
       _addressID = map['addressID'];
     }
-    if (map.containsKey('phone') && map['phone'] is String) {
-      phone = map['phone'];
+    if (map.containsKey('imageURL') && map['imageURL'] is String) {
+      imageURL = map['imageURL'];
     }
     if (map.containsKey('gardens') && map['gardens'] is List) {
       _gardens = Set<DocumentReference>.from(map['gardens']);
     }
     if (map.containsKey('favoredObjects') && map['favoredObjects'] is List) {
       _favoredObjects = Set.from(map['favoredObjects']);
+    }
+    if (map.containsKey('mail') && map['mail'] is String) {
+      mail = map['mail'];
+    }
+    if (map.containsKey('showNameOnMap') && map['showNameOnMap'] is bool) {
+      showNameOnMap = map['showNameOnMap'];
+    }
+    if (map.containsKey('showGardenImageOnMap') &&
+        map['showGardenImageOnMap'] is bool) {
+      showGardenImageOnMap = map['showGardenImageOnMap'];
     }
     logging.log('loaded User: ${toString()}');
     if (informListeners) {
@@ -99,14 +121,17 @@ class User extends ChangeNotifier {
     if (!_loggedIn) {
       return false;
     }
-    await _firestore.doc(documentPath).set({
+    await _storage.database.doc(documentPath).set({
       'nickname': nickname,
       'name': name,
       'surname': surname,
+      'mail': mail,
       'addressID': _addressID,
-      'phone': phone,
+      'imageURL': imageURL,
       'gardens': _gardens.toList(),
       'favoredObjects': _favoredObjects.toList(),
+      'showNameOnMap': showNameOnMap,
+      'showGardenImageOnMap': showGardenImageOnMap,
     });
     return true;
   }
@@ -118,18 +143,28 @@ class User extends ChangeNotifier {
       {String newName,
       String newSurname,
       String newNickname,
-      String newPhone,
+      String newMail,
+      String newImageURL,
       String newAddress,
+      bool doesShowNameOnMap,
+      bool doesShowGardenImageOnMap,
       bool informListeners = true}) {
     if (newName != null) name = newName;
     if (newSurname != null) surname = newSurname;
     if (newNickname != null) {
       nickname = newNickname;
-      if (_loggedIn) _auth.currentUser.updateProfile(displayName: nickname);
+      if (_loggedIn) {
+        _storage.auth.currentUser.updateProfile(displayName: nickname);
+      }
     }
-    if (newPhone != null) phone = newPhone;
+    if (newImageURL != null) imageURL = newImageURL;
     if (newAddress != null) {
       //TODO search for address objects
+    }
+    if (newMail != null) mail = newMail;
+    if (doesShowNameOnMap != null) showNameOnMap = doesShowNameOnMap;
+    if (doesShowGardenImageOnMap != null) {
+      showGardenImageOnMap = doesShowGardenImageOnMap;
     }
     saveUser();
     if (informListeners) {
@@ -156,14 +191,15 @@ class User extends ChangeNotifier {
 
   /// is true if the User has confirmed his email address by the sent link
   bool get hasConfirmedEmail =>
-      _auth.currentUser != null && _auth.currentUser.emailVerified;
+      _storage.auth.currentUser != null &&
+      _storage.auth.currentUser.emailVerified;
 
   /// is true if the user is logged in
   bool get isLoggedIn => _loggedIn;
 
   /// returns a [String] with the path to the users profile in the database
-  String get documentPath => _loggedIn && _auth.currentUser != null
-      ? 'users/${_auth.currentUser.uid}'
+  String get documentPath => _loggedIn && _storage.auth.currentUser != null
+      ? 'users/${_storage.auth.currentUser.uid}'
       : 'users/anonymous';
 
   /// signs the user out, saves all data to the database.
@@ -173,15 +209,18 @@ class User extends ChangeNotifier {
       return;
     }
     saveUser();
-    _auth.signOut();
+    _storage.auth.signOut();
     nickname = '';
     name = '';
     surname = '';
-    phone = '';
+    imageURL = '';
+    mail = '';
     _addressID = null;
     _gardens = <DocumentReference>{};
     _favoredObjects = <String>{};
     _loggedIn = false;
+    showNameOnMap = true;
+    showGardenImageOnMap = true;
     notifyListeners();
   }
 
@@ -199,8 +238,8 @@ class User extends ChangeNotifier {
     if (isLoggedIn) {
       return null;
     }
-    _googleSignIn.signOut();
-    final googleAccount = await _googleSignIn.signIn();
+    _storage.googleSignIn.signOut();
+    final googleAccount = await _storage.googleSignIn.signIn();
     if (googleAccount == null) {
       return LoginResult('Anmeldung abgebrochen.');
     }
@@ -209,7 +248,7 @@ class User extends ChangeNotifier {
     final result = await _signInWithCredential(
         credential: credential,
         email: googleAccount.email,
-        signOutCallback: _googleSignIn.signOut);
+        signOutCallback: _storage.googleSignIn.signOut);
     return result;
   }
 
@@ -221,24 +260,27 @@ class User extends ChangeNotifier {
     if (isLoggedIn) {
       return null;
     }
-    AccessToken token;
+    fb_auth.LoginResult token;
     try {
-      token = await _facebookAuth
+      token = await _storage.facebookAuth
           .login(loginBehavior: 'dialog', permissions: ['email']);
-    } on FacebookAuthException {
+      if (token.status != fb_auth.FacebookAuthErrorCode.OPERATION_IN_PROGRESS) {
+        return LoginResult('Anmeldung abgebrochen');
+      }
+    } on PlatformException {
       return LoginResult('Anmeldung abgebrochen');
     }
-    final data = await _facebookAuth.getUserData(fields: 'email');
+    final data = await _storage.facebookAuth.getUserData(fields: 'email');
     if (!data.containsKey('email')) {
-      _facebookAuth.logOut();
+      _storage.facebookAuth.logOut();
       return LoginResult(
           'Name oder Email konnte nicht von Facebook abgerufen werden');
     }
-    final credential = FacebookAuthProvider.credential(token.token);
+    final credential = FacebookAuthProvider.credential(token.accessToken.token);
     final result = await _signInWithCredential(
         credential: credential,
         email: data['email'],
-        signOutCallback: _googleSignIn.signOut);
+        signOutCallback: _storage.googleSignIn.signOut);
     return result;
   }
 
@@ -250,15 +292,18 @@ class User extends ChangeNotifier {
   Future<LoginResult> signInWithEmail(String email, String password) async {
     if (!isLoggedIn) {
       try {
-        await _auth.signInWithEmailAndPassword(
-            email: email, password: password);
-        if (!_auth.currentUser.emailVerified) {
-          _auth.signOut();
+        await _storage.auth
+            .signInWithEmailAndPassword(email: email, password: password);
+        if (!_storage.auth.currentUser.emailVerified) {
+          _storage.auth.signOut();
           return LoginResult('Bitte bestätigen Sie zuerst ihre Email Adresse',
               isEmailConfirmed: false);
         }
         _loggedIn = true;
         await loadDetailsFromLoggedInUser();
+        if (mail.isEmpty && email.isNotEmpty) {
+          updateUserData(newMail: email);
+        }
       } on FirebaseAuthException catch (error) {
         if (error.code == 'invalid-email') {
           return LoginResult('Die eingegebene Email Adresse ist ungültig.');
@@ -278,7 +323,8 @@ class User extends ChangeNotifier {
       @required String email,
       @required Function() signOutCallback}) async {
     try {
-      final signInMethods = await _auth.fetchSignInMethodsForEmail(email);
+      final signInMethods =
+          await _storage.auth.fetchSignInMethodsForEmail(email);
       if (signInMethods.isEmpty) {
         signOutCallback();
         return LoginResult('Bitte registrieren Sie sich zuerst.',
@@ -288,7 +334,7 @@ class User extends ChangeNotifier {
         return LoginResult('Sie haben sich bisher nicht mit einem '
             '${credential.providerId} account registriert.<br>');
       }
-      await _auth.signInWithCredential(credential);
+      await _storage.auth.signInWithCredential(credential);
       _loggedIn = true;
       await loadDetailsFromLoggedInUser();
     } on FirebaseAuthException catch (error) {
@@ -312,7 +358,7 @@ class User extends ChangeNotifier {
     if (isLoggedIn) {
       return null;
     }
-    final googleAccount = await _googleSignIn.signIn();
+    final googleAccount = await _storage.googleSignIn.signIn();
     if (googleAccount == null) {
       return 'Registrierung abgebrochen';
     }
@@ -323,7 +369,7 @@ class User extends ChangeNotifier {
       context: context,
       email: googleAccount.email,
       displayName: googleAccount.displayName,
-      signOutCallback: _googleSignIn.signOut,
+      signOutCallback: _storage.googleSignIn.signOut,
     );
     return result;
   }
@@ -337,8 +383,8 @@ class User extends ChangeNotifier {
   Future<String> registerWithEmail(String email, String password,
       {String nickname, String name, String surname}) async {
     try {
-      final cred = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+      final cred = await _storage.auth
+          .createUserWithEmailAndPassword(email: email, password: password);
       cred.user.updateProfile(displayName: nickname);
       updateUserData(newName: name, newSurname: surname, newNickname: nickname);
       cred.user.sendEmailVerification();
@@ -365,24 +411,27 @@ class User extends ChangeNotifier {
     if (isLoggedIn) {
       return null;
     }
-    AccessToken token;
+    fb_auth.LoginResult token;
     try {
-      token = await _facebookAuth
+      token = await _storage.facebookAuth
           .login(loginBehavior: 'dialog', permissions: ['email']);
-    } on FacebookAuthException {
+      if (token.status != fb_auth.FacebookAuthErrorCode.OPERATION_IN_PROGRESS) {
+        return 'Registrierung abgebrochen';
+      }
+    } on PlatformException {
       return 'Registrierung abgebrochen';
     }
-    final data = await _facebookAuth.getUserData(fields: 'name, email');
+    final data = await _storage.facebookAuth.getUserData(fields: 'name, email');
     if (!data.containsKey('name') || !data.containsKey('email')) {
       return 'Name oder Email konnte nicht von Facebook abgerufen werden';
     }
-    final credential = FacebookAuthProvider.credential(token.token);
+    final credential = FacebookAuthProvider.credential(token.accessToken.token);
     final result = await _registerWithCredential(
         context: context,
         credential: credential,
         displayName: data['name'],
         email: data['email'],
-        signOutCallback: _facebookAuth.logOut);
+        signOutCallback: _storage.facebookAuth.logOut);
     return result;
   }
 
@@ -402,10 +451,11 @@ class User extends ChangeNotifier {
           'musst du das Privacy agreement annehmen.';
     }
     try {
-      final authUser = await _auth.signInWithCredential(credential);
+      final authUser = await _storage.auth.signInWithCredential(credential);
       authUser.user.updateProfile(displayName: displayName);
       authUser.user.updateEmail(email);
-      updateUserData(newNickname: displayName, informListeners: false);
+      updateUserData(
+          newNickname: displayName, informListeners: false, newMail: mail);
       _loggedIn = true;
       await loadDetailsFromLoggedInUser();
       return null;
@@ -418,9 +468,10 @@ class User extends ChangeNotifier {
   /// sends the mail to confirm the email address again
   Future<String> sendEmailConfirmation(String email, String password) async {
     try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
-      await _auth.currentUser.sendEmailVerification();
-      _auth.signOut();
+      await _storage.auth
+          .signInWithEmailAndPassword(email: email, password: password);
+      await _storage.auth.currentUser.sendEmailVerification();
+      _storage.auth.signOut();
     } on FirebaseAuthException {
       return 'Something went wrong';
     }
@@ -431,7 +482,7 @@ class User extends ChangeNotifier {
   Future<bool> sendPasswordResetLink(String email) async {
     final methods = await getSignInMethods(email);
     if (methods.contains('password')) {
-      _auth.sendPasswordResetEmail(email: email);
+      _storage.auth.sendPasswordResetEmail(email: email);
       return true;
     }
     return false;
@@ -440,7 +491,7 @@ class User extends ChangeNotifier {
   /// returns a list of possible sign in methods for the provided email
   Future<List<String>> getSignInMethods(String email) async {
     try {
-      return _auth.fetchSignInMethodsForEmail(email);
+      return _storage.auth.fetchSignInMethodsForEmail(email);
     } on FirebaseAuthException {
       return [];
     }
