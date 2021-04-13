@@ -19,6 +19,9 @@ class BiodiversityMeasure {
   /// which type the element belongs to e.g. Structure
   final String type;
 
+  /// in which unit this Biodiversity element is measured e.g. point
+  final String dimension;
+
   /// A list with all Species this BiodiversityMeasure is good for
   final List<String> beneficialFor;
 
@@ -52,7 +55,9 @@ class BiodiversityMeasure {
             ? map['goodTogetherWith'].cast<String>()
             : [],
         imageSource =
-            map.containsKey('image') ? map['image'] as String : 'res/logo.png' {
+            map.containsKey('image') ? map['image'] as String : 'res/logo.png',
+        dimension =
+            map.containsKey('dimension') ? map['dimension'] as String : '' {
     _loadDescription();
   }
 

@@ -1,10 +1,10 @@
 import 'dart:ui';
 
 import 'package:biodiversity/components/drawer.dart';
+import 'package:biodiversity/components/list_widget.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
 /// Displays the page where the user can see his own garden
@@ -23,7 +23,74 @@ class _MyGardenState extends State<MyGarden> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: AppBar(title: const Text('Mein Garten')),
+      appBar: AppBar(
+        title: const Text('Mein Garten'),
+        actions: [
+          PopupMenuButton(
+              itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 'gardenEditPage',
+                      child: Row(
+                        children: [
+                          const Padding(
+                            child: Icon(
+                              Icons.perm_contact_calendar_sharp,
+                              color: Colors.black,
+                            ),
+                            padding: EdgeInsets.only(right: 10),
+                          ),
+                          const Text('Garten bearbeiten')
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'gardenAddPage',
+                      child: Row(
+                        children: [
+                          const Padding(
+                            child: Icon(
+                              Icons.add,
+                              color: Colors.black,
+                            ),
+                            padding: EdgeInsets.only(right: 10),
+                          ),
+                          const Text('Garten hinzfügen')
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'gardenInfoPage',
+                      child: Row(
+                        children: [
+                          const Padding(
+                            child: Icon(
+                              Icons.home_filled,
+                              color: Colors.black,
+                            ),
+                            padding: EdgeInsets.only(right: 10),
+                          ),
+                          const Text('Garten info ansehen')
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'myGardenPage',
+                      child: Row(
+                        children: [
+                          const Padding(
+                            child: Icon(
+                              Icons.home,
+                              color: Colors.black,
+                            ),
+                            padding: EdgeInsets.only(right: 10),
+                          ),
+                          const Text('Zu Garten_1 wechseln')
+                        ],
+                      ),
+                    ),
+                  ]),
+        ],
+      ),
       drawer: MyDrawer(),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('gardens').snapshots(),
@@ -35,8 +102,20 @@ class _MyGardenState extends State<MyGarden> {
           return _buildBody(context, snapshot.data.docs);
         },
       ),
+      floatingActionButton: _floatingActionButton(),
     );
   }
+}
+
+Widget _floatingActionButton() {
+  return FloatingActionButton(
+    onPressed: () {},
+    child: const Icon(
+      Icons.add,
+      size: 30.0,
+      color: Colors.white,
+    ),
+  );
 }
 
 Widget _buildBody(BuildContext context, List<DocumentSnapshot> snapshot) {
@@ -50,208 +129,145 @@ Widget _buildBody(BuildContext context, List<DocumentSnapshot> snapshot) {
     }
   }
 
-  return SingleChildScrollView(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Stack(
-          alignment: AlignmentDirectional.center,
-          children: <Widget>[
-            Image(
-              width: MediaQuery.of(context).size.width,
-              height: 100,
-              fit: BoxFit.fitWidth,
-              image: const AssetImage('res/myGarden.jpg'),
-              semanticLabel: garden.name,
-            ),
-            Center(
-              child: Text(
-                garden.name,
-                textAlign: TextAlign.center,
-                softWrap: true,
-                textScaleFactor: 2,
-                style:
-                    const TextStyle(color: Color.fromRGBO(255, 255, 255, 0.8)),
+  return PageView(
+    scrollDirection: Axis.vertical,
+    children: <Widget>[
+      Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Stack(
+            alignment: AlignmentDirectional.center,
+            children: <Widget>[
+              Image(
+                width: MediaQuery.of(context).size.width,
+                height: 100,
+                fit: BoxFit.fitWidth,
+                image: const AssetImage('res/myGarden.jpg'),
+                semanticLabel: garden.name,
               ),
-            ),
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 30, left: 30, top: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Dein Garten enthält bereits:\n',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              _ElementCounterCard('Anzahl Strukturelemente:',
-                  garden.numberOfStructureElements, const Icon(MdiIcons.wall)),
-              _ElementCounterCard('Anzahl Pflanzen:', garden.numberOfPlants,
-                  const Icon(MdiIcons.nature)),
-              _ElementCounterCard('Anzahl Methoden:', garden.numberOfMethods,
-                  const Icon(MdiIcons.meteor)),
-              const Text(
-                'Mein Garten durchsuchen...',
-                style: TextStyle(backgroundColor: Colors.grey, fontSize: 14),
+              Center(
+                child: Text(
+                  garden.name,
+                  textAlign: TextAlign.center,
+                  softWrap: true,
+                  textScaleFactor: 2,
+                  style: const TextStyle(
+                      color: Color.fromRGBO(255, 255, 255, 0.8)),
+                ),
               ),
             ],
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            children: [
-              Row(
-                children: <Widget>[
-                  Flexible(
-                    fit: FlexFit.tight,
-                    child: TextField(
-                      decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.only(bottom: -10)),
-                      controller: _textController,
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.save),
-                    onPressed: _onSaveGarden,
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              ListView.separated(
-                shrinkWrap: true,
-                itemCount: garden.ownedObjects.length,
-                itemBuilder: (context, index) {
-                  final name = garden.ownedObjects.entries.elementAt(index).key;
-                  final count =
-                      garden.ownedObjects.entries.elementAt(index).value;
+          Padding(
+            padding: const EdgeInsets.only(right: 30, left: 30, top: 50),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Zusammenfassung von Schrebergarten_1:\n',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                _differentCircles(context),
+                const SizedBox(height: 15.0),
+                TextButton(
+                    //TODO functionality to see the garden in the map
+                    onPressed: () {},
+                    child: Row(
+                      children: <Widget>[
+                        const Icon(Icons.maps_ugc_outlined),
+                        const SizedBox(width: 10.0),
+                        const Text('Garten auf Karte anzeigen',
+                            style: TextStyle(fontSize: 16, color: Colors.black))
+                      ],
+                    )),
+              ],
+            ),
+          ),
+        ],
+      ),
+      Column(
+        children: <Widget> [
+          const Padding(
+            padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+            child: Text('Lebensräume in Ihrem Garten suchen',
+                style: TextStyle(fontSize: 20, color: Colors.black)),
+          ),
+          Expanded(
+            child: ListWidget(
+              useSimpleCard: false,
+              isSpeciesList: false,
+              isGardenList: true,
+            ),
+          ),
+        ],
+      ),
+    ],
+  );
+}
 
-                  return _ElementCard(
-                      name,
-                      count,
-                      garden,
-                      //TODO implement a more save to load the images
-                      AssetImage('res/$name.jpg'),
-                      'Beschreibung von $name');
-                },
-                separatorBuilder: (context, index) {
-                  return const SizedBox(height: 3);
-                },
-              ),
+Widget _createCircle(String number, String text) {
+  return Container(
+    height: 100.0,
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            border: Border.all(width: 2),
+            shape: BoxShape.circle,
+            // You can use like this way or like the below line
+            //borderRadius: new BorderRadius.circular(30.0),
+            color: Colors.white,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(number, style: const TextStyle(fontSize: 20.0)),
             ],
           ),
         ),
+        Text(text, style: const TextStyle(color: Colors.grey))
       ],
     ),
   );
 }
 
-class _ElementCounterCard extends StatelessWidget {
-  final String text;
-  final int data;
-  final Icon icon;
-
-  const _ElementCounterCard(this.text, this.data, this.icon);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
+Widget _differentCircles(BuildContext context) {
+  final garden = Provider.of<Garden>(context);
+  return Column(children: <Widget>[
+    Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        icon,
-        const VerticalDivider(
-          width: 10,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _createCircle('${garden.totalAreaObjects}', 'Flächen (m2)'),
+          ],
         ),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                text,
-                style: const TextStyle(color: Colors.grey),
-              ),
-              const Divider(
-                height: 0,
-                color: Colors.grey,
-              ),
-              Text(data.toString()),
-            ],
-          ),
-        )
+        Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          _createCircle('${garden.totalLengthObjects}', ' Längen (m)')
+        ]),
       ],
-    );
-  }
-}
-
-class _ElementCard extends StatelessWidget {
-  final String name;
-  final int count;
-  final AssetImage image;
-  final String description;
-  final Garden garden;
-
-  const _ElementCard(
-      this.name, this.count, this.garden, this.image, this.description);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 60,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(3)),
-        border: Border.all(
-          color: const Color.fromRGBO(200, 200, 200, 1),
+    ),
+    Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _createCircle(
+                '${garden.totalPointObjects}', 'Punktobjekt (Anzahl)'),
+          ],
         ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(name,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16)),
-                      Text('Anzahl: $count'),
-                    ],
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit),
-                        onPressed: () {},
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () {
-                          garden.removeFromOwnedObjects(name);
-                          garden.saveGarden();
-                        },
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Image(
-            width: 90,
-            height: 60,
-            fit: BoxFit.cover,
-            image: image,
-          ),
-        ],
-      ),
-    );
-  }
+        Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          _createCircle(
+              '${garden.totalSupportedSpecies}', 'Geförderte Arten (Anzahl)')
+        ]),
+      ],
+    )
+  ]);
 }

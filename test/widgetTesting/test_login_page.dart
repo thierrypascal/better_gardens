@@ -10,7 +10,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
-import '../facebook_mock/mock_storage_provider.dart';
+import '../environment/mock_storage_provider.dart';
 
 final _globalKey = GlobalKey();
 

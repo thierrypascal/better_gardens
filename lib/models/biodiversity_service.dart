@@ -54,6 +54,21 @@ class BiodiversityService extends ChangeNotifier {
     }
   }
 
+  /// returns the measure type of a [BiodiversityMeasure]
+  /// identified by the given name e.g. point
+  Future<String> getMeasureOfObject(String name) async {
+    while (!_initialized) {
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+    final element = _measures.firstWhere((element) => element.name == name,
+        orElse: () => null);
+    if (element != null) {
+      return element.dimension;
+    } else {
+      return null;
+    }
+  }
+
   /// returns the [BiodiversityMeasure] identified by the provided reference
   BiodiversityMeasure getBiodiversityMeasureByReference(
       DocumentReference reference) {

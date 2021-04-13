@@ -13,19 +13,22 @@ setup_phase:
     - flutter pub upgrade
     - flutter doctor --android-licenses
     - flutter doctor -v
+    - flutter pub outdated
 
 flutter_test:
   stage: test
   before_script:
     - flutter clean
+    - flutter pub upgrade
     - flutter pub get
   script:
-    - flutter test
+    - flutter test --no-null-assertions
 
 build_android_release:
   stage: build
   before_script:
     - flutter clean
+    - flutter pub upgrade
     - flutter pub get
   script:
     - flutter build appbundle --debug
@@ -38,6 +41,7 @@ analyze:sonarqube:
   before_script:
     - export PATH="$PATH:/usr/share/sonar-scanner/bin"
     - export PATH="$PATH:/usr/lib/dart/bin"
+    - flutter pub upgrade
   allow_failure: true
   only:
     - master

@@ -11,7 +11,7 @@ class MockFacebookUser {
   bool signedIn;
 
   MockFacebookUser(this.name, this.password, this.email)
-      : uuid = Uuid().v1(),
+      : uuid = const Uuid().v1(),
         signedIn = false;
 }
 
@@ -27,19 +27,42 @@ class MockFacebookAuth extends Mock implements FacebookAuth {
   AccessToken _getAccessToken({
     List<String> permissions = const ['email', 'public_profile'],
   }) {
-    return AccessToken(grantedPermissions: permissions, userId: mockUser.uuid);
+    return AccessToken(
+        grantedPermissions: permissions,
+        userId: mockUser.uuid,
+        token: 'MOCK_TOKEN',
+        lastRefresh: DateTime.now(),
+        declinedPermissions: [],
+        expires: DateTime.now().add(const Duration(days: 30)),
+        applicationId: '',
+        isExpired: false);
+  }
+
+  LoginResult _getLoginResult(String message,
+      {LoginStatus status = LoginStatus.success, List<String> permissions}) {
+    if (status != LoginStatus.success) {
+      return LoginResult(status: status, message: message);
+    }
+    return LoginResult(
+        status: status,
+        message: message,
+        accessToken: permissions.isEmpty
+            ? _getAccessToken()
+            : _getAccessToken(permissions: permissions));
   }
 
   @override
-  Future<AccessToken> login(
+  Future<LoginResult> login(
       {List<String> permissions = const ['email', 'public_profile'],
       String loginBehavior = LoginBehavior.DIALOG_ONLY,
       bool failLogin}) {
     if (failLogin) {
-      throw FacebookAuthException('Login-Abort', 'login aborted by user');
+      return Future.value(
+          _getLoginResult('Login abort', status: LoginStatus.cancelled));
     }
     mockUser.signedIn = true;
-    return Future.value(_getAccessToken(permissions: permissions));
+    return Future.value(
+        _getLoginResult('login success', permissions: permissions));
   }
 
   @override
@@ -49,18 +72,13 @@ class MockFacebookAuth extends Mock implements FacebookAuth {
   }
 
   @override
-  Future<AccessToken> get isLogged {
-    return Future.value(_getAccessToken());
-  }
-
-  @override
   Future<Map<String, dynamic>> getUserData(
       {String fields = 'name,email,picture.width(200)'}) {
     return Future.value({});
   }
 
   @override
-  Future<AccessToken> expressLogin() {
-    return Future.value(_getAccessToken());
+  Future<LoginResult> expressLogin() {
+    return Future.value(_getLoginResult('express success'));
   }
 }

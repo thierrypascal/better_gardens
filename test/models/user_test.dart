@@ -1,7 +1,7 @@
 import 'package:biodiversity/models/user.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../facebook_mock/mock_storage_provider.dart';
+import '../environment/mock_storage_provider.dart';
 
 const name = 'Gabriel';
 const pw = '123456';

@@ -13,6 +13,7 @@ class HabitatElementListPage extends StatelessWidget {
       body: ListWidget(
         useSimpleCard: false,
         isSpeciesList: false,
+        isGardenList: false,
       ),
     );
   }

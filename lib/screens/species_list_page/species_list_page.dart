@@ -15,6 +15,7 @@ class SpeciesListPage extends StatelessWidget {
       body: ListWidget(
         useSimpleCard: false,
         isSpeciesList: true,
+        isGardenList: false,
       ),
     );
   }

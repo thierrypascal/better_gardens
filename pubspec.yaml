@@ -24,25 +24,25 @@ dependencies:
   flutter:
     sdk: flutter
 
-  google_maps_flutter:
-  geocoding:
-  firebase_core:
-  firebase_storage:
-  cloud_firestore:
+  google_maps_flutter: ^2.0.3
+  geocoding: ^2.0.0
+  firebase_core: ^1.0.3
+  firebase_storage: ^8.0.1
+  cloud_firestore: ^1.0.4
 
   modal_bottom_sheet:
   flutter_markdown:
 
-  provider:
+  provider: ^5.0.0
   cached_network_image:
   http:
   image_picker:
   flutter_image_compress:
 
   #Authentication
-  firebase_auth:
-  google_sign_in:
-  flutter_facebook_auth:
+  firebase_auth: ^1.0.3
+  google_sign_in: ^5.0.1
+  flutter_facebook_auth: ^3.3.2+2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -60,7 +60,9 @@ dev_dependencies:
     sdk: flutter
   mockito:
   cloud_firestore_mocks:
-  firebase_storage_mocks:
+  # TODO reenable to make tests work once the package is updated:
+  # https://github.com/atn832/firebase_storage_mocks/pull/4
+  #firebase_storage_mocks:
   firebase_auth_mocks:
   google_sign_in_mocks:
   uuid:

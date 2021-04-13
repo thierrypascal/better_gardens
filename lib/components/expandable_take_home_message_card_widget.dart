@@ -120,7 +120,7 @@ class _ExpandableTakeHomeMessageCardState
                           }
                         },
                         child: const Text(
-                          'Weiter lesen',
+                          'Weiterlesen',
                           style:
                               TextStyle(decoration: TextDecoration.underline),
                         ),
