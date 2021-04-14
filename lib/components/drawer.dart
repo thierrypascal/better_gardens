@@ -3,6 +3,7 @@ import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/account_page/account_page.dart';
 import 'package:biodiversity/screens/information_list_page/habitat_elements_list_page.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
+import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
 import 'package:biodiversity/screens/species_list_page/species_list_page.dart';
 import 'package:biodiversity/screens/take_home_message_page/take_home_messages.dart';
@@ -21,6 +22,7 @@ class MyDrawer extends StatelessWidget {
       elevation: 5,
       child: Theme(
         data: ThemeData(
+            accentColor: Colors.white30,
             appBarTheme: AppBarTheme(color: Theme.of(context).primaryColorDark),
             scaffoldBackgroundColor: Theme.of(context).colorScheme.primary,
             textTheme: TextTheme(
@@ -74,7 +76,16 @@ class MyDrawer extends StatelessWidget {
                                 ],
                               ),
                             ),
-
+                            ListTile(
+                              title: const Text('Karte'),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => MapsPage()),
+                                );
+                              },
+                            ),
                             ListTile(
                               title: const Text('Account'),
                               onTap: () {
@@ -193,10 +204,18 @@ class MyDrawer extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context, true),
                     child: const Text('Ausloggen'),
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.green),
+                    ),
                   ),
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
                     child: const Text('Abbrechen'),
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.green),
+                    ),
                   ),
                 ],
               ),

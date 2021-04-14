@@ -8,7 +8,6 @@ import 'package:biodiversity/models/species_service.dart';
 import 'package:biodiversity/models/storage_provider.dart';
 import 'package:biodiversity/models/take_home_message_service.dart';
 import 'package:biodiversity/models/user.dart';
-import 'package:biodiversity/screens/account_page/account_page.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -85,7 +84,6 @@ class MyApp extends StatelessWidget {
                     backgroundColor: Colors.green,
                     modalBackgroundColor: Colors.green),
                 errorColor: Colors.redAccent,
-
                 // This makes the visual density adapt to the platform that you
                 // run the app on. For desktop platforms, the controls will be
                 // smaller and closer together
