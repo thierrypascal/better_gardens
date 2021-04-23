@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer' as logging;
 import 'dart:io';
 
@@ -11,13 +12,15 @@ import 'package:path_provider/path_provider.dart';
 /// Service which holds the image urls and copyright information
 /// This helps to reduce loading times
 class ImageService extends ChangeNotifier {
-  final StorageProvider _storage;
+  StreamSubscription _streamSubscription;
   final Map<String, String> _urls = <String, String>{};
   final Map<String, String> _copyrightInfo = <String, String>{};
+  final StorageProvider _storage;
 
   /// Service which holds the image urls and copyright information
-  ImageService(this._storage) {
-    _storage.database
+  ImageService({StorageProvider storageProvider})
+      : _storage = storageProvider ??= StorageProvider.instance {
+    _streamSubscription = _storage.database
         .collection('imageReferences')
         .snapshots()
         .listen((change) {
@@ -30,6 +33,12 @@ class ImageService extends ChangeNotifier {
         }
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _streamSubscription.cancel();
+    super.dispose();
   }
 
   String _key(String name, String type, {int imageNr}) {
@@ -92,9 +101,9 @@ class ImageService extends ChangeNotifier {
                     return _getImageWithCopyright(url.data, copyright.data);
                   } else {
                     return Container(
-                      child: const CircularProgressIndicator(),
                       width: width,
                       height: height,
+                      child: const CircularProgressIndicator(),
                     );
                   }
                 });
@@ -103,9 +112,10 @@ class ImageService extends ChangeNotifier {
           }
         } else {
           return Container(
-              child: const CircularProgressIndicator(),
-              width: width,
-              height: height);
+            width: width,
+            height: height,
+            child: const CircularProgressIndicator(),
+          );
         }
       },
     );
@@ -192,7 +202,7 @@ class ImageService extends ChangeNotifier {
         _storage.fileStorage.ref().child('userUpload/$bucket/$filename');
     final task = reference.putFile(uploadImage);
     final docRef = await task;
-    File('$tempPath/temp.jpeg').delete();
+    File('$tempPath/temp.jpeg').delete(); // ignore: unawaited_futures
     return await docRef.ref.getDownloadURL();
   }
 }

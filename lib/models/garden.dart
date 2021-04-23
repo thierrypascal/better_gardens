@@ -4,6 +4,7 @@ import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/storage_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:uuid/uuid.dart';
 
 /// Container class for the garden
 class Garden extends ChangeNotifier {
@@ -34,37 +35,31 @@ class Garden extends ChangeNotifier {
   final StorageProvider _storage;
 
   /// creates an empty garden as placeholder
-  Garden.empty(this._storage) {
+  Garden.empty({StorageProvider storageProvider})
+      : _storage = storageProvider ??= StorageProvider.instance {
     name = '';
     street = '';
     city = '';
     owner = [];
     ownedObjects = {};
+    ownedLinkingProjects = [];
   }
 
   /// which [Vernetzungsprojekte] are contained in this garden
   //TODO: Implement Vernetzungsprojekte and switch String to Vernetzungsprojekt
   List<String> ownedLinkingProjects;
 
-  /// create a new garden
-  Garden(
-      this.name,
-      this.street,
-      this.city,
-      this.latitude,
-      this.longitude,
-      this.reference,
-      this.ownedObjects,
-      this.ownedLinkingProjects,
-      this.owner,
-      this._storage);
-
   /// creates a Garden from the provided Map.
   /// Used for database loading and testing
-  Garden.fromMap(Map<String, dynamic> map, this._storage, {this.reference})
-      : name = map.containsKey('name') ? map['name'] as String : '',
+  Garden.fromMap(Map<String, dynamic> map,
+      {this.reference, StorageProvider storageProvider})
+      : _storage = storageProvider ??= StorageProvider.instance,
+        name = map.containsKey('name') ? map['name'] as String : '',
         city = map.containsKey('city') ? map['city'] as String : '',
         street = map.containsKey('street') ? map['street'] as String : '',
+        owner = map.containsKey('owner')
+            ? List<String>.from(map['owner'] as List)
+            : [],
         latitude = map.containsKey('latitude')
             ? map['latitude'] as double
             // FIBL coordinates
@@ -77,17 +72,19 @@ class Garden extends ChangeNotifier {
             ? Map<String, int>.from(map['ownedObjects'] as Map)
             : {},
         ownedLinkingProjects = map.containsKey('ownedLinkingProjects')
-            ? Map<String, int>.from(map['ownedLinkingProjects'] as Map)
-            : {};
+            ? List<String>.from(map['ownedLinkingProjects'] as Iterable)
+            : [];
 
   /// loads a garden form a database snapshot
-  Garden.fromSnapshot(DocumentSnapshot snapshot, StorageProvider storage)
-      : this.fromMap(snapshot.data(), storage, reference: snapshot.reference);
+  Garden.fromSnapshot(DocumentSnapshot snapshot)
+      : this.fromMap(snapshot.data(), reference: snapshot.reference);
 
   /// saves the garden object to the database
   /// any information already present on the database will be overridden
   Future<void> saveGarden() async {
-    return _storage.database.doc(reference.path).set({
+    final path =
+        reference == null ? 'gardens/${const Uuid().v4()}' : reference.path;
+    await _storage.database.doc(path).set({
       'owner': owner,
       'name': name,
       'street': street,
@@ -97,6 +94,29 @@ class Garden extends ChangeNotifier {
       'ownedObjects': ownedObjects,
       'ownedLinkingProjects': ownedLinkingProjects,
     });
+  }
+
+  /// adds an element with to a garden with the specified count
+  /// and saves the garden to the database
+  void addOwnedObject(String object, int count) {
+    if (object != null &&
+        object.isNotEmpty &&
+        count > 0 &&
+        !ownedObjects.containsKey(object)) {
+      ownedObjects[object] = count;
+      saveGarden();
+    }
+  }
+
+  /// add a LinkingProject to the garden
+  /// and saves the garden to the database
+  void addLinkingProject(String linkingProject) {
+    if (linkingProject != null &&
+        linkingProject.isNotEmpty &&
+        !ownedLinkingProjects.contains(linkingProject)) {
+      ownedLinkingProjects.add(linkingProject);
+      saveGarden();
+    }
   }
 
   /// removes a element from the garden, changes are saved automatically
@@ -110,7 +130,7 @@ class Garden extends ChangeNotifier {
   /// removes a element from the garden, changes are saved automatically
   void removeFromLinkingProjects(String object) {
     if (ownedLinkingProjects.contains(object)) {
-      ownedObjects.remove(object);
+      ownedLinkingProjects.remove(object);
       saveGarden();
     }
   }

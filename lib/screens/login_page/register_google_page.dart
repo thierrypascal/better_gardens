@@ -38,8 +38,8 @@ class _RegisterGooglePageState extends State<RegisterGooglePage> {
           ),
         if (_errorText != null) const SizedBox(height: 10),
         ElevatedButton(
-          child: const Text('Registrieren'),
           onPressed: () => _handleRegistration(context),
+          child: const Text('Registrieren'),
         ),
       ],
     );

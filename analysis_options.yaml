@@ -1,4 +1,4 @@
-include: package:effective_dart/analysis_options.yaml
+include: package:pedantic/analysis_options.yaml
 
 linter:
   rules:
@@ -9,9 +9,12 @@ linter:
     prefer_single_quotes: true
     use_key_in_widget_constructors: true
     prefer_const_constructors: true
+    unawaited_futures: false
 
 
 analyzer:
+  exclude:
+    - lib/components/tags/
   errors:
     always_use_package_imports: error
     avoid_empty_else: error

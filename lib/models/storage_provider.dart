@@ -8,23 +8,36 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 /// A class which provides a single place where external Storage is accessed
 class StorageProvider {
+  StorageProvider._privateConstructor();
+
+  static final _instance = StorageProvider._privateConstructor();
+  static final _fileStorage = FirebaseStorage.instance;
+  static final _database = FirebaseFirestore.instance;
+  static final _auth = FirebaseAuth.instance;
+  static final _googleSignIn = GoogleSignIn();
+  static final _facebookAuth = FacebookAuth.instance;
+  static final _googleAuthProvider = GoogleAuthProvider();
+
+  /// Instance of the StorageProvider
+  static final StorageProvider instance = _instance;
+
   /// Reference to the file-storage instance
-  final FirebaseStorage fileStorage = FirebaseStorage.instance;
+  final FirebaseStorage fileStorage = _fileStorage;
 
   /// Reference to the database instance
-  final FirebaseFirestore database = FirebaseFirestore.instance;
+  final FirebaseFirestore database = _database;
 
   /// Reference to the authentication service instance
-  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseAuth auth = _auth;
 
   /// Reference to the google sign in provider
-  final GoogleSignIn googleSignIn = GoogleSignIn();
+  final GoogleSignIn googleSignIn = _googleSignIn;
 
   /// Reference to the facebook oAuth provider
-  final FacebookAuth facebookAuth = FacebookAuth.instance;
+  final FacebookAuth facebookAuth = _facebookAuth;
 
   /// Reference to the google oAuth provider
-  final GoogleAuthProvider googleAuthProvider = GoogleAuthProvider();
+  final GoogleAuthProvider googleAuthProvider = _googleAuthProvider;
 
   /// returns the content of a file from the fileStorage as String
   Future<String> getTextFromFileStorage(String path) async {

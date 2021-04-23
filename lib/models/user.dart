@@ -16,7 +16,6 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart' as fb_auth;
 /// so only one instance should be used throughout the app.
 class User extends ChangeNotifier {
   final StorageProvider _storage;
-
   Set<DocumentReference> _gardens;
   Set<String> _favoredObjects;
   DocumentReference _addressID;
@@ -44,17 +43,17 @@ class User extends ChangeNotifier {
   bool showGardenImageOnMap;
 
   /// Provides an empty User object. This should only be used once at App start.
-  User.empty(this._storage)
-      : _loggedIn = false,
+  User.empty({StorageProvider storageProvider})
+      : _storage = storageProvider ??= StorageProvider.instance,
+        _loggedIn = false,
         _gardens = <DocumentReference>{},
         _favoredObjects = <String>{},
         _addressID = null,
-        nickname = 'TestNickname',
-        //TODO remove before commit
-        name = 'TestName',
-        surname = 'TestSurname',
+        nickname = '',
+        name = '',
+        surname = '',
         imageURL = '',
-        mail = 'test.tester@testing.com',
+        mail = '',
         showNameOnMap = true,
         showGardenImageOnMap = true;
 
@@ -203,13 +202,13 @@ class User extends ChangeNotifier {
       : 'users/anonymous';
 
   /// signs the user out, saves all data to the database.
+  /// Afterwards all fields are reset to empty fields.
   /// The listeners will be notified
   void signOut() {
-    if (!_loggedIn) {
-      return;
+    if (_loggedIn) {
+      saveUser();
+      _storage.auth.signOut();
     }
-    saveUser();
-    _storage.auth.signOut();
     nickname = '';
     name = '';
     surname = '';
@@ -264,7 +263,8 @@ class User extends ChangeNotifier {
     try {
       token = await _storage.facebookAuth
           .login(loginBehavior: 'dialog', permissions: ['email']);
-      if (token.status != fb_auth.FacebookAuthErrorCode.OPERATION_IN_PROGRESS) {
+      if (token.status == fb_auth.LoginStatus.cancelled ||
+          token.status == fb_auth.LoginStatus.failed) {
         return LoginResult('Anmeldung abgebrochen');
       }
     } on PlatformException {
@@ -294,7 +294,8 @@ class User extends ChangeNotifier {
       try {
         await _storage.auth
             .signInWithEmailAndPassword(email: email, password: password);
-        if (!_storage.auth.currentUser.emailVerified) {
+        if (_storage.auth.currentUser.emailVerified != null &&
+            !_storage.auth.currentUser.emailVerified) {
           _storage.auth.signOut();
           return LoginResult('Bitte bestätigen Sie zuerst ihre Email Adresse',
               isEmailConfirmed: false);
@@ -415,7 +416,8 @@ class User extends ChangeNotifier {
     try {
       token = await _storage.facebookAuth
           .login(loginBehavior: 'dialog', permissions: ['email']);
-      if (token.status != fb_auth.FacebookAuthErrorCode.OPERATION_IN_PROGRESS) {
+      if (token.status == fb_auth.LoginStatus.cancelled ||
+          token.status == fb_auth.LoginStatus.failed) {
         return 'Registrierung abgebrochen';
       }
     } on PlatformException {

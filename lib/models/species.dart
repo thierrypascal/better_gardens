@@ -1,25 +1,30 @@
 import 'package:biodiversity/models/biodiversity_measure.dart';
+import 'package:biodiversity/models/information_object.dart';
+import 'package:biodiversity/models/storage_provider.dart';
+import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Container class for a species
-class Species {
-  /// class of the specie e.g. Säugetier
-  final String speciesClass;
-
-  /// name of the specie e.g. Hedgehog
+class Species implements InformationObject {
+  @override
   final String name;
 
-  /// short description of the species
+  @override
   final String shortDescription;
 
-  /// detailed description of the species
+  @override
   final String description;
+
+  @override
+  final String type;
+
+  @override
+  final String category;
 
   /// other species which
   final List<String> connectedTo;
 
-  /// type of the species e.g. Säugetiere
-  final String type;
+  /// a list of objects which support this species
   final List<String> supportedBy;
 
   /// reference to the store location in the database
@@ -28,9 +33,17 @@ class Species {
   /// reference to an imageSource of the species
   final String imageSource;
 
+  final StorageProvider _storage;
+  final ServiceProvider _service;
+
   /// creates a Species object from a Map
-  Species.fromMap(Map<String, dynamic> map, {this.reference})
-      : speciesClass = map.containsKey('class') ? map['class'] as String : '',
+  Species.fromMap(Map<String, dynamic> map,
+      {this.reference,
+      StorageProvider storageProvider,
+      ServiceProvider serviceProvider})
+      : _storage = storageProvider ??= StorageProvider.instance,
+        _service = serviceProvider ??= ServiceProvider.instance,
+        category = map.containsKey('class') ? map['class'] as String : '',
         name = map.containsKey('name') ? map['name'] as String : '',
         shortDescription = map.containsKey('shortDescription')
             ? map['shortDescription'] as String
@@ -71,5 +84,18 @@ class Species {
     } else {
       return 'nichts';
     }
+  }
+
+  @override
+  Map<String, Iterable<InformationObject>> get associationMap {
+    return {
+      'Unterstützt durch die folgenden Lebensräume:': _service
+          .biodiversityService
+          .getFullBiodiversityObjectList()
+          .where((element) => supportedBy.contains(element.name)),
+      'Verbunden mit:': _service.speciesService
+          .getFullSpeciesObjectList()
+          .where((element) => connectedTo.contains(element.name))
+    };
   }
 }

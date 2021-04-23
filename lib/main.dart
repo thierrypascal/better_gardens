@@ -1,12 +1,5 @@
-import 'package:biodiversity/models/biodiversity_service.dart';
 import 'package:biodiversity/models/garden.dart';
-import 'package:biodiversity/models/garden_service.dart';
-import 'package:biodiversity/models/image_service.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
-import 'package:biodiversity/models/map_marker_service.dart';
-import 'package:biodiversity/models/species_service.dart';
-import 'package:biodiversity/models/storage_provider.dart';
-import 'package:biodiversity/models/take_home_message_service.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -20,7 +13,6 @@ void main() {
 /// The mainActivity of the flutter app
 // ignore: use_key_in_widget_constructors
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     final _initialization = Firebase.initializeApp();
@@ -34,40 +26,16 @@ class MyApp extends StatelessWidget {
           );
         }
         if (snapshot.connectionState == ConnectionState.done) {
-          final storage = StorageProvider();
           return MultiProvider(
             providers: [
               ChangeNotifierProvider(
-                create: (context) => ImageService(storage),
+                create: (context) => User.empty(),
               ),
               ChangeNotifierProvider(
-                create: (context) => User.empty(storage),
-                lazy: false,
-              ),
-              ChangeNotifierProvider(
-                create: (context) => Garden.empty(storage),
-              ),
-              ChangeNotifierProvider(
-                create: (context) => GardenService(storage),
-                lazy: false,
-              ),
-              ChangeNotifierProvider(
-                create: (context) => BiodiversityService(storage),
-                lazy: false,
-              ),
-              ChangeNotifierProvider(
-                create: (context) => SpeciesService(storage),
-                lazy: false,
-              ),
-              ChangeNotifierProvider(
-                create: (context) => TakeHomeMessageService(storage),
-                lazy: false,
+                create: (context) => Garden.empty(),
               ),
               ChangeNotifierProvider(
                   create: (context) => MapInteractionContainer.empty()),
-              ChangeNotifierProvider(
-                create: (context) => MapMarkerService(context, storage),
-              ),
             ],
             child: MaterialApp(
               title: 'Better Gardens',
@@ -92,7 +60,6 @@ class MyApp extends StatelessWidget {
                 visualDensity: VisualDensity.adaptivePlatformDensity,
               ),
               home: LoginPage(),
-//              home: AccountPage(),
             ),
           );
         }

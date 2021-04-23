@@ -1,4 +1,5 @@
-import 'package:biodiversity/components/list_widget.dart';
+import 'package:biodiversity/components/information_object_list_widget.dart';
+import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -11,9 +12,10 @@ class SelectionList extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Lebensraum hinzufügen'),
         ),
-        body: ListWidget(
+        body: InformationObjectListWidget(
+          objects: ServiceProvider.instance.biodiversityService
+              .getFullBiodiversityObjectList(),
           useSimpleCard: true,
-          isSpeciesList: false,
         ));
   }
 }

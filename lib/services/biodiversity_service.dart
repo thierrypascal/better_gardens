@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/storage_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,23 +8,32 @@ import 'package:flutter/foundation.dart';
 
 /// a service which loads all [BiodiversityMeasure] at once and stores them
 class BiodiversityService extends ChangeNotifier {
-  final StorageProvider _storage;
+  StreamSubscription _streamSubscription;
   final List<BiodiversityMeasure> _measures = [];
   final List<String> _classes = [];
   bool _initialized = false;
+  final StorageProvider _storage;
 
   /// initializer for the service
-  BiodiversityService(this._storage) {
-    _storage.database
+  BiodiversityService({StorageProvider storageProvider})
+      : _storage = storageProvider ??= StorageProvider.instance {
+    _streamSubscription = _storage.database
         .collection('biodiversityMeasures')
         .snapshots()
         .listen(_updateElements);
   }
 
+  @override
+  Future<void> dispose() async {
+    await _streamSubscription.cancel();
+    super.dispose();
+  }
+
   void _updateElements(QuerySnapshot snapshots) {
     _measures.clear();
     for (final DocumentSnapshot snapshot in snapshots.docs) {
-      _measures.add(BiodiversityMeasure.fromSnapshot(snapshot, _storage));
+      _measures.add(BiodiversityMeasure.fromSnapshot(snapshot,
+          storageProvider: _storage));
     }
     notifyListeners();
     _initialized = true;
@@ -72,12 +83,20 @@ class BiodiversityService extends ChangeNotifier {
   /// returns the [BiodiversityMeasure] identified by the provided reference
   BiodiversityMeasure getBiodiversityMeasureByReference(
       DocumentReference reference) {
-    return _measures.where((element) => element.reference == reference).first;
+    try {
+      return _measures.where((element) => element.reference == reference).first;
+    } on StateError {
+      return null;
+    }
   }
 
   /// returns the [BiodiversityMeasure] identified by the name
   BiodiversityMeasure getBiodiversityMeasureByName(String name) {
-    return _measures.where((element) => element.name == name).first;
+    try {
+      return _measures.where((element) => element.name == name).first;
+    } on StateError {
+      return null;
+    }
   }
 
   /// returns a list of all distinct classes all species are in

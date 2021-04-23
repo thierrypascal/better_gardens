@@ -130,9 +130,9 @@ class _EmailFormState extends State<EmailForm> {
             Text(errorMessage.message),
             if (!errorMessage.isEmailConfirmed)
               ElevatedButton(
-                child: const Text('Bestätigungsmail erneut senden'),
                 onPressed: () => Provider.of<User>(context, listen: false)
                     .sendEmailConfirmation(_email, _password),
+                child: const Text('Bestätigungsmail erneut senden'),
               )
           ],
         ),
