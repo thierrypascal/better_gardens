@@ -51,6 +51,7 @@ dependencies:
   material_design_icons_flutter:
   font_awesome_flutter:
   flutter_svg:
+  uuid: ^3.0.4
 
 dev_dependencies:
   lint:
@@ -60,12 +61,11 @@ dev_dependencies:
     sdk: flutter
   mockito:
   cloud_firestore_mocks:
-  # TODO reenable to make tests work once the package is updated:
-  # https://github.com/atn832/firebase_storage_mocks/pull/4
+  # TODO reenable once the package is updated:
+  # https://github.com/atn832/firebase_storage_mocks/pull/8
   #firebase_storage_mocks:
   firebase_auth_mocks:
   google_sign_in_mocks:
-  uuid:
   excel:
   file_picker:
 

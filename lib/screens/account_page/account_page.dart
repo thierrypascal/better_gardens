@@ -30,6 +30,8 @@ class _AccountPageState extends State<AccountPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   CircleAvatar(
+                    radius: 40,
+                    backgroundColor: Colors.white,
                     child: Image.network(user.imageURL,
                         errorBuilder: (context, error, trace) {
                       return const Icon(
@@ -37,8 +39,6 @@ class _AccountPageState extends State<AccountPage> {
                         size: 60,
                       );
                     }),
-                    radius: 40,
-                    backgroundColor: Colors.white,
                   ),
                   const SizedBox(width: 15),
                   Column(
@@ -72,11 +72,11 @@ class _AccountPageState extends State<AccountPage> {
                 child: Row(
                   children: [
                     Padding(
+                      padding: const EdgeInsets.only(right: 8),
                       child: Icon(
                         Icons.edit,
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
-                      padding: const EdgeInsets.only(right: 8),
                     ),
                     const Text('Profil bearbeiten')
                   ],
@@ -87,11 +87,11 @@ class _AccountPageState extends State<AccountPage> {
                 child: Row(
                   children: [
                     Padding(
+                      padding: const EdgeInsets.only(right: 8),
                       child: Icon(
                         Icons.lock_open,
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
-                      padding: const EdgeInsets.only(right: 8),
                     ),
                     const Text('Passwort ändern')
                   ],
@@ -158,6 +158,8 @@ class _AccountPageState extends State<AccountPage> {
                       child: Column(
                         children: [
                           CircleAvatar(
+                            radius: 40,
+                            backgroundColor: Colors.white,
                             child: Image.network(user.imageURL,
                                 errorBuilder: (context, error, trace) {
                               return const Icon(
@@ -165,13 +167,11 @@ class _AccountPageState extends State<AccountPage> {
                                 size: 80,
                               );
                             }),
-                            radius: 40,
-                            backgroundColor: Colors.white,
                           ),
                           TextButton(
-                            child: const Text('Profilbild ändern'),
-                            onPressed: () =>
-                                {}, //TODO let user choose from gallery
+                            onPressed: () => {},
+                            child: const Text(
+                                'Profilbild ändern'), //TODO let user choose from gallery
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -242,6 +242,9 @@ class _AccountPageState extends State<AccountPage> {
               ),
               actions: [
                 ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
                   child: Row(children: [
                     const Padding(
                       padding: EdgeInsets.only(right: 8),
@@ -249,18 +252,8 @@ class _AccountPageState extends State<AccountPage> {
                     ),
                     const Text('Abbrechen')
                   ]),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
                 ),
                 ElevatedButton(
-                  child: Row(children: [
-                    const Padding(
-                      padding: EdgeInsets.only(right: 8),
-                      child: Icon(Icons.save),
-                    ),
-                    const Text('Speichern')
-                  ]),
                   onPressed: () {
                     _formKey.currentState.save();
                     user.updateUserData(
@@ -273,6 +266,13 @@ class _AccountPageState extends State<AccountPage> {
                     );
                     Navigator.of(context).pop();
                   },
+                  child: Row(children: [
+                    const Padding(
+                      padding: EdgeInsets.only(right: 8),
+                      child: Icon(Icons.save),
+                    ),
+                    const Text('Speichern')
+                  ]),
                 ),
               ],
             ),

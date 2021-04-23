@@ -19,18 +19,21 @@ class AddressObject {
   /// the document reference where this address object is stored in the database
   DocumentReference reference;
 
+  final StorageProvider _storage;
+
   /// creates a new AddressObject with the provided elements
   /// at the given location
-  AddressObject(this.elements, this.coordinates, this._storage,
-      {this.reference})
-      : creationDate = DateTime.now();
-
-  final StorageProvider _storage;
+  AddressObject(this.elements, this.coordinates,
+      {this.reference, StorageProvider storageProvider})
+      : creationDate = DateTime.now(),
+        _storage = storageProvider ??= StorageProvider.instance;
 
   /// create a AddressObject form a database snapshot
   /// Only used to parse objects from the database
-  AddressObject.fromSnapshot(DocumentSnapshot snapshot, this._storage)
-      : reference = snapshot.reference,
+  AddressObject.fromSnapshot(DocumentSnapshot snapshot,
+      {StorageProvider storageProvider})
+      : _storage = storageProvider ??= StorageProvider.instance,
+        reference = snapshot.reference,
         elements = snapshot.data().containsKey('elements')
             ? Map<String, int>.from(snapshot.data()['elements'] as Map)
             : {},
@@ -77,7 +80,7 @@ class AddressObject {
         .where('name', whereIn: elements.keys.toList())
         .get();
     return collection.docs
-        .map((snapshot) => BiodiversityMeasure.fromSnapshot(snapshot, _storage))
+        .map((snapshot) => BiodiversityMeasure.fromSnapshot(snapshot))
         .toList();
   }
 

@@ -1,8 +1,9 @@
 import 'dart:ui';
 
 import 'package:biodiversity/components/drawer.dart';
-import 'package:biodiversity/components/list_widget.dart';
+import 'package:biodiversity/components/information_object_list_widget.dart';
 import 'package:biodiversity/models/garden.dart';
+import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,11 +34,11 @@ class _MyGardenState extends State<MyGarden> {
                       child: Row(
                         children: [
                           const Padding(
+                            padding: EdgeInsets.only(right: 10),
                             child: Icon(
                               Icons.perm_contact_calendar_sharp,
                               color: Colors.black,
                             ),
-                            padding: EdgeInsets.only(right: 10),
                           ),
                           const Text('Garten bearbeiten')
                         ],
@@ -48,11 +49,11 @@ class _MyGardenState extends State<MyGarden> {
                       child: Row(
                         children: [
                           const Padding(
+                            padding: EdgeInsets.only(right: 10),
                             child: Icon(
                               Icons.add,
                               color: Colors.black,
                             ),
-                            padding: EdgeInsets.only(right: 10),
                           ),
                           const Text('Garten hinzfügen')
                         ],
@@ -63,11 +64,11 @@ class _MyGardenState extends State<MyGarden> {
                       child: Row(
                         children: [
                           const Padding(
+                            padding: EdgeInsets.only(right: 10),
                             child: Icon(
                               Icons.home_filled,
                               color: Colors.black,
                             ),
-                            padding: EdgeInsets.only(right: 10),
                           ),
                           const Text('Garten info ansehen')
                         ],
@@ -78,11 +79,11 @@ class _MyGardenState extends State<MyGarden> {
                       child: Row(
                         children: [
                           const Padding(
+                            padding: EdgeInsets.only(right: 10),
                             child: Icon(
                               Icons.home,
                               color: Colors.black,
                             ),
-                            padding: EdgeInsets.only(right: 10),
                           ),
                           const Text('Zu Garten_1 wechseln')
                         ],
@@ -187,17 +188,16 @@ Widget _buildBody(BuildContext context, List<DocumentSnapshot> snapshot) {
         ],
       ),
       Column(
-        children: <Widget> [
+        children: <Widget>[
           const Padding(
             padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
             child: Text('Lebensräume in Ihrem Garten suchen',
                 style: TextStyle(fontSize: 20, color: Colors.black)),
           ),
           Expanded(
-            child: ListWidget(
-              useSimpleCard: false,
-              isSpeciesList: false,
-              isGardenList: true,
+            child: InformationObjectListWidget(
+              objects: ServiceProvider.instance.gardenService
+                  .getAllBiodiversityMeasuresFromUsersActiveGarden(),
             ),
           ),
         ],

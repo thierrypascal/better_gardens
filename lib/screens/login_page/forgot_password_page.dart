@@ -49,13 +49,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 },
               ),
               ElevatedButton(
-                child: const Text('Passwort zurücksetzen'),
                 onPressed: () {
                   if (_emailForm.currentState.validate()) {
                     _emailForm.currentState.save();
                     _handleSubmit();
                   }
                 },
+                child: const Text('Passwort zurücksetzen'),
               )
             ],
           ),
@@ -88,8 +88,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       ),
       actions: [
         ElevatedButton(
-            child: const Text('Schliessen'),
-            onPressed: () => Navigator.pop(context)),
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Schliessen'),
+        ),
       ],
     );
   }
@@ -115,9 +116,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           child: const Text('Schliessen'),
         ),
         ElevatedButton(
-          child: const Text('Registrieren'),
           onPressed: () => Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => RegisterPage())),
+          child: const Text('Registrieren'),
         )
       ],
     );

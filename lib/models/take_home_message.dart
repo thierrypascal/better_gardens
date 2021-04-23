@@ -1,17 +1,24 @@
+import 'package:biodiversity/models/information_object.dart';
 import 'package:biodiversity/models/storage_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 
 /// A container class of a take home message.
-class TakeHomeMessage {
-  /// name of the element e.g. meadow
-  final String title;
+class TakeHomeMessage implements InformationObject {
+  @override
+  final String name;
 
-  /// a description of the element
+  @override
   String description;
 
-  /// a short description extracted from the description
+  @override
   String shortDescription;
+
+  @override
+  String get type => 'Take Home Message';
+
+  @override
+  String get category => 'Take Home Message';
 
   /// how long the message takes to read
   final String readTime;
@@ -23,10 +30,10 @@ class TakeHomeMessage {
 
   /// creates a [TakeHomeMessage] from the provided map
   /// used to load elements from the database and for testing
-  TakeHomeMessage.fromMap(Map<String, dynamic> map, StorageProvider storage,
-      {this.reference})
-      : _storage = storage,
-        title = map.containsKey('title') ? map['title'] as String : '',
+  TakeHomeMessage.fromMap(Map<String, dynamic> map,
+      {this.reference, StorageProvider storageProvider})
+      : _storage = storageProvider ??= StorageProvider.instance,
+        name = map.containsKey('title') ? map['title'] as String : '',
         readTime = map.containsKey('readTime') ? map['readTime'] as String : '',
         description = '',
         shortDescription = '' {
@@ -36,7 +43,7 @@ class TakeHomeMessage {
   Future<void> _loadDescription() async {
     try {
       description = await _storage
-          .getTextFromFileStorage('/takeHomeMessages/body/$title.md');
+          .getTextFromFileStorage('/takeHomeMessages/body/$name.md');
     } on PlatformException {
       description = 'Fehler: keine Beschreibung gefunden.';
     }
@@ -47,8 +54,10 @@ class TakeHomeMessage {
   }
 
   /// load a [TakeHomeMessage] form a database snapshot
-  TakeHomeMessage.fromSnapshot(
-      DocumentSnapshot snapshot, StorageProvider storageProvider)
-      : this.fromMap(snapshot.data(), storageProvider,
-            reference: snapshot.reference);
+  TakeHomeMessage.fromSnapshot(DocumentSnapshot snapshot)
+      : this.fromMap(snapshot.data(), reference: snapshot.reference);
+
+  @override
+  // no linked items
+  Map<String, Iterable<InformationObject>> get associationMap => {};
 }

@@ -1,7 +1,7 @@
 import 'package:biodiversity/components/white_redirect_page.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/account_page/account_page.dart';
-import 'package:biodiversity/screens/information_list_page/habitat_elements_list_page.dart';
+import 'package:biodiversity/screens/information_list_page/biodiversity_elements_list_page.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
@@ -128,7 +128,7 @@ class MyDrawer extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          HabitatElementListPage()),
+                                          BiodiversityElementListPage()),
                                 );
                               },
                             ),
@@ -203,19 +203,19 @@ class MyDrawer extends StatelessWidget {
                 children: [
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context, true),
-                    child: const Text('Ausloggen'),
                     style: ButtonStyle(
                       backgroundColor:
                           MaterialStateProperty.all<Color>(Colors.green),
                     ),
+                    child: const Text('Ausloggen'),
                   ),
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text('Abbrechen'),
                     style: ButtonStyle(
                       backgroundColor:
                           MaterialStateProperty.all<Color>(Colors.green),
                     ),
+                    child: const Text('Abbrechen'),
                   ),
                 ],
               ),

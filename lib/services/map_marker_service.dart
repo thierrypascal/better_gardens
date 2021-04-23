@@ -1,33 +1,41 @@
+import 'dart:async';
+
 import 'package:biodiversity/models/address_object.dart';
-import 'package:biodiversity/models/biodiversity_service.dart';
 import 'package:biodiversity/models/storage_provider.dart';
+import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:provider/provider.dart';
 
 /// a service which loads and stores all map markers
 class MapMarkerService extends ChangeNotifier {
   final Map<String, BitmapDescriptor> _icons = <String, BitmapDescriptor>{};
   final List<AddressObject> _markers = [];
-  final BuildContext _context;
   bool _initialized = false;
   final StorageProvider _storage;
+  StreamSubscription _streamSubscription;
 
   ///init of the service, should only be used once
-  MapMarkerService(this._context, this._storage) {
-    _storage.database
+  MapMarkerService({StorageProvider storageProvider})
+      : _storage = storageProvider ??= StorageProvider.instance {
+    _streamSubscription = _storage.database
         .collection('locations')
         .snapshots()
         .listen(_updateElements);
     _loadIcons();
   }
 
+  @override
+  void dispose() {
+    _streamSubscription.cancel();
+    super.dispose();
+  }
+
   void _updateElements(QuerySnapshot snapshots) {
     _markers.clear();
     for (final DocumentSnapshot snapshot in snapshots.docs) {
-      _markers.add(AddressObject.fromSnapshot(snapshot, _storage));
+      _markers.add(AddressObject.fromSnapshot(snapshot));
     }
     _initialized = true;
     notifyListeners();
@@ -53,8 +61,7 @@ class MapMarkerService extends ChangeNotifier {
   List<AddressObject> get addressObjectList => _markers;
 
   /// returns a set of all markers
-  Future<Set<Marker>> getMarkerSet(
-      {Function(String element) onTapCallback}) async {
+  Future<Set<Marker>> getMarkerSet({Function(String element) onTapCallback}) async {
     while (!_initialized) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
@@ -62,9 +69,8 @@ class MapMarkerService extends ChangeNotifier {
     final list = <Marker>{};
     for (final object in _markers) {
       for (final element in object.elements.keys) {
-        final type =
-            await Provider.of<BiodiversityService>(_context, listen: false)
-                .getTypeOfObject(element);
+        final type = await ServiceProvider.instance.biodiversityService
+            .getTypeOfObject(element);
         list.add(Marker(
           markerId: MarkerId(
               object.getLatLng().toString() + object.creationDate.toString()),
@@ -91,7 +97,7 @@ class MapMarkerService extends ChangeNotifier {
     }
     if (addressObject == null) {
       addressObject = AddressObject({element: amount},
-          GeoPoint(coordinate.latitude, coordinate.longitude), _storage);
+          GeoPoint(coordinate.latitude, coordinate.longitude));
       _markers.add(addressObject);
     }
     notifyListeners();

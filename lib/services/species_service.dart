@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/storage_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,12 +10,23 @@ import 'package:flutter/foundation.dart';
 class SpeciesService extends ChangeNotifier {
   final List<Species> _species = [];
   final List<String> _classes = [];
-  final StorageProvider _storage;
+  StreamSubscription _streamSubscription;
   bool _initialized = false;
+  final StorageProvider _storage;
 
   /// init the service, should only be used once
-  SpeciesService(this._storage) {
-    _storage.database.collection('species').snapshots().listen(_updateElements);
+  SpeciesService({StorageProvider storageProvider})
+      : _storage = storageProvider ??= StorageProvider.instance {
+    _streamSubscription = _storage.database
+        .collection('species')
+        .snapshots()
+        .listen(_updateElements);
+  }
+
+  @override
+  Future<void> dispose() async {
+    await _streamSubscription.cancel();
+    super.dispose();
   }
 
   void _updateElements(QuerySnapshot snapshots) {
@@ -58,7 +71,11 @@ class SpeciesService extends ChangeNotifier {
 
   /// returns a single Species referenced by the provided reference
   Species getSpeciesByName(String name) {
-    return _species.where((element) => element.name == name).first;
+    try {
+      return _species.where((element) => element.name == name).first;
+    } on StateError {
+      return null;
+    }
   }
 
   /// returns a list of all distinct classes all species are in

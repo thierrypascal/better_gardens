@@ -4,8 +4,8 @@ import 'dart:math' as math;
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/fonts/icons_biodiversity_icons.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
-import 'package:biodiversity/models/map_marker_service.dart';
 import 'package:biodiversity/screens/map_page/maps_selection_list_page.dart';
+import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -36,7 +36,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    Provider.of<MapMarkerService>(context, listen: false).getMarkerSet(
+    ServiceProvider.instance.mapMarkerService.getMarkerSet(
         onTapCallback: (element) {
       setState(() {
         _biodiversityMeasure = element;

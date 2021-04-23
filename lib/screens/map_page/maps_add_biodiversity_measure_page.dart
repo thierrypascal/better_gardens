@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:biodiversity/components/simple_measure_element_card_widget.dart';
+import 'package:biodiversity/components/simple_information_object_card_widget.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
-import 'package:biodiversity/models/map_marker_service.dart';
 import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:biodiversity/screens/map_page/maps_selection_list_page.dart';
 import 'package:biodiversity/screens/map_page/maps_submap_widget.dart';
+import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -56,9 +56,12 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
                           child: const Text('Element auswählen'),
                         );
                       } else {
-                        return SimpleMeasureElementCard(
+                        return SimpleInformationObjectCard(
                           selection.element,
-                          goToSelectionList: true,
+                          onTapHandler: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SelectionList())),
                         );
                       }
                     },
@@ -124,7 +127,7 @@ class _AddBiodiversityMeasureState extends State<AddBiodiversityMeasure> {
   void _onSaveButton() {
     if (Provider.of<MapInteractionContainer>(context, listen: false).element !=
         null) {
-      Provider.of<MapMarkerService>(context, listen: false).addMarker(
+      ServiceProvider.instance.mapMarkerService.addMarker(
           Provider.of<MapInteractionContainer>(context, listen: false)
               .element
               .name,
