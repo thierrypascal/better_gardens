@@ -18,7 +18,6 @@ class User extends ChangeNotifier {
   final StorageProvider _storage;
   Set<DocumentReference> _gardens;
   Set<String> _favoredObjects;
-  DocumentReference _addressID;
   bool _loggedIn;
 
   /// The nickname is a name which is used to represent the user anonymously
@@ -85,9 +84,6 @@ class User extends ChangeNotifier {
     if (map.containsKey('surname') && map['surname'] is String) {
       surname = map['surname'];
     }
-    if (map.containsKey('addressID') && map['addressID'] is DocumentReference) {
-      _addressID = map['addressID'];
-    }
     if (map.containsKey('imageURL') && map['imageURL'] is String) {
       imageURL = map['imageURL'];
     }
@@ -125,7 +121,6 @@ class User extends ChangeNotifier {
       'name': name,
       'surname': surname,
       'mail': mail,
-      'addressID': _addressID,
       'imageURL': imageURL,
       'gardens': _gardens.toList(),
       'favoredObjects': _favoredObjects.toList(),
@@ -196,6 +191,12 @@ class User extends ChangeNotifier {
   /// is true if the user is logged in
   bool get isLoggedIn => _loggedIn;
 
+  /// is true if the user is registered with email and password
+  bool get isRegisteredWithEmail => isLoggedIn
+      ? _storage.auth.currentUser.providerData
+          .any((element) => element.providerId == 'password')
+      : false;
+
   /// returns a [String] with the path to the users profile in the database
   String get documentPath => _loggedIn && _storage.auth.currentUser != null
       ? 'users/${_storage.auth.currentUser.uid}'
@@ -214,7 +215,6 @@ class User extends ChangeNotifier {
     surname = '';
     imageURL = '';
     mail = '';
-    _addressID = null;
     _gardens = <DocumentReference>{};
     _favoredObjects = <String>{};
     _loggedIn = false;
@@ -310,7 +310,7 @@ class User extends ChangeNotifier {
           return LoginResult('Die eingegebene Email Adresse ist ungültig.');
         } else if (error.code == 'user-disabled') {
           return LoginResult('Ihr Konto wurde gesperrt. '
-              'Bite wenden Sie sich an den Support.');
+              'Bitte wenden Sie sich an den Support.');
         } else {
           return LoginResult('Die Email Adresse oder das Passwort ist falsch');
         }
@@ -497,5 +497,25 @@ class User extends ChangeNotifier {
     } on FirebaseAuthException {
       return [];
     }
+  }
+
+  /// change password
+  Future<String> changePassword(
+      {@required String oldPassword, @required String newPassword}) async {
+    try {
+      final credential = await _storage.auth
+          .signInWithEmailAndPassword(email: mail, password: oldPassword);
+      await _storage.auth.currentUser.updatePassword(newPassword);
+    } on FirebaseAuthException catch (exception) {
+      if (exception.code == 'weak-password') {
+        return 'Das neue Passwort ist zu schwach.';
+      }
+      if (exception.code == 'wrong-password') {
+        return 'Das alte Password ist falsch.';
+      } else {
+        return 'Etwas ist schiefgelaufen.';
+      }
+    }
+    return null;
   }
 }

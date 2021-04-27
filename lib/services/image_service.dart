@@ -127,6 +127,7 @@ class ImageService extends ChangeNotifier {
       double width = double.infinity,
       double height,
       BoxFit fit = BoxFit.fitWidth,
+      Widget errorWidget,
       AlignmentGeometry copyrightAlignment = AlignmentDirectional.bottomEnd}) {
     return CachedNetworkImage(
       width: width,
@@ -134,7 +135,8 @@ class ImageService extends ChangeNotifier {
       fit: fit,
       imageUrl: url,
       cacheKey: url,
-      errorWidget: (context, str, error) => getImage('default', 'error'),
+      errorWidget: (context, str, error) =>
+          errorWidget == null ? getImage('default', 'error') : errorWidget,
     );
   }
 
