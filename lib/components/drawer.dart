@@ -100,7 +100,7 @@ class MyDrawer extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => WhiteRedirectPage(
-                                            'Bitte melde dich zuerst an',
+                                            'Bitte melde Dich zuerst an',
                                             LoginPage())),
                                   );
                                 }

@@ -1,6 +1,8 @@
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/text_field_with_descriptor.dart';
+import 'package:biodiversity/models/image_service.dart';
 import 'package:biodiversity/models/user.dart';
+import 'package:biodiversity/screens/account_page/image_picker_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -30,15 +32,14 @@ class _AccountPageState extends State<AccountPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   CircleAvatar(
+                    child: Provider.of<ImageService>(context, listen: false)
+                        .getImageByUrl(user.imageURL,
+                            errorWidget: const Icon(
+                              Icons.person,
+                              size: 60,
+                            )),
                     radius: 40,
                     backgroundColor: Colors.white,
-                    child: Image.network(user.imageURL,
-                        errorBuilder: (context, error, trace) {
-                      return const Icon(
-                        Icons.person,
-                        size: 60,
-                      );
-                    }),
                   ),
                   const SizedBox(width: 15),
                   Column(
@@ -82,21 +83,22 @@ class _AccountPageState extends State<AccountPage> {
                   ],
                 ),
               ),
-              PopupMenuItem(
-                value: 'ChangePasswordPage',
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: Icon(
-                        Icons.lock_open,
-                        color: Theme.of(context).colorScheme.onSurface,
+              if (user.isRegisteredWithEmail)
+                PopupMenuItem(
+                  value: 'ChangePasswordPage',
+                  child: Row(
+                    children: [
+                      Padding(
+                        child: Icon(
+                          Icons.lock_open,
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                        padding: const EdgeInsets.only(right: 8),
                       ),
-                    ),
-                    const Text('Passwort ändern')
-                  ],
+                      const Text('Passwort ändern')
+                    ],
+                  ),
                 ),
-              ),
             ],
             onSelected: _handleTopMenu,
           ),
@@ -135,10 +137,14 @@ class _AccountPageState extends State<AccountPage> {
     String _nickname;
     String _email;
     String _url;
+    String _curPassword;
+    String _firstPassword;
+    String _secondPassword;
+
 
     final user = Provider.of<User>(context, listen: false);
-    bool _showNameOnMap = user.showNameOnMap;
-    bool _showGardenImageOnMap = user.showGardenImageOnMap;
+    var _showNameOnMap = user.showNameOnMap;
+    var _showGardenImageOnMap = user.showGardenImageOnMap;
     switch (value) {
       case 'EditProfilePage':
         {
@@ -149,7 +155,7 @@ class _AccountPageState extends State<AccountPage> {
               scrollable: true,
               title: const Center(child: Text('Profil bearbeiten')),
               content: StatefulBuilder(
-                builder: (BuildContext context, setState) {
+                builder: (context, setState) {
                   return Container(
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height,
@@ -169,9 +175,13 @@ class _AccountPageState extends State<AccountPage> {
                             }),
                           ),
                           TextButton(
-                            onPressed: () => {},
-                            child: const Text(
-                                'Profilbild ändern'), //TODO let user choose from gallery
+                            child: const Text('Profilbild ändern'),
+                            onPressed: () => {
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (context) => ImagePickerPage()))
+                            }, //TODO redirect to ImagePickerPage if Implemented
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -219,8 +229,8 @@ class _AccountPageState extends State<AccountPage> {
                           ),
                           SwitchListTile(
                               contentPadding: const EdgeInsets.all(0),
-                              title: const Text(
-                                  'Benutzername auf Karte anzeigen'),
+                              title:
+                                  const Text('Benutzername auf Karte anzeigen'),
                               value: _showNameOnMap,
                               onChanged: (value) => {
                                     setState(() => {_showNameOnMap = value})
@@ -228,7 +238,7 @@ class _AccountPageState extends State<AccountPage> {
                           SwitchListTile(
                               contentPadding: const EdgeInsets.all(0),
                               title: const Text(
-                                  'Bild des Gartens auf de Karte anzeigen'),
+                                  'Bild des Gartens auf Karte anzeigen'),
                               value: _showGardenImageOnMap,
                               onChanged: (value) => {
                                     setState(
@@ -264,7 +274,7 @@ class _AccountPageState extends State<AccountPage> {
                       doesShowNameOnMap: _showNameOnMap,
                       doesShowGardenImageOnMap: _showGardenImageOnMap,
                     );
-                    Navigator.of(context).pop();
+                    Navigator.of(context).pop(); //TODO White redirect Page
                   },
                   child: Row(children: [
                     const Padding(
@@ -281,8 +291,119 @@ class _AccountPageState extends State<AccountPage> {
         }
       case 'ChangePasswordPage':
         {
-          //TODO Changepassword page
-
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              insetPadding: const EdgeInsets.all(5),
+              scrollable: true,
+              title: const Center(child: Text('Passwort ändern')),
+              content: StatefulBuilder(
+                builder: (context, setState) {
+                  return Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: TextFormField(
+                              onSaved: (value) => _curPassword = value,
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'Bitte gib ein Passwort ein';
+                                } else {
+                                  return null;
+                                }
+                              },
+                              obscureText: true,
+                              decoration: const InputDecoration(
+                                labelText: 'Aktuelles Passwort',
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: TextFormField(
+                              onSaved: (value) => _firstPassword = value,
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'Bitte gib ein Passwort ein';
+                                } else {
+                                  return null;
+                                }
+                              },
+                              obscureText: true,
+                              decoration: const InputDecoration(
+                                labelText: 'Neues Passwort',
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: TextFormField(
+                              onSaved: (value) => _secondPassword = value,
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'Bitte gib ein Passwort ein';
+                                } else {
+                                  return null;
+                                }
+                              },
+                              obscureText: true,
+                              decoration: const InputDecoration(
+                                labelText: 'Neues Passwort wiederholen',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+              actions: [
+                ElevatedButton(
+                  child: Row(children: [
+                    const Padding(
+                      padding: EdgeInsets.only(right: 8),
+                      child: Icon(Icons.cancel_outlined),
+                    ),
+                    const Text('Abbrechen')
+                  ]),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                ElevatedButton(
+                  child: Row(children: [
+                    const Padding(
+                      padding: EdgeInsets.only(right: 8),
+                      child: Icon(Icons.save),
+                    ),
+                    const Text('Speichern')
+                  ]),
+                  onPressed: () async {
+                    if (_formKey.currentState.validate()) {
+                      _formKey.currentState.save();
+                      if (_firstPassword == _secondPassword) {
+                        final _responseAnswer = await user.changePassword(
+                            oldPassword: _curPassword,
+                            newPassword: _firstPassword);
+                        if (_responseAnswer == null) {
+                          Navigator.of(context).pop();
+                        } else {
+                          print(
+                              'Grund für den Fehlschlag: $_responseAnswer'); //TODO Show as snackbar once the popup is a page
+                        }
+                      }
+                    }
+                  },
+                ),
+              ],
+            ),
+          );
           break;
         }
     }
