@@ -47,7 +47,6 @@ class User extends ChangeNotifier {
         _loggedIn = false,
         _gardens = <DocumentReference>{},
         _favoredObjects = <String>{},
-        _addressID = null,
         nickname = '',
         name = '',
         surname = '',
@@ -205,9 +204,9 @@ class User extends ChangeNotifier {
   /// signs the user out, saves all data to the database.
   /// Afterwards all fields are reset to empty fields.
   /// The listeners will be notified
-  void signOut() {
+  Future<void> signOut() async {
     if (_loggedIn) {
-      saveUser();
+      await saveUser();
       _storage.auth.signOut();
     }
     nickname = '';
@@ -233,7 +232,7 @@ class User extends ChangeNotifier {
   /// In case of success returns [null], otherwise a [LoginResult] object
   /// with the message set and additionally the flag isPrivacyAgreementAccepted
   /// set to false if the user isn't registered
-  Future<LoginResult> signInWithGoogle({bool register = false}) async {
+  Future<LoginResult> signInWithGoogle() async {
     if (isLoggedIn) {
       return null;
     }
@@ -326,10 +325,10 @@ class User extends ChangeNotifier {
     try {
       final signInMethods =
           await _storage.auth.fetchSignInMethodsForEmail(email);
-      if (signInMethods.isEmpty) {
+      if (signInMethods == null || signInMethods.isEmpty) {
         signOutCallback();
         return LoginResult('Bitte registrieren Sie sich zuerst.',
-            isRegistered: false);
+            isRegistered: false, isEmailConfirmed: false);
       } else if (!signInMethods.contains(credential.providerId)) {
         signOutCallback();
         return LoginResult('Sie haben sich bisher nicht mit einem '
@@ -493,7 +492,8 @@ class User extends ChangeNotifier {
   /// returns a list of possible sign in methods for the provided email
   Future<List<String>> getSignInMethods(String email) async {
     try {
-      return _storage.auth.fetchSignInMethodsForEmail(email);
+      var list = await _storage.auth.fetchSignInMethodsForEmail(email);
+      return list ??= [];
     } on FirebaseAuthException {
       return [];
     }

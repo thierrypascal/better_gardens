@@ -1,6 +1,5 @@
 import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/information_object.dart';
-import 'package:biodiversity/models/storage_provider.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -21,6 +20,9 @@ class Species implements InformationObject {
   @override
   final String category;
 
+  @override
+  String get additionalInfo => null;
+
   /// other species which
   final List<String> connectedTo;
 
@@ -33,16 +35,12 @@ class Species implements InformationObject {
   /// reference to an imageSource of the species
   final String imageSource;
 
-  final StorageProvider _storage;
   final ServiceProvider _service;
 
   /// creates a Species object from a Map
   Species.fromMap(Map<String, dynamic> map,
-      {this.reference,
-      StorageProvider storageProvider,
-      ServiceProvider serviceProvider})
-      : _storage = storageProvider ??= StorageProvider.instance,
-        _service = serviceProvider ??= ServiceProvider.instance,
+      {this.reference, ServiceProvider serviceProvider})
+      : _service = serviceProvider ??= ServiceProvider.instance,
         category = map.containsKey('class') ? map['class'] as String : '',
         name = map.containsKey('name') ? map['name'] as String : '',
         shortDescription = map.containsKey('shortDescription')
@@ -62,8 +60,10 @@ class Species implements InformationObject {
             : [];
 
   /// creates a Species object from a database snapshot
-  Species.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data(), reference: snapshot.reference);
+  Species.fromSnapshot(DocumentSnapshot snapshot,
+      {ServiceProvider serviceProvider})
+      : this.fromMap(snapshot.data(),
+            reference: snapshot.reference, serviceProvider: serviceProvider);
 
   /// returns a formatted string with the [BiodiversityMeasure]
   /// supporting the species
@@ -88,14 +88,20 @@ class Species implements InformationObject {
 
   @override
   Map<String, Iterable<InformationObject>> get associationMap {
+    final supported = <InformationObject>[];
+    for (final element in supportedBy) {
+      final item =
+          _service.biodiversityService.getBiodiversityMeasureByName(element);
+      if (item != null) supported.add(item);
+    }
+    final connected = <InformationObject>[];
+    for (final element in connectedTo) {
+      final item = _service.speciesService.getSpeciesByName(element);
+      if (item != null) connected.add(item);
+    }
     return {
-      'Unterstützt durch die folgenden Lebensräume:': _service
-          .biodiversityService
-          .getFullBiodiversityObjectList()
-          .where((element) => supportedBy.contains(element.name)),
-      'Verbunden mit:': _service.speciesService
-          .getFullSpeciesObjectList()
-          .where((element) => connectedTo.contains(element.name))
+      'Unterstützt durch die folgenden Lebensräume:': supported,
+      'Verbunden mit:': connected
     };
   }
 }

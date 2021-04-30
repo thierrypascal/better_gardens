@@ -20,6 +20,9 @@ class TakeHomeMessage implements InformationObject {
   @override
   String get category => 'Take Home Message';
 
+  @override
+  String get additionalInfo => readTime;
+
   /// how long the message takes to read
   final String readTime;
 
@@ -45,12 +48,17 @@ class TakeHomeMessage implements InformationObject {
       description = await _storage
           .getTextFromFileStorage('/takeHomeMessages/body/$name.md');
     } on PlatformException {
-      description = 'Fehler: keine Beschreibung gefunden.';
+      description = null;
     }
+    description ??= 'Fehler: keine Beschreibung gefunden.';
 
-    var pointIndex = description.indexOf('\.', 400);
-    if (pointIndex == -1) pointIndex = 400;
-    shortDescription = '${description.substring(0, pointIndex)}.';
+    if (description.length > 400) {
+      var pointIndex = description.indexOf('\.', 400);
+      if (pointIndex == -1) pointIndex = 400;
+      shortDescription = '${description.substring(0, pointIndex)}.';
+    } else {
+      shortDescription = description;
+    }
   }
 
   /// load a [TakeHomeMessage] form a database snapshot

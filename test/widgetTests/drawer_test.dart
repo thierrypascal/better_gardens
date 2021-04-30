@@ -9,6 +9,9 @@ void main() {
     expect(find.text('Account'), findsOneWidget,
         reason: 'Account is missing on the Drawer');
 
+    expect(find.text('Karte'), findsOneWidget,
+        reason: 'Account is missing on the Drawer');
+
     expect(find.text('Mein Garten'), findsOneWidget,
         reason: 'Mein Garten is missing on the Drawer');
 

@@ -19,7 +19,7 @@ class ImageService extends ChangeNotifier {
 
   /// Service which holds the image urls and copyright information
   ImageService({StorageProvider storageProvider})
-      : _storage = storageProvider ??= StorageProvider.instance {
+      : _storage = storageProvider ?? StorageProvider.instance {
     _streamSubscription = _storage.database
         .collection('imageReferences')
         .snapshots()
@@ -41,7 +41,10 @@ class ImageService extends ChangeNotifier {
     super.dispose();
   }
 
+  /// defines how the reference on the database is named
   String _key(String name, String type, {int imageNr}) {
+    type = type.toLowerCase().trim();
+    name = name.toLowerCase().trim();
     if (imageNr != null) return '$type$name-$imageNr';
     return '$type$name';
   }
@@ -52,6 +55,7 @@ class ImageService extends ChangeNotifier {
       double width = double.infinity,
       double height,
       BoxFit fit = BoxFit.fitWidth,
+      Widget errorWidget,
       bool displayCopyrightInfo = false,
       AlignmentGeometry copyrightAlignment = AlignmentDirectional.bottomEnd}) {
     final key = _key(name, type, imageNr: imageNr);
@@ -91,7 +95,9 @@ class ImageService extends ChangeNotifier {
     return FutureBuilder(
       future: getImageURL(name, type),
       builder: (context, url) {
-        if (url.connectionState == ConnectionState.done && !url.hasError) {
+        if (url.connectionState == ConnectionState.done &&
+            !url.hasError &&
+            url.data != null) {
           if (displayCopyrightInfo) {
             return FutureBuilder(
                 future: getImageCopyright(name, type),
@@ -136,7 +142,7 @@ class ImageService extends ChangeNotifier {
       imageUrl: url,
       cacheKey: url,
       errorWidget: (context, str, error) =>
-          errorWidget == null ? getImage('default', 'error') : errorWidget,
+          errorWidget ?? getImage('default', 'error'),
     );
   }
 

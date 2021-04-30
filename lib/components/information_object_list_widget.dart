@@ -3,6 +3,7 @@ import 'package:biodiversity/components/simple_information_object_card_widget.da
 import 'package:biodiversity/components/tags/flutter_tags.dart';
 import 'package:biodiversity/models/information_object.dart';
 import 'package:biodiversity/models/tag_item.dart';
+import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/material.dart';
 
 /// Creates a List Widget displaying all provided InformationObjects
@@ -16,13 +17,17 @@ class InformationObjectListWidget extends StatefulWidget {
   /// A list of InformationObjects which should be displayed
   final List<InformationObject> objects;
 
+  final ServiceProvider _serviceProvider;
+
   /// Creates a List Widget displaying all provided InformationObjects
-  InformationObjectListWidget({
-    Key key,
-    this.objects,
-    this.useSimpleCard = false,
-    this.hideLikeAndAdd = false,
-  }) : super(key: key);
+  InformationObjectListWidget(
+      {Key key,
+      this.objects,
+      this.useSimpleCard = false,
+      this.hideLikeAndAdd = false,
+      ServiceProvider serviceProvider})
+      : _serviceProvider = serviceProvider ?? ServiceProvider.instance,
+        super(key: key);
 
   @override
   _InformationObjectListWidgetState createState() =>
@@ -219,10 +224,16 @@ class _InformationObjectListWidgetState
                       itemBuilder: (context, index) {
                         final element = filteredItems.elementAt(index);
                         return widget.useSimpleCard
-                            ? SimpleInformationObjectCard(element)
-                            : ExpandableInformationObjectCard(
+                            ? SimpleInformationObjectCard(
                                 element,
+                                additionalInfo: element.additionalInfo,
+                                serviceProvider: widget._serviceProvider,
+                              )
+                            : ExpandableInformationObjectCard(
+                          element,
                                 hideLikeAndAdd: widget.hideLikeAndAdd,
+                                additionalInfo: element.additionalInfo,
+                                serviceProvider: widget._serviceProvider,
                               );
                       },
                       separatorBuilder: (context, index) {

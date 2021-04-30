@@ -12,11 +12,11 @@ import 'package:flutter/foundation.dart';
 class GardenService extends ChangeNotifier {
   final List<Garden> _gardens = [];
   StreamSubscription _streamSubscription;
-  final StorageProvider _storage;
+  StorageProvider _storage;
 
   /// init the service, should only be used once
-  GardenService({StorageProvider storageProvider})
-      : _storage = storageProvider ??= StorageProvider.instance {
+  GardenService({StorageProvider storageProvider}) {
+    _storage = storageProvider ?? StorageProvider.instance;
     _streamSubscription = _storage.database
         .collection('gardens')
         .snapshots()

@@ -1,12 +1,14 @@
 import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../environment/mock_service_provider.dart';
 import '../environment/mock_storage_provider.dart';
 
 /// This test class makes sure no invalid data
 /// can be retrieved from the database
 void main() {
   final storage = MockStorageProvider();
+  final service = MockServiceProvider(storageProvider: storage);
   test('Valid biodiversity measures', () async {
     final measureAttributes = {
       'name': 'testname',
@@ -19,7 +21,7 @@ void main() {
       'unusedField': 'xyz'
     };
     final measure = BiodiversityMeasure.fromMap(measureAttributes,
-        storageProvider: storage);
+        storageProvider: storage, serviceProvider: service);
     expect(
         measure.beneficialFor, containsAll(measureAttributes['beneficialFor']),
         reason: 'beneficialFor was not set correctly');
@@ -33,7 +35,8 @@ void main() {
   });
 
   test('empty fields', () {
-    var measure = BiodiversityMeasure.fromMap({}, storageProvider: storage);
+    var measure = BiodiversityMeasure.fromMap({},
+        storageProvider: storage, serviceProvider: service);
     expect(measure, isA<BiodiversityMeasure>());
     expect(measure.name, '', reason: "can't handle empty name");
     expect(measure.shortDescription, '',

@@ -11,11 +11,12 @@ class BiodiversityElementListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text('Lebensräume')),
-        drawer: MyDrawer(),
-        body: InformationObjectListWidget(
-          objects: ServiceProvider.instance.biodiversityService
-              .getFullBiodiversityObjectList(),
-        ));
+      appBar: AppBar(title: const Text('Lebensräume')),
+      drawer: MyDrawer(),
+      body: InformationObjectListWidget(
+        objects: ServiceProvider.instance.biodiversityService
+            .getFullBiodiversityObjectList(),
+      ),
+    );
   }
 }

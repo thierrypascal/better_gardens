@@ -16,7 +16,6 @@ class TakeHomeMessagePage extends StatelessWidget {
       body: InformationObjectListWidget(
         objects: ServiceProvider.instance.takeHomeMessageService
             .getFullTakeHomeMessageObjectList(),
-        hideLikeAndAdd: false,
       ),
     );
   }

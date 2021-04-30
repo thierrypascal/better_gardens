@@ -19,7 +19,7 @@ void main() {
   });
 
   testWidgets('Test Email login', (tester) async {
-    await tester.pumpWidget(loadProviders(widget: LoginPage()));
+    await setUpBiodiversityEnvironment(tester: tester, widget: LoginPage());
     await tester.tap(find.text('E-mail'));
     await tester.pumpAndSettle();
     expect(find.byType(LoginPage), findsNothing,

@@ -18,7 +18,7 @@ class MapMarkerService extends ChangeNotifier {
 
   ///init of the service, should only be used once
   MapMarkerService({StorageProvider storageProvider})
-      : _storage = storageProvider ??= StorageProvider.instance {
+      : _storage = storageProvider ?? StorageProvider.instance {
     _streamSubscription = _storage.database
         .collection('locations')
         .snapshots()

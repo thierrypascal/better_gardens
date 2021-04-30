@@ -9,13 +9,13 @@ import 'package:biodiversity/services/take_home_message_service.dart';
 class ServiceProvider {
   ServiceProvider._privateConstructor();
 
-  static final _instance = ServiceProvider._privateConstructor();
   static final _gardenService = GardenService();
   static final _imageService = ImageService();
   static final _biodiversityService = BiodiversityService();
   static final _speciesService = SpeciesService();
   static final _takeHomeMessageService = TakeHomeMessageService();
   static final _mapMarkerService = MapMarkerService();
+  static final _instance = ServiceProvider._privateConstructor();
 
   /// Instance of the ServiceProvider
   static final ServiceProvider instance = _instance;
