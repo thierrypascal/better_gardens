@@ -18,6 +18,12 @@ abstract class InformationObject {
   /// the category of an object is used to create a filter for a list
   String get category;
 
+  /// used to display additional infos on the information_object_cards.
+  /// For example reading time on Take-home-messages
+  ///
+  /// return null, if no additional information should be displayed
+  String get additionalInfo;
+
   /// returns a map of linked informationObjects
   /// formatted like this:
   /// ```

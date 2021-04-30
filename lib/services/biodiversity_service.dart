@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/storage_provider.dart';
+import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -15,13 +16,18 @@ class BiodiversityService extends ChangeNotifier {
   final StorageProvider _storage;
 
   /// initializer for the service
-  BiodiversityService({StorageProvider storageProvider})
-      : _storage = storageProvider ??= StorageProvider.instance {
+  BiodiversityService(
+      {StorageProvider storageProvider, ServiceProvider serviceProvider})
+      : _storage = storageProvider ?? StorageProvider.instance {
     _streamSubscription = _storage.database
         .collection('biodiversityMeasures')
         .snapshots()
-        .listen(_updateElements);
+        .listen((snapshot) =>
+            _updateElements(snapshot, serviceProvider: serviceProvider));
   }
+
+  /// whether the service is ready and has fetched data from the server
+  bool get isInitialized => _initialized;
 
   @override
   Future<void> dispose() async {
@@ -29,11 +35,17 @@ class BiodiversityService extends ChangeNotifier {
     super.dispose();
   }
 
-  void _updateElements(QuerySnapshot snapshots) {
+  void _updateElements(QuerySnapshot snapshots,
+      {ServiceProvider serviceProvider}) {
     _measures.clear();
+    _classes.clear();
     for (final DocumentSnapshot snapshot in snapshots.docs) {
-      _measures.add(BiodiversityMeasure.fromSnapshot(snapshot,
-          storageProvider: _storage));
+      final element = BiodiversityMeasure.fromSnapshot(snapshot,
+          storageProvider: _storage, serviceProvider: serviceProvider);
+      _measures.add(element);
+      if (!_classes.contains(element.type)) {
+        _classes.add(element.type);
+      }
     }
     notifyListeners();
     _initialized = true;
@@ -101,14 +113,6 @@ class BiodiversityService extends ChangeNotifier {
 
   /// returns a list of all distinct classes all species are in
   List<String> getAllClasses() {
-    if (_classes.isNotEmpty) {
-      return _classes.toList();
-    }
-    for (final s in _measures) {
-      if (!_classes.contains(s.type)) {
-        _classes.add(s.type);
-      }
-    }
-    return _classes.toList();
+    return _classes == null ? [] : _classes.toList();
   }
 }

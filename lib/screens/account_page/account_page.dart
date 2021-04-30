@@ -1,15 +1,18 @@
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/text_field_with_descriptor.dart';
-import 'package:biodiversity/models/image_service.dart';
 import 'package:biodiversity/models/user.dart';
-import 'package:biodiversity/screens/account_page/image_picker_page.dart';
+import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 /// Displays the page with account information
 class AccountPage extends StatefulWidget {
   /// Displays the page with account information
-  AccountPage({Key key}) : super(key: key);
+  AccountPage({Key key, ServiceProvider serviceProvider})
+      : _service = serviceProvider ?? ServiceProvider.instance,
+        super(key: key);
+
+  final ServiceProvider _service;
 
   @override
   _AccountPageState createState() => _AccountPageState();
@@ -32,14 +35,12 @@ class _AccountPageState extends State<AccountPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   CircleAvatar(
-                    child: Provider.of<ImageService>(context, listen: false)
-                        .getImageByUrl(user.imageURL,
-                            errorWidget: const Icon(
-                              Icons.person,
-                              size: 60,
-                            )),
                     radius: 40,
                     backgroundColor: Colors.white,
+                    child: widget._service.imageService.getImageByUrl(
+                      user.imageURL,
+                      errorWidget: const Icon(Icons.person, size: 60),
+                    ),
                   ),
                   const SizedBox(width: 15),
                   Column(
@@ -89,11 +90,11 @@ class _AccountPageState extends State<AccountPage> {
                   child: Row(
                     children: [
                       Padding(
+                        padding: const EdgeInsets.only(right: 8),
                         child: Icon(
                           Icons.lock_open,
                           color: Theme.of(context).colorScheme.onSurface,
                         ),
-                        padding: const EdgeInsets.only(right: 8),
                       ),
                       const Text('Passwort ändern')
                     ],
@@ -130,7 +131,7 @@ class _AccountPageState extends State<AccountPage> {
 
   /// Displays a popup dialogue that allows
   /// to change the fields of the User Object
-  _handleTopMenu(String value) {
+  void _handleTopMenu(String value) {
     final _formKey = GlobalKey<FormState>();
     String _name;
     String _surname;
@@ -140,7 +141,6 @@ class _AccountPageState extends State<AccountPage> {
     String _curPassword;
     String _firstPassword;
     String _secondPassword;
-
 
     final user = Provider.of<User>(context, listen: false);
     var _showNameOnMap = user.showNameOnMap;
@@ -175,13 +175,14 @@ class _AccountPageState extends State<AccountPage> {
                             }),
                           ),
                           TextButton(
-                            child: const Text('Profilbild ändern'),
+                            //TODO redirect to ImagePickerPage if Implemented
                             onPressed: () => {
                               // Navigator.push(
                               //     context,
                               //     MaterialPageRoute(
                               //         builder: (context) => ImagePickerPage()))
-                            }, //TODO redirect to ImagePickerPage if Implemented
+                            },
+                            child: const Text('Profilbild ändern'),
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -365,6 +366,9 @@ class _AccountPageState extends State<AccountPage> {
               ),
               actions: [
                 ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
                   child: Row(children: [
                     const Padding(
                       padding: EdgeInsets.only(right: 8),
@@ -372,18 +376,8 @@ class _AccountPageState extends State<AccountPage> {
                     ),
                     const Text('Abbrechen')
                   ]),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
                 ),
                 ElevatedButton(
-                  child: Row(children: [
-                    const Padding(
-                      padding: EdgeInsets.only(right: 8),
-                      child: Icon(Icons.save),
-                    ),
-                    const Text('Speichern')
-                  ]),
                   onPressed: () async {
                     if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
@@ -400,6 +394,13 @@ class _AccountPageState extends State<AccountPage> {
                       }
                     }
                   },
+                  child: Row(children: [
+                    const Padding(
+                      padding: EdgeInsets.only(right: 8),
+                      child: Icon(Icons.save),
+                    ),
+                    const Text('Speichern')
+                  ]),
                 ),
               ],
             ),

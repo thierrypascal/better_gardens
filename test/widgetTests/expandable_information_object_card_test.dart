@@ -10,6 +10,7 @@ import '../environment/mock_storage_provider.dart';
 void main() {
   testWidgets('Test fields present', (tester) async {
     final storage = MockStorageProvider();
+    final service = MockServiceProvider(storageProvider: storage);
     final attributes = {
       'name': 'testname',
       'shortDescription': 'Some description...',
@@ -20,8 +21,8 @@ void main() {
       'dimension': 'dimension..',
       'unusedField': 'xyz'
     };
-    final element =
-        BiodiversityMeasure.fromMap(attributes, storageProvider: storage);
+    final element = BiodiversityMeasure.fromMap(attributes,
+        storageProvider: storage, serviceProvider: service);
     expect(element.shortDescription, attributes['shortDescription']);
     await setUpBiodiversityEnvironment(
         tester: tester,
@@ -31,7 +32,7 @@ void main() {
             serviceProvider: MockServiceProvider(storageProvider: storage),
           ),
         ),
-        storage: storage);
+        storageProvider: storage);
     // Let the snapshots stream fire a snapshot.
     await tester.idle();
     await tester.pump(const Duration(minutes: 1));

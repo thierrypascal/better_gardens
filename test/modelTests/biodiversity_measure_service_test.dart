@@ -12,7 +12,8 @@ void main() {
       'name': 'testObject',
       'type': 'test',
     });
-    final service = BiodiversityService(storageProvider: storage);
+    final service = BiodiversityService(
+        storageProvider: storage, serviceProvider: serviceProvider);
     expect(service.getBiodiversityObjectList('None'), isA<List>());
     expect(await service.getTypeOfObject('testObject'), equals('test'));
     expect(await service.getTypeOfObject('anotherThing'), equals('unknown'));

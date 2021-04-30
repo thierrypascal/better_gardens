@@ -12,6 +12,7 @@ import 'mock_storage_provider.dart';
 
 class MockServiceProvider extends Mock implements ServiceProvider {
   StorageProvider storageProvider;
+  ServiceProvider serviceProvider;
 
   MockServiceProvider({this.storageProvider}) {
     storageProvider ??= MockStorageProvider();
@@ -26,8 +27,8 @@ class MockServiceProvider extends Mock implements ServiceProvider {
       ImageService(storageProvider: storageProvider);
 
   @override
-  BiodiversityService get biodiversityService =>
-      BiodiversityService(storageProvider: storageProvider);
+  BiodiversityService get biodiversityService => BiodiversityService(
+      storageProvider: storageProvider, serviceProvider: this);
 
   @override
   SpeciesService get speciesService =>

@@ -2,6 +2,7 @@ import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
+import 'package:biodiversity/services/service_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -26,6 +27,8 @@ class MyApp extends StatelessWidget {
           );
         }
         if (snapshot.connectionState == ConnectionState.done) {
+          // load services and the related content
+          ServiceProvider.instance;
           return MultiProvider(
             providers: [
               ChangeNotifierProvider(

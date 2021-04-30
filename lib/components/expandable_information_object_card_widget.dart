@@ -14,12 +14,20 @@ class ExpandableInformationObjectCard extends StatefulWidget {
   /// if this flag is set, the buttons hinzufügen and merken will be removed
   final bool hideLikeAndAdd;
 
-  final ServiceProvider _service;
+  /// additional Info to be displayed instead of hinzufügen and merken buttons.
+  /// the Buttons will be automatically removed if this string is set
+  final String additionalInfo;
+
+  final ServiceProvider _serviceProvider;
 
   /// show a card to the provided InformationObject
   ExpandableInformationObjectCard(this.object,
-      {this.hideLikeAndAdd = false, ServiceProvider serviceProvider, Key key})
-      : _service = serviceProvider ??= ServiceProvider.instance,
+      {hideLikeAndAdd = false,
+      this.additionalInfo,
+      ServiceProvider serviceProvider,
+      Key key})
+      : _serviceProvider = serviceProvider ??= ServiceProvider.instance,
+        hideLikeAndAdd = hideLikeAndAdd || additionalInfo != null,
         super(key: key);
 
   @override
@@ -48,7 +56,7 @@ class _ExpandableInformationObjectCardState
             child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 height: _expanded ? 100 : 0,
-                child: widget._service.imageService.getImage(
+                child: widget._serviceProvider.imageService.getImage(
                   widget.object.name,
                   widget.object.type,
                 )),
@@ -122,8 +130,15 @@ class _ExpandableInformationObjectCardState
                         ),
                       ],
                     ),
+                  if (widget.additionalInfo != null)
+                    Text(
+                      widget.additionalInfo,
+                      softWrap: true,
+                      maxLines: 4,
+                      overflow: TextOverflow.fade,
+                    ),
                   const SizedBox(width: 4),
-                  widget._service.imageService.getImage(
+                  widget._serviceProvider.imageService.getImage(
                       widget.object.name, widget.object.type,
                       height: 60, width: 60, fit: BoxFit.cover),
                 ],

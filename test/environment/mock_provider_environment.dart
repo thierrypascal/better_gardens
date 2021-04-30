@@ -11,23 +11,33 @@ import 'mock_storage_provider.dart';
 Future<void> setUpBiodiversityEnvironment(
     {@required WidgetTester tester,
     @required Widget widget,
-    MockStorageProvider storage}) async {
-  await tester.pumpWidget(loadProviders(widget: widget, storage: storage));
+    MockStorageProvider storageProvider,
+    bool pumpAndSettle = true}) async {
+  storageProvider ??= MockStorageProvider();
+  await storageProvider.database
+      .doc('imageReferences/default')
+      .set({'downloadURL': 'defaultDownloadURL'});
+  await tester.pumpWidget(loadProviders(
+    widget: widget,
+    storageProvider: storageProvider,
+  ));
+  if (pumpAndSettle) {
+    await tester.pumpAndSettle(const Duration(minutes: 1));
+  }
   await tester.idle();
 }
 
 Widget loadProviders(
     {@required Widget widget,
-    MockStorageProvider storage,
+    MockStorageProvider storageProvider,
     GlobalKey globalKey}) {
-  storage ??= MockStorageProvider();
   return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => User.empty(storageProvider: storage),
+          create: (context) => User.empty(storageProvider: storageProvider),
         ),
         ChangeNotifierProvider(
-          create: (context) => Garden.empty(storageProvider: storage),
+          create: (context) => Garden.empty(storageProvider: storageProvider),
         ),
         ChangeNotifierProvider(
             create: (context) => MapInteractionContainer.empty()),

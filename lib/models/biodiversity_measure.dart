@@ -24,6 +24,9 @@ class BiodiversityMeasure implements InformationObject {
   @override
   String get category => type;
 
+  @override
+  String get additionalInfo => null;
+
   /// in which unit this Biodiversity element is measured e.g. point
   final String dimension;
 
@@ -41,12 +44,16 @@ class BiodiversityMeasure implements InformationObject {
 
   final _descriptionPath = 'biodiversityMeasures/descriptions';
   final StorageProvider _storage;
+  final ServiceProvider _service;
 
   /// creates a [BiodiversityMeasure] from the provided map
   /// used to load elements from the database and for testing
   BiodiversityMeasure.fromMap(Map<String, dynamic> map,
-      {this.reference, StorageProvider storageProvider})
-      : _storage = storageProvider ??= StorageProvider.instance,
+      {this.reference,
+      StorageProvider storageProvider,
+      ServiceProvider serviceProvider})
+      : _storage = storageProvider ?? StorageProvider.instance,
+        _service = serviceProvider ?? ServiceProvider.instance,
         name = map.containsKey('name') ? map['name'] as String : '',
         shortDescription = map.containsKey('shortDescription')
             ? map['shortDescription'] as String
@@ -85,21 +92,24 @@ class BiodiversityMeasure implements InformationObject {
 
   /// load a [BiodiversityMeasure] form a database snapshot
   BiodiversityMeasure.fromSnapshot(DocumentSnapshot snapshot,
-      {StorageProvider storageProvider})
+      {StorageProvider storageProvider, ServiceProvider serviceProvider})
       : this.fromMap(snapshot.data(),
-            reference: snapshot.reference, storageProvider: storageProvider);
+            reference: snapshot.reference,
+            storageProvider: storageProvider,
+            serviceProvider: serviceProvider);
 
   @override
   Map<String, Iterable<InformationObject>> get associationMap {
     final beneficialObjects = <InformationObject>[];
     for (final item in beneficialFor) {
-      beneficialObjects
-          .add(ServiceProvider.instance.speciesService.getSpeciesByName(item));
+      final species = _service.speciesService.getSpeciesByName(item);
+      if (species != null) beneficialObjects.add(species);
     }
     final goodTogetherObjects = <InformationObject>[];
     for (final item in goodTogetherWith) {
-      goodTogetherObjects.add(ServiceProvider.instance.biodiversityService
-          .getBiodiversityMeasureByName(item));
+      final object =
+          _service.biodiversityService.getBiodiversityMeasureByName(item);
+      if (object != null) goodTogetherObjects.add(object);
     }
     return {
       'Gut für die folgenden Tiere:': beneficialObjects,

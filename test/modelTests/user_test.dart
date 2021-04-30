@@ -9,6 +9,7 @@ const testNickname = 'littleTester1234';
 const testPassword = '123456';
 const testMail = 'muster.mueller@tester.com';
 const testImageURL = 'https://bit.ly/3xfxbnW';
+const testFavoredObjects = ['Bee', 'Hedgehog', 'Pile of branches'];
 
 void main() {
   test('Empty User is empty', () {
@@ -100,11 +101,63 @@ void main() {
       'surname': testSurname,
       'mail': testMail,
       'imageURL': testImageURL,
+      'gardens': [],
+      'favoredObjects': testFavoredObjects,
     });
     await testUser.signInWithEmail(testMail, testPassword);
     expect(testUser.nickname, testNickname, reason: 'Nickname was not loaded');
     expect(testUser.name, testName, reason: 'Name was not loaded');
     expect(testUser.surname, testSurname, reason: 'Surname was not loaded');
     expect(testUser.imageURL, testImageURL, reason: 'ImageURL was not loaded');
+  });
+
+  test('User sign out test', () async {
+    final storage = MockStorageProvider();
+    final user = User.empty(storageProvider: storage);
+    await storage.database
+        .doc('gardens/testgarden')
+        .set({'name': 'Mein Garten'});
+    final garden = await storage.database.doc('gardens/testgarden').get();
+    await storage.database.doc('users/some_random_id').set({
+      'nickname': testNickname,
+      'name': testName,
+      'surname': testSurname,
+      'mail': testMail,
+      'imageURL': testImageURL,
+      'gardens': [garden.reference],
+      'favoredObjects': testFavoredObjects
+    });
+    await user.signInWithEmail(testMail, testPassword);
+    await user.signOut();
+    final emptyUser = User.empty(storageProvider: storage);
+    expect(user.name, emptyUser.name,
+        reason: 'name was not the same as in User.empty');
+    expect(user.surname, emptyUser.surname,
+        reason: 'surname was not the same as in User.empty');
+    expect(user.nickname, emptyUser.nickname,
+        reason: 'nickname was not the same as in User.empty');
+    expect(user.mail, emptyUser.mail,
+        reason: 'mail was not the same as in User.empty');
+    expect(user.isLoggedIn, emptyUser.isLoggedIn,
+        reason: 'isLoggedIn was not the same as in User.empty');
+    expect(user.showGardenImageOnMap, emptyUser.showGardenImageOnMap,
+        reason: 'showGardenImageOnMap was not the same as in User.empty');
+    expect(user.showNameOnMap, emptyUser.showNameOnMap,
+        reason: 'showNameOnMap was not the same as in User.empty');
+    expect(user.imageURL, emptyUser.imageURL,
+        reason: 'imageURL was not the same as in User.empty');
+  });
+
+  test('Google sign in', () async {
+    final storage = MockStorageProvider();
+    final user = User.empty(storageProvider: storage);
+    final result = await user.signInWithGoogle();
+    expect(result, isNotNull,
+        reason: 'Login without registration should not work');
+    expect(result.isRegistered, isFalse, reason: 'should not be registered');
+    expect(result.isEmailConfirmed, isFalse,
+        reason: 'email should not be confirmed');
+    expect(result.message, 'Bitte registrieren Sie sich zuerst.',
+        reason: 'wrong error message');
   });
 }

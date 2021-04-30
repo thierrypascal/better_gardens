@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/storage_provider.dart';
+import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -15,12 +16,14 @@ class SpeciesService extends ChangeNotifier {
   final StorageProvider _storage;
 
   /// init the service, should only be used once
-  SpeciesService({StorageProvider storageProvider})
-      : _storage = storageProvider ??= StorageProvider.instance {
+  SpeciesService(
+      {StorageProvider storageProvider, ServiceProvider serviceProvider})
+      : _storage = storageProvider ?? StorageProvider.instance {
     _streamSubscription = _storage.database
         .collection('species')
         .snapshots()
-        .listen(_updateElements);
+        .listen((snapshot) =>
+            _updateElements(snapshot, serviceProvider: serviceProvider));
   }
 
   @override
@@ -29,10 +32,12 @@ class SpeciesService extends ChangeNotifier {
     super.dispose();
   }
 
-  void _updateElements(QuerySnapshot snapshots) {
+  void _updateElements(QuerySnapshot snapshots,
+      {ServiceProvider serviceProvider}) {
     _species.clear();
     for (final DocumentSnapshot snapshot in snapshots.docs) {
-      _species.add(Species.fromSnapshot(snapshot));
+      _species.add(
+          Species.fromSnapshot(snapshot, serviceProvider: serviceProvider));
     }
     notifyListeners();
     _initialized = true;

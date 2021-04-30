@@ -15,9 +15,19 @@ class SimpleInformationObjectCard extends StatelessWidget {
   /// if on tap onto the element the page should be redirected to SelectionList
   final Function onTapHandler;
 
+  /// additional Info to be displayed
+  final String additionalInfo;
+
+  final ServiceProvider _serviceProvider;
+
   /// Non expandable ListTile, displaying a [BiodiversityMeasure]
-  const SimpleInformationObjectCard(this.object, {this.onTapHandler, Key key})
-      : super(key: key);
+  SimpleInformationObjectCard(this.object,
+      {this.onTapHandler,
+      this.additionalInfo,
+      ServiceProvider serviceProvider,
+      Key key})
+      : _serviceProvider = serviceProvider ?? ServiceProvider.instance,
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +60,14 @@ class SimpleInformationObjectCard extends StatelessWidget {
                 ],
               ),
             ),
-            ServiceProvider.instance.imageService
+            if (additionalInfo != null)
+              Text(
+                additionalInfo,
+                softWrap: true,
+                maxLines: 4,
+                overflow: TextOverflow.fade,
+              ),
+            _serviceProvider.imageService
                 .getImage(object.name, object.type, height: 60, width: 60)
           ],
         ),
@@ -64,6 +81,7 @@ class SimpleInformationObjectCard extends StatelessWidget {
       sb.write(item.name);
       sb.write(', ');
     }
+    if (sb.length == 0) return '';
     return sb.toString().replaceRange(sb.length - 2, sb.length, '');
   }
 }
