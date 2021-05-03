@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/information_object_list_widget.dart';
 import 'package:biodiversity/models/garden.dart';
+import 'package:biodiversity/screens/my_garden_page/my_garden_edit.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -28,68 +29,59 @@ class _MyGardenState extends State<MyGarden> {
         title: const Text('Mein Garten'),
         actions: [
           PopupMenuButton(
-              itemBuilder: (context) => [
-                    PopupMenuItem(
-                      value: 'gardenEditPage',
-                      child: Row(
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(right: 10),
-                            child: Icon(
-                              Icons.perm_contact_calendar_sharp,
-                              color: Colors.black,
-                            ),
-                          ),
-                          const Text('Garten bearbeiten')
-                        ],
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'MyGardenEdit',
+                child: Row(
+                  children: [
+                    const Padding(
+                      child: Icon(
+                        Icons.perm_contact_calendar_sharp,
+                        color: Colors.black,
                       ),
+                      padding: EdgeInsets.only(right: 10),
                     ),
-                    PopupMenuItem(
-                      value: 'gardenAddPage',
-                      child: Row(
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(right: 10),
-                            child: Icon(
-                              Icons.add,
-                              color: Colors.black,
-                            ),
-                          ),
-                          const Text('Garten hinzfügen')
-                        ],
+                    const Text('Garten bearbeiten'),
+
+                  ],
+
+                ),
+
+              ),
+              PopupMenuItem(
+                value: 'gardenAddPage',
+                child: Row(
+                  children: [
+                    const Padding(
+                      child: Icon(
+                        Icons.add,
+                        color: Colors.black,
                       ),
+                      padding: EdgeInsets.only(right: 10),
                     ),
-                    PopupMenuItem(
-                      value: 'gardenInfoPage',
-                      child: Row(
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(right: 10),
-                            child: Icon(
-                              Icons.home_filled,
-                              color: Colors.black,
-                            ),
-                          ),
-                          const Text('Garten info ansehen')
-                        ],
+                    const Text('Garten hinzfügen')
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 'myGardenPage',
+                child: Row(
+                  children: [
+                    const Padding(
+                      child: Icon(
+                        Icons.home,
+                        color: Colors.black,
                       ),
+                      padding: EdgeInsets.only(right: 10),
                     ),
-                    PopupMenuItem(
-                      value: 'myGardenPage',
-                      child: Row(
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(right: 10),
-                            child: Icon(
-                              Icons.home,
-                              color: Colors.black,
-                            ),
-                          ),
-                          const Text('Zu Garten_1 wechseln')
-                        ],
-                      ),
-                    ),
-                  ]),
+                    const Text('Zu Garten_1 wechseln')
+                  ],
+                ),
+              ),
+            ],
+
+            onSelected: _handleTopMenu,
+          ),
         ],
       ),
       drawer: MyDrawer(),
@@ -105,7 +97,27 @@ class _MyGardenState extends State<MyGarden> {
       ),
       floatingActionButton: _floatingActionButton(),
     );
+
   }
+  _handleTopMenu(String value) {
+  switch (value) {
+    case 'MyGardenEdit':
+      {
+        Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MyGardenEdit()),
+              );
+
+      }
+      break;
+    case 'gardenAddPage':
+      {
+        //TODO sina add page
+
+        break;
+      }
+  }
+}
 }
 
 Widget _floatingActionButton() {
@@ -271,3 +283,5 @@ Widget _differentCircles(BuildContext context) {
     )
   ]);
 }
+
+
