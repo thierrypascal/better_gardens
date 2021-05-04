@@ -12,7 +12,7 @@ Future<void> main() async {
     final service = MockServiceProvider(storageProvider: storage);
     await storage.database
         .doc('imageReferences/typename')
-        .set({'downloadURL': 'res/logo.png', 'copyright': 'copyright'});
+        .set({'downloadURL': 'res/Logo_basic.png', 'copyright': 'copyright'});
 
     await setUpBiodiversityEnvironment(
         tester: tester,
@@ -29,7 +29,7 @@ Future<void> main() async {
     final service = MockServiceProvider(storageProvider: storage);
     await storage.database
         .doc('imageReferences/default')
-        .set({'downloadURL': 'res/logo.png', 'copyright': 'copyright'});
+        .set({'downloadURL': 'res/Logo_basic.png', 'copyright': 'copyright'});
 
     await setUpBiodiversityEnvironment(
         tester: tester,

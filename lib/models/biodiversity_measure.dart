@@ -68,7 +68,7 @@ class BiodiversityMeasure implements InformationObject {
             : [],
         type = map.containsKey('type') ? map['type'] as String : '',
         imageSource =
-            map.containsKey('image') ? map['image'] as String : 'res/logo.png',
+            map.containsKey('image') ? map['image'] as String : 'res/Logo_basic.png',
         dimension =
             map.containsKey('dimension') ? map['dimension'] as String : '' {
     _loadDescription();

@@ -47,7 +47,7 @@ void main() {
     expect(measure.goodTogetherWith, [],
         reason: "can't handle empty goodTogetherWith");
     expect(measure.dimension, '', reason: "can't handle empty dimension");
-    expect(measure.imageSource, 'res/logo.png',
+    expect(measure.imageSource, 'res/Logo_basic.png',
         reason: "can't handle empty imageSource");
   });
 }

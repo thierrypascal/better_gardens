@@ -11,7 +11,7 @@ class TakeHomeMessagePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Take Home Messages')),
+      appBar: AppBar(title: const Text('Take-Home Messages')),
       drawer: MyDrawer(),
       body: InformationObjectListWidget(
         objects: ServiceProvider.instance.takeHomeMessageService
