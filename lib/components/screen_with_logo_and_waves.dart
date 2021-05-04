@@ -30,7 +30,7 @@ class LogoAndWavesScreen extends StatelessWidget {
           0,
           Center(
             child: Image.asset(
-              'res/logo.png',
+              'res/Logo_wtext.png',
               width: logoSize,
             ),
           ));

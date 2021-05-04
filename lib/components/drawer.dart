@@ -48,12 +48,12 @@ class MyDrawer extends StatelessWidget {
                               padding: const EdgeInsets.all(8.0),
                               child: Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+                                    MainAxisAlignment.start,
                                 children: [
                                   const Image(
-                                      width: 50,
-                                      height: 50,
-                                      image: AssetImage('res/logo.png')),
+                                      width: 100,
+                                      height: 100,
+                                      image: AssetImage('res/Logo_basic.png')),
                                   Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -64,17 +64,20 @@ class MyDrawer extends StatelessWidget {
                                                   .colorScheme
                                                   .onPrimary,
                                               fontWeight: FontWeight.w600)),
-                                      Text(
-                                        "Let's talk about Better Gardens!",
-                                        style: TextStyle(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onPrimary),
-                                      ),
                                     ],
                                   ),
                                 ],
                               ),
+                            ),
+                            ListTile(
+                              title: const Text('Mein Garten'),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => MyGarden()),
+                                );
+                              },
                             ),
                             ListTile(
                               title: const Text('Karte'),
@@ -83,6 +86,42 @@ class MyDrawer extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => MapsPage()),
+                                );
+                              },
+                            ),
+                            ListTile(
+                              title: const Text('Arten'),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SpeciesListPage()),
+                                );
+                              },
+                            ),
+                            ListTile(
+                              title: const Text('Lebensräume'),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          BiodiversityElementListPage()),
+                                );
+                              },
+                            ),
+                            ListTile(
+                              title: const Text('Merkliste'),
+                              onTap: () {},
+                            ),
+                            ListTile(
+                              title: const Text('Take-Home Messages'),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          TakeHomeMessagePage()),
                                 );
                               },
                             ),
@@ -106,59 +145,12 @@ class MyDrawer extends StatelessWidget {
                                 }
                               },
                             ),
-                            ListTile(
-                              title: const Text('Mein Garten'),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => MyGarden()),
-                                );
-                                // ...
-                              },
-                            ),
-                            ListTile(
-                              title: const Text('Nachrichten'),
-                              onTap: () {},
-                            ),
-                            ListTile(
-                              title: const Text('Lebensräume'),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          BiodiversityElementListPage()),
-                                );
-                              },
-                            ),
-                            ListTile(
-                              title: const Text('Arten'),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => SpeciesListPage()),
-                                );
-                              },
-                            ),
-                            ListTile(
-                              title: const Text('Merkliste'),
-                              onTap: () {},
-                            ),
-                            ListTile(
-                              title: const Text('Take Home Messages'),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          TakeHomeMessagePage()),
-                                );
-                              },
-                            ),
                             // ignore: prefer_if_elements_to_conditional_expressions
                             _loginLogoutButton(context),
+                            ListTile(
+                              title: const Text('Impressum', style: TextStyle(fontSize: 12),),
+                              onTap: () {},
+                            ),
                           ],
                         ),
                       ),

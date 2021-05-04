@@ -48,7 +48,7 @@ class Species implements InformationObject {
             : '',
         imageSource = map.containsKey('imageSource')
             ? map['imageSource'] as String
-            : 'res/logo.png',
+            : 'res/Logo_basic.png',
         description =
             map.containsKey('description') ? map['description'] as String : '',
         type = map.containsKey('type') ? map['type'] as String : '',

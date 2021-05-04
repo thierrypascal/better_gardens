@@ -15,9 +15,6 @@ void main() {
     expect(find.text('Mein Garten'), findsOneWidget,
         reason: 'Mein Garten is missing on the Drawer');
 
-    expect(find.text('Nachrichten'), findsOneWidget,
-        reason: 'Nachrichten is missing on the Drawer');
-
     expect(find.text('Lebensräume'), findsOneWidget,
         reason: 'Lebensräume is missing on the Drawer');
 
@@ -27,7 +24,7 @@ void main() {
     expect(find.text('Merkliste'), findsOneWidget,
         reason: 'Merkliste is missing on the Drawer');
 
-    expect(find.text('Take Home Messages'), findsOneWidget,
+    expect(find.text('Take-Home Messages'), findsOneWidget,
         reason: 'Take Home Messages is missing on the Drawer');
 
     expect(find.text('Login'), findsOneWidget,
