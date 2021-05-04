@@ -283,5 +283,3 @@ Widget _differentCircles(BuildContext context) {
     )
   ]);
 }
-
-

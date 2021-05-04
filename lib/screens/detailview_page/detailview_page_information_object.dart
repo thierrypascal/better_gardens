@@ -2,6 +2,7 @@ import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/tags/flutter_tags.dart';
 import 'package:biodiversity/models/information_object.dart';
 import 'package:biodiversity/models/user.dart';
+import 'package:biodiversity/screens/information_list_page/add_element_to_garden_amount_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -91,7 +92,12 @@ class _DetailViewPageInformationObjectState
                   icon: const Icon(
                     Icons.add,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AddElementToGardenAmountPage(object: widget.object,)),
+                    );
+                  },
                 ),
                 IconButton(
                   icon: user.doesLikeElement(widget.object.name)

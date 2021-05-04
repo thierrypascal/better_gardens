@@ -27,7 +27,7 @@ class WhiteRedirectPage extends StatelessWidget {
             child: Text(
           text,
           style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 24),
-          textAlign: TextAlign.justify,
+          textAlign: TextAlign.center,
         )),
       ),
     );
