@@ -95,7 +95,10 @@ class _DetailViewPageInformationObjectState
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => AddElementToGardenAmountPage(object: widget.object,)),
+                      MaterialPageRoute(
+                          builder: (context) => AddElementToGardenAmountPage(
+                                object: widget.object,
+                              )),
                     );
                   },
                 ),

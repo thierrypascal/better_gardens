@@ -28,8 +28,9 @@ class _AddElementToGardenAmountPageState
     return EditDialog(
       title: "Lebensraum hinzufügen",
       abortCallback: () {
-        Provider.of<InformationObjectAmountContainer>(context,
-            listen: false).amounts.clear();
+        Provider.of<InformationObjectAmountContainer>(context, listen: false)
+            .amounts
+            .clear();
         Navigator.pop(context);
       },
       save: "Weiter",
@@ -39,8 +40,7 @@ class _AddElementToGardenAmountPageState
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) =>
-                  AddElementToGardenLocationPage()),
+              builder: (context) => AddElementToGardenLocationPage()),
         );
       },
       body: Column(
@@ -51,14 +51,10 @@ class _AddElementToGardenAmountPageState
             "Lebensraum hinzufügen",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          SizedBox(
-            height: 10,
-          ),
+          SizedBox(height: 10),
           Text(
               "Gib die Menge des Lebensraumes an, den Du hinzufügen möchtest."),
-          SizedBox(
-            height: 20,
-          ),
+          SizedBox(height: 20),
           SimpleInformationObjectCard(
             widget.object,
             formKey: _formKey,

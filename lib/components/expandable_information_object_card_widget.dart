@@ -93,7 +93,11 @@ class _ExpandableInformationObjectCardState
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => AddElementToGardenAmountPage(object: widget.object,)),
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      AddElementToGardenAmountPage(
+                                        object: widget.object,
+                                      )),
                             );
                           },
                           style: const ButtonStyle(
@@ -173,7 +177,11 @@ class _ExpandableInformationObjectCardState
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => AddElementToGardenAmountPage(object: widget.object,)),
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        AddElementToGardenAmountPage(
+                                          object: widget.object,
+                                        )),
                               );
                             },
                           ),

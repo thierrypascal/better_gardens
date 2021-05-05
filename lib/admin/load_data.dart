@@ -1,3 +1,4 @@
+import 'package:biodiversity/admin/upload_images.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,32 +25,35 @@ class _LoadDataState extends State<LoadData> {
     assert(!kReleaseMode);
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Data loading, ADMINS ONLY'),
+        leading: IconButton(
+          onPressed: () => Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => UploadImages())),
+          icon: const Icon(Icons.next_plan_outlined),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             const Text(
-              'This page should only be used by developers.\n'
-              'The content of the Excel file stored in the repo under:\n'
-              'res/data/Lebensraume-und-Arten.xlsx\n'
-              'is not checked if the content is correct\n\n'
-              'Always make sure the data in the Excel file is correct '
-              'before uploading !',
+              'This page allows you to upload information about species '
+              'and biodiversity Elements to the database.\n'
+              'This page should only be used by developers.\n\n\n\n'
+              'The content is not checked for correctness.\n\n'
+              'Always make sure the data provided is correct before uploading !\n\n'
+              'The Excel file should be stored in the folder:\n'
+              'res/data/Lebensraume-und-Arten.xlsx\n',
               style: TextStyle(fontSize: 18),
             ),
             Column(
               children: [
-                ElevatedButton(
+                ElevatedButton.icon(
                   onPressed: _loadData,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.backup_rounded),
-                      const SizedBox(width: 10),
-                      const Text('load and update data'),
-                    ],
-                  ),
+                  label: const Text('Upload Data'),
+                  icon: const Icon(Icons.backup_rounded),
                 ),
                 const SizedBox(height: 15),
                 LinearProgressIndicator(value: _progress),

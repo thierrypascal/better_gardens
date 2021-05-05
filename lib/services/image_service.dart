@@ -43,11 +43,10 @@ class ImageService extends ChangeNotifier {
   }
 
   /// defines how the reference on the database is named
-  String _key(String name, String type, {int imageNr}) {
-    type = type.toLowerCase().trim();
+  String _key(String name, {int imageNr}) {
     name = name.toLowerCase().trim();
-    if (imageNr != null) return '$type$name-$imageNr';
-    return '$type$name';
+    if (imageNr != null) return '$name-$imageNr';
+    return '$name-1';
   }
 
   /// Returns an image which is loaded dynamically from the database/firestore
@@ -59,7 +58,7 @@ class ImageService extends ChangeNotifier {
       Widget errorWidget,
       bool displayCopyrightInfo = false,
       AlignmentGeometry copyrightAlignment = AlignmentDirectional.bottomEnd}) {
-    final key = _key(name, type, imageNr: imageNr);
+    final key = _key(name, imageNr: imageNr);
 
     Widget _getImage(String url) {
       return CachedNetworkImage(
@@ -101,7 +100,7 @@ class ImageService extends ChangeNotifier {
             url.data != null) {
           if (displayCopyrightInfo) {
             return FutureBuilder(
-                future: getImageCopyright(name, type),
+                future: getImageCopyright(name),
                 builder: (context, copyright) {
                   if (copyright.connectionState == ConnectionState.done &&
                       !copyright.hasError) {
@@ -151,18 +150,29 @@ class ImageService extends ChangeNotifier {
   /// Example name: Asthaufen<br>
   /// Example type: biodiversityMeasures
   Future<String> getImageURL(String name, String type, {int imageNr}) async {
-    final key = _key(name, type, imageNr: imageNr);
+    final key = _key(name, imageNr: imageNr);
     if (_urls.containsKey(key)) {
       return _urls[key];
     }
-    final doc = await _storage.database.doc('imageReferences/$key').get();
+    var doc = await _storage.database.doc('imageReferences/$key').get();
+    if (!doc.exists) {
+      final query = _storage.database
+          .collection('imageReferences')
+          .where('name', isEqualTo: name)
+          .where('type', isEqualTo: type)
+          .where('order', isEqualTo: imageNr ?? 1);
+      final docs = await query.get();
+      if (docs.docs.isNotEmpty) {
+        doc = docs.docs.first;
+      }
+    }
     if (!doc.exists || !doc.data().containsKey('downloadURL')) {
       if (name != 'default') {
         final url = await getImageURL('default', '');
         if (url != null) _urls[key] = url;
         return url;
       }
-      logging.log('default image source not found', level: 100);
+      logging.log('default image source not found', level: 1000);
       return null;
     }
     _urls[key] = doc.data()['downloadURL'];
@@ -172,16 +182,15 @@ class ImageService extends ChangeNotifier {
   /// returns copyright information about the image associated with that name
   /// and type. <br>
   /// Example name: Asthaufen<br> Example type: biodiversityMeasures
-  Future<String> getImageCopyright(String name, String type,
-      {int imageNr}) async {
-    final key = _key(name, type, imageNr: imageNr);
+  Future<String> getImageCopyright(String name, {int imageNr}) async {
+    final key = _key(name, imageNr: imageNr);
     if (_copyrightInfo.containsKey(key)) {
       return _copyrightInfo[key];
     }
     final doc = await _storage.database.doc('imageReferences/$key').get();
     if (!doc.exists || !doc.data().containsKey('copyright')) {
       if (name != 'default') {
-        final copyright = await getImageCopyright('default', '');
+        final copyright = await getImageCopyright('default');
         if (copyright != null) _copyrightInfo[key] = copyright;
         return copyright;
       }

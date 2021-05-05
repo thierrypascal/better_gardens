@@ -15,7 +15,7 @@ Future<void> setUpBiodiversityEnvironment(
     bool pumpAndSettle = true}) async {
   storageProvider ??= MockStorageProvider();
   await storageProvider.database
-      .doc('imageReferences/default')
+      .doc('imageReferences/default-1')
       .set({'downloadURL': 'defaultDownloadURL'});
   await tester.pumpWidget(loadProviders(
     widget: widget,

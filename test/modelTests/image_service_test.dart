@@ -11,7 +11,7 @@ Future<void> main() async {
     final storage = MockStorageProvider();
     final service = MockServiceProvider(storageProvider: storage);
     await storage.database
-        .doc('imageReferences/typename')
+        .doc('imageReferences/name-1')
         .set({'downloadURL': 'res/Logo_basic.png', 'copyright': 'copyright'});
 
     await setUpBiodiversityEnvironment(
@@ -28,7 +28,7 @@ Future<void> main() async {
     final storage = MockStorageProvider();
     final service = MockServiceProvider(storageProvider: storage);
     await storage.database
-        .doc('imageReferences/default')
+        .doc('imageReferences/default-1')
         .set({'downloadURL': 'res/Logo_basic.png', 'copyright': 'copyright'});
 
     await setUpBiodiversityEnvironment(
@@ -57,10 +57,9 @@ Future<void> main() async {
     final storage = MockStorageProvider();
     final service = MockServiceProvider(storageProvider: storage);
     await storage.database
-        .doc('imageReferences/typename')
+        .doc('imageReferences/name-1')
         .set({'copyright': 'testCopyright'});
-    final copyright =
-        await service.imageService.getImageCopyright('name', 'type');
+    final copyright = await service.imageService.getImageCopyright('name');
     expect(copyright, 'testCopyright',
         reason: 'correct copyright was not loaded');
   });
@@ -69,10 +68,10 @@ Future<void> main() async {
     final storage = MockStorageProvider();
     final service = MockServiceProvider(storageProvider: storage);
     await storage.database
-        .doc('imageReferences/default')
+        .doc('imageReferences/default-1')
         .set({'copyright': 'defaultCopyright'});
     final copyright =
-        await service.imageService.getImageCopyright('randomName', 'type');
+        await service.imageService.getImageCopyright('randomName');
     expect(copyright, 'defaultCopyright',
         reason: 'default copyright was not loaded');
   });
@@ -81,13 +80,13 @@ Future<void> main() async {
     final storage = MockStorageProvider();
     final service = MockServiceProvider(storageProvider: storage);
     await storage.database
-        .doc('imageReferences/default')
+        .doc('imageReferences/default-1')
         .set({'downloadURL': 'defaultDownloadURL'});
     final defaultUrl = await service.imageService.getImageURL('name', 'type');
     expect(defaultUrl, 'defaultDownloadURL',
         reason: 'Default URL was not loaded');
     await storage.database
-        .doc('imageReferences/typename')
+        .doc('imageReferences/name-1')
         .set({'downloadURL': 'specificURL'});
     final url = await service.imageService.getImageURL('name', 'type');
     expect(url, 'specificURL',
