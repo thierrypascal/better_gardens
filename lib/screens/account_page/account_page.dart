@@ -1,9 +1,11 @@
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/text_field_with_descriptor.dart';
 import 'package:biodiversity/models/user.dart';
+import 'package:biodiversity/screens/account_page/image_picker_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 
 /// Displays the page with account information
 class AccountPage extends StatefulWidget {
@@ -177,10 +179,10 @@ class _AccountPageState extends State<AccountPage> {
                           TextButton(
                             //TODO redirect to ImagePickerPage if Implemented
                             onPressed: () => {
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //         builder: (context) => ImagePickerPage()))
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ImagePickerPage(aspectRatio: 1, originalImageURL: user.imageURL,)))
                             },
                             child: const Text('Profilbild ändern'),
                           ),

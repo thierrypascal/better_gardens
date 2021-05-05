@@ -31,6 +31,9 @@ class EditDialog extends StatelessWidget {
   /// content to display on the page
   final Widget body;
 
+  /// scroll physics for the body
+  final bool isScrollable;
+
   /// Simple class to display a save-abort dialog
   EditDialog(
       {this.abort = 'Abbrechen',
@@ -40,7 +43,8 @@ class EditDialog extends StatelessWidget {
       @required this.title,
       @required this.abortCallback,
       @required this.saveCallback,
-      cancelCallback,
+      Function cancelCallback,
+      this.isScrollable = true,
       @required this.body,
       Key key})
       : cancelCallback = cancelCallback ?? abortCallback,
@@ -77,12 +81,14 @@ class EditDialog extends StatelessWidget {
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 15, right: 15),
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: [
-                      body,
-                    ],
-                  ),
+                  child: isScrollable
+                      ? ListView(
+                          shrinkWrap: true,
+                          children: [
+                            body,
+                          ],
+                        )
+                      : body,
                 ),
               ),
               Padding(

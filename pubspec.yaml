@@ -32,6 +32,8 @@ dependencies:
 
   flutter_markdown:
 
+  extended_image: ^4.0.1
+
   provider: ^5.0.0
   cached_network_image:
   http:
