@@ -72,7 +72,7 @@ class MyDrawer extends StatelessWidget {
                             ListTile(
                               title: const Text('Mein Garten'),
                               onTap: () {
-                                Navigator.push(
+                                Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => MyGarden()),
@@ -82,7 +82,7 @@ class MyDrawer extends StatelessWidget {
                             ListTile(
                               title: const Text('Karte'),
                               onTap: () {
-                                Navigator.push(
+                                Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => MapsPage()),
@@ -92,7 +92,7 @@ class MyDrawer extends StatelessWidget {
                             ListTile(
                               title: const Text('Arten'),
                               onTap: () {
-                                Navigator.push(
+                                Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => SpeciesListPage()),
@@ -102,7 +102,7 @@ class MyDrawer extends StatelessWidget {
                             ListTile(
                               title: const Text('Lebensräume'),
                               onTap: () {
-                                Navigator.push(
+                                Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
@@ -117,7 +117,7 @@ class MyDrawer extends StatelessWidget {
                             ListTile(
                               title: const Text('Take-Home Messages'),
                               onTap: () {
-                                Navigator.push(
+                                Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
@@ -130,12 +130,12 @@ class MyDrawer extends StatelessWidget {
                               onTap: () {
                                 if (Provider.of<User>(context, listen: false)
                                     .isLoggedIn) {
-                                  Navigator.push(
+                                  Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => AccountPage()));
                                 } else {
-                                  Navigator.push(
+                                  Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => WhiteRedirectPage(
@@ -177,7 +177,7 @@ class MyDrawer extends StatelessWidget {
     } else {
       return ListTile(
         title: const Text('Login'),
-        onTap: () => Navigator.push(
+        onTap: () => Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => LoginPage()),
         ),
