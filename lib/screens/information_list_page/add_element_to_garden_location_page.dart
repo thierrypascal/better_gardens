@@ -1,7 +1,7 @@
 import 'package:biodiversity/components/edit_dialog.dart';
 import 'package:biodiversity/models/garden.dart';
-import 'package:biodiversity/models/information_object.dart';
 import 'package:biodiversity/models/information_object_amount_container.dart';
+import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/information_list_page/add_element_to_garden_overview_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,20 +26,21 @@ class _AddElementToGardenLocationPageState
   void initState() {
     super.initState();
 
-    gardens = ServiceProvider.instance.gardenService.getAllGardensFromUser();
+    gardens = ServiceProvider.instance.gardenService
+        .getAllGardensFromUser(Provider.of<User>(context));
     isSelected = List.generate(gardens.length, (index) => false);
   }
 
   @override
   Widget build(BuildContext context) {
     return EditDialog(
-      title: "Lebensraum hinzufügen",
-      abort: "Zurück",
+      title: 'Lebensraum hinzufügen',
+      abort: 'Zurück',
       abortIcon: Icons.navigate_before,
       abortCallback: () {
         Navigator.pop(context);
       },
-      save: "Weiter",
+      save: 'Weiter',
       saveIcon: Icons.navigate_next,
       saveCallback: () {
         if (isSelected.isNotEmpty && gardens.isNotEmpty) {
@@ -49,10 +50,7 @@ class _AddElementToGardenLocationPageState
           selected = isSelected.indexWhere((element) => element == true);
           if (selected != -1) {
             selectedGarden = gardens.elementAt(selected);
-            if (ServiceProvider.instance.gardenService
-                    .getAllGardensFromUser()
-                    .isEmpty ||
-                selectedGarden == null) {
+            if (gardens.isEmpty || selectedGarden == null) {
               //save to provider
               Provider.of<InformationObjectAmountContainer>(context,
                       listen: false)
@@ -79,23 +77,20 @@ class _AddElementToGardenLocationPageState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             const Text(
-              "Lebensraum hinzufügen",
+              'Lebensraum hinzufügen',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             const Text(
-                "Wähle den Garten, in dem Du den Lebensraum hinzufügen möchtest."),
-            const SizedBox(
-              height: 20,
-            ),
+                'Wähle den Garten, in dem Du den Lebensraum hinzufügen möchtest.'),
+            const SizedBox(height: 20),
             (gardens.isNotEmpty)
                 ? Container(
                     width: double.infinity,
                     child: ToggleButtons(
                         direction: Axis.vertical,
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(5)),
                         onPressed: (int index) {
                           setState(() {
                             for (int indexBtn = 0;
@@ -122,7 +117,7 @@ class _AddElementToGardenLocationPageState
                         //Todo: redirect to MyGardenCreate
                         setState(() {});
                       },
-                      child: Text("Erstelle einen Garten"),
+                      child: const Text('Erstelle einen Garten'),
                     ),
                   )
           ],
@@ -137,11 +132,11 @@ class _AddElementToGardenLocationPageState
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Vorsicht'),
+          title: const Text('Vorsicht'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Erstelle und wähle zuerst einen Garten aus.'),
+                const Text('Erstelle und wähle zuerst einen Garten aus.'),
               ],
             ),
           ),
@@ -150,7 +145,7 @@ class _AddElementToGardenLocationPageState
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Verstanden'),
+              child: const Text('Verstanden'),
             ),
           ],
         );
