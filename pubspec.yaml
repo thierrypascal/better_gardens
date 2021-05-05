@@ -30,7 +30,6 @@ dependencies:
   firebase_storage: ^8.0.1
   cloud_firestore: ^1.0.4
 
-  modal_bottom_sheet:
   flutter_markdown:
 
   provider: ^5.0.0

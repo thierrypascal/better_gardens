@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
                 create: (context) => User.empty(),
               ),
               ChangeNotifierProvider(
-                create: (context) => Garden.empty(),
+                create: (context) => Garden.empty(), lazy:true
               ),
               ChangeNotifierProvider(
                   create: (context) => MapInteractionContainer.empty()),
@@ -66,7 +66,7 @@ class MyApp extends StatelessWidget {
                 // than on mobile platforms.
                 visualDensity: VisualDensity.adaptivePlatformDensity,
               ),
-              home: BiodiversityElementListPage(),
+              home: LoginPage(),
             ),
           );
         }

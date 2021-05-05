@@ -17,6 +17,9 @@ class Garden extends ChangeNotifier {
   /// city the garden is in
   String city;
 
+  //Type of garden
+  String gardenType;
+
   /// latitude coordinates of garden placement on map
   double latitude;
 
@@ -30,7 +33,7 @@ class Garden extends ChangeNotifier {
   Map<String, int> ownedObjects;
 
   /// reference to the associated User
-  List<String> owner;
+  String owner;
 
   final StorageProvider _storage;
 
@@ -40,7 +43,8 @@ class Garden extends ChangeNotifier {
     name = '';
     street = '';
     city = '';
-    owner = [];
+    owner = '';
+    gardenType = '';
     ownedObjects = {};
     ownedLinkingProjects = [];
   }
@@ -57,9 +61,7 @@ class Garden extends ChangeNotifier {
         name = map.containsKey('name') ? map['name'] as String : '',
         city = map.containsKey('city') ? map['city'] as String : '',
         street = map.containsKey('street') ? map['street'] as String : '',
-        owner = map.containsKey('owner')
-            ? List<String>.from(map['owner'] as List)
-            : [],
+        owner = map.containsKey('owner') ? map['owner'] as String : '',
         latitude = map.containsKey('latitude')
             ? map['latitude'] as double
             // FIBL coordinates
@@ -88,6 +90,7 @@ class Garden extends ChangeNotifier {
       'owner': owner,
       'name': name,
       'street': street,
+      'gardenType': gardenType,
       'city': city,
       'latitude': latitude,
       'longitude': longitude,
@@ -152,3 +155,4 @@ class Garden extends ChangeNotifier {
   /// count of point objects
   int get totalSupportedSpecies => _countObjects('species');
 }
+
