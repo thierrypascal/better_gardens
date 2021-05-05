@@ -51,7 +51,18 @@ class MapInteractionContainer extends ChangeNotifier {
     return '${placeMark[0].street}, ${placeMark[0].locality}';
   }
 
-  /// returns a [CameraPosition] wich has the stored location in focus
+  /// returns the address of the stored coordinates as string.
+  /// a default message is returned if no coordinates are stored
+  Future<LatLng> getLocationOfAddress(String adr) async {
+    if (adr == null) {
+      return LatLng(46.948915, 7.445423);
+    }
+    final location = await locationFromAddress(adr);
+    final result = LatLng(location.first.latitude, location.first.longitude);
+    return result;
+  }
+
+  /// returns a [CameraPosition] which has the stored location in focus
   CameraPosition getCameraPosition() {
     return CameraPosition(
         zoom: 18.0,

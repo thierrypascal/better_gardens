@@ -42,19 +42,11 @@ class MapMarkerService extends ChangeNotifier {
   }
 
   Future<void> _loadIcons() async {
-    final structureIcon = await BitmapDescriptor.fromAssetImage(
-        const ImageConfiguration(), 'res/structureIcon.png');
-    final plantIcon = await BitmapDescriptor.fromAssetImage(
-        const ImageConfiguration(), 'res/plantIcon.png');
-    final methodIcon = await BitmapDescriptor.fromAssetImage(
-        const ImageConfiguration(), 'res/methodIcon.png');
-    final wishIcon = await BitmapDescriptor.fromAssetImage(
-        const ImageConfiguration(), 'res/wishIcon.png');
+    //TODO: add images for linking project
+    final gardenIcon = await BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(), 'res/gardenIcon.png');
 
-    _icons.putIfAbsent('element', () => structureIcon);
-    _icons.putIfAbsent('plant', () => plantIcon);
-    _icons.putIfAbsent('method', () => methodIcon);
-    _icons.putIfAbsent('wish', () => wishIcon);
+    _icons.putIfAbsent('garden', () => gardenIcon);
   }
 
   /// returns a list of all [AddressObjects] stored
@@ -69,13 +61,14 @@ class MapMarkerService extends ChangeNotifier {
     final list = <Marker>{};
     for (final object in _markers) {
       for (final element in object.elements.keys) {
+        //TODO: adapt for garden/linking project
         final type = await ServiceProvider.instance.biodiversityService
             .getTypeOfObject(element);
         list.add(Marker(
           markerId: MarkerId(
               object.getLatLng().toString() + object.creationDate.toString()),
           position: object.getLatLng(),
-          icon: _icons.containsKey(type) ? _icons[type] : _icons['wish'],
+          icon: _icons.containsKey(type) ? _icons[type] : _icons['garden'],
           onTap: () {
             onTapCallback(element);
           },

@@ -1,4 +1,6 @@
 import 'package:biodiversity/components/drawer.dart';
+import 'package:biodiversity/components/edit_dialog.dart';
+import 'package:biodiversity/components/tags/src/item_tags.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,10 +15,10 @@ class MyGardenEdit extends StatefulWidget {
 class _MyGardenEditState extends State<MyGardenEdit> {
   final _formKey = GlobalKey<FormState>();
   String _name;
-  String _gartenType;
+  String _gartenType = '';
+  String _selectedType;
   String _address;
-
-  final List<String> menuItems = [
+  var _gardenType = [
     'Familiengarten',
     'Hausgarten',
     'Dachgarten',
@@ -28,18 +30,29 @@ class _MyGardenEditState extends State<MyGardenEdit> {
   @override
   Widget build(BuildContext context) {
     final garden = Provider.of<Garden>(context, listen: false);
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Mein Garten'),
-      ),
-      drawer: MyDrawer(),
+    return EditDialog(
+      title: ('Mein Garten'),
+      abortCallback: () {
+        Navigator.of(context).pop();
+      },
+      saveCallback: () {
+        _formKey.currentState.save();
+        garden.name = _name;
+        garden.street = _address;
+        garden.gardenType = _gartenType;
+        garden.saveGarden();
+        Navigator.of(context).pop();
+      },
       body: Container(
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text('$_name bearbaiten'),
+              Text(garden.name + ' bearbeiten',
+              style: const TextStyle(fontSize: 20.0)
+              ),
+              
               Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
@@ -52,52 +65,38 @@ class _MyGardenEditState extends State<MyGardenEdit> {
                 ),
               ),
               const SizedBox(),
+              
+              const Padding(
+                padding: EdgeInsets.only(left:20, bottom: 5.0),
+                child: Text('Gartentyp'),
+                ),
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                    const EdgeInsets.only(left: 15, right: 15),
                 child: Container(
+                  padding: EdgeInsets.only(left:16.0, right: 16.0),
                   decoration: BoxDecoration(
+                      
                       border: Border.all(color: Colors.grey, width: 1),
                       borderRadius: BorderRadius.circular(10)),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
-                      value: _gartenType,
-                      items: [
-                        //TODO do not hardcode these values
-                        const DropdownMenuItem<String>(
-                          value: '1',
-                          child: Center(child: Text('Familiengarten')),
-                        ),
-                        const DropdownMenuItem<String>(
-                          value: '2',
-                          child: Center(child: Text('Hausgarten')),
-                        ),
-                        const DropdownMenuItem<String>(
-                          value: '3',
-                          child: Center(child: Text('Dachgarten')),
-                        ),
-                        const DropdownMenuItem<String>(
-                          value: '4',
-                          child: Center(child: Text('Balkon / Terrase')),
-                        ),
-                        const DropdownMenuItem<String>(
-                          value: '5',
-                          child: Center(child: Text('Gemeinschaftsgarten')),
-                        ),
-                        const DropdownMenuItem<String>(
-                          value: '6',
-                          child: Center(child: Text('Innenhof')),
-                        ),
-                      ],
-
+                      isExpanded: true,
+                      value: _selectedType,
+                      items: _gardenType.map((String dropDownStringItem) {
+                        return DropdownMenuItem<String>(
+                          value: dropDownStringItem,
+                          child: Text(dropDownStringItem),
+                        );
+                      }).toList(),
                       onChanged: (String _value) => {
                         setState(() {
                           _gartenType = _value;
-
+                          _selectedType = _value;
                           print(_value);
                         }),
                       },
-                      //hint: const Text('Gartentyp'),
+                      hint: Text('Select your garden type'),
                     ),
                   ),
                 ),
@@ -116,49 +115,7 @@ class _MyGardenEditState extends State<MyGardenEdit> {
                   onSaved: (value) => _address = value,
                 ),
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Row(children: [
-                            const Padding(
-                              padding: EdgeInsets.only(right: 8),
-                              child: Icon(Icons.cancel_outlined),
-                            ),
-                            const Text('Abbrechen')
-                          ]),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            _formKey.currentState.save();
-                            // garden.updateGardenData(
-                            //   newGarten: _name,
-                            //   newAddress: _address,
-                            //   newType: _gartenType,
-                            // );
-                            Navigator.of(context).pop();
-                          },
-                          child: Row(children: [
-                            const Padding(
-                              padding: EdgeInsets.only(right: 8),
-                              child: Icon(Icons.save),
-                            ),
-                            const Text('Speichern')
-                          ]),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+             
               //Todo IMAGE select and show
             ],
           ),
@@ -167,62 +124,3 @@ class _MyGardenEditState extends State<MyGardenEdit> {
     );
   }
 }
-// _handleTopMenu(String value, BuildContext context) {
-
-// switch(value){
-//   case 'EditGardenPage':
-//   {
-//     var setState;
-//     showDialog(
-//       context: context,
-//       builder: (context) => AlertDialog(
-//           insetPadding: const EdgeInsets.all(5),
-//           scrollable: true,
-//           title: const Center(child: Text('Garten bearbeiten')),
-//           content: StatefulBuilder(
-//             builder: (BuildContext context,setState){
-//               return Container(
-//                 width: MediaQuery.of(context).size.width,
-//                 height: MediaQuery.of(context).size.height,
-//                 child: Form(
-//                   key: _formKey,
-
-//               );
-//             }
-//             ),
-//             actions: [
-//               ElevatedButton(
-//                 child: Row(children: [
-//                   const Padding(
-//                     padding: EdgeInsets.only(right: 8),
-//                     child: Icon(Icons.cancel_outlined),
-//                   ),
-//                   const Text('Abbrechen')
-//                 ]),
-//                 onPressed: () {
-//                   Navigator.of(context).pop();
-//                 },
-//               ),
-//               ElevatedButton(
-//                 child: Row(children: [
-//                   const Padding(
-//                     padding: EdgeInsets.only(right: 8),
-//                     child: Icon(Icons.save),
-//                   ),
-//                   const Text('Speichern')
-//                 ]),
-//                 onPressed: (){
-//                   _formKey.currentState.save();
-//                   // garden.updateGardenData(
-//                   //   newGarten: _name,
-//                   //   newAddress: _address,
-//                   //   newType: _gartenType,
-//                   // );
-//                   Navigator.of(context).pop();
-//                 },
-//               ),
-//             ],
-//     ),
-//     );
-//     break;
-//   }
