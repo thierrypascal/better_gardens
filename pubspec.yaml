@@ -62,9 +62,7 @@ dev_dependencies:
     sdk: flutter
   mockito:
   cloud_firestore_mocks:
-  # TODO reenable once the package is updated:
-  # https://github.com/atn832/firebase_storage_mocks/pull/8
-  #firebase_storage_mocks:
+  firebase_storage_mocks:
   firebase_auth_mocks:
   google_sign_in_mocks:
   excel:

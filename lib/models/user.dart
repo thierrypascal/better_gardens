@@ -53,7 +53,12 @@ class User extends ChangeNotifier {
         imageURL = '',
         mail = '',
         showNameOnMap = true,
-        showGardenImageOnMap = true;
+        showGardenImageOnMap = true {
+    if (_storage.auth.currentUser != null) {
+      _loggedIn = true;
+      loadDetailsFromLoggedInUser();
+    }
+  }
 
   /// Loads the details like nickname, liked objects etc. form the database
   /// After the details are loaded, the listeners are notified
@@ -72,8 +77,7 @@ class User extends ChangeNotifier {
       return false;
     }
     final map = doc.data();
-    logging.log(map.toString());
-    logging.log('load details');
+    logging.log('User attributes from database: ${map.toString()}');
     if (map.containsKey('nickname') && map['nickname'] is String) {
       nickname = map['nickname'];
     }
