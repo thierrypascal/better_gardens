@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:developer' as logging;
 import 'dart:io';
 
-
 import 'package:biodiversity/models/storage_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -66,7 +65,8 @@ class ImageService extends ChangeNotifier {
         height: height,
         fit: fit,
         imageUrl: url,
-        cacheKey: key,
+        errorWidget: (context, str, err) =>
+            errorWidget ?? getImage('default-1', 'error'),
       );
     }
 
@@ -77,7 +77,7 @@ class ImageService extends ChangeNotifier {
           _getImage(_urls[key]),
           Padding(
             padding: const EdgeInsets.all(4),
-            child: Text(_copyrightInfo[key]),
+            child: Text(copyright),
           )
         ],
       );
@@ -93,7 +93,7 @@ class ImageService extends ChangeNotifier {
     }
 
     return FutureBuilder(
-      future: getImageURL(name, type),
+      future: getImageURL(name, type, imageNr: imageNr),
       builder: (context, url) {
         if (url.connectionState == ConnectionState.done &&
             !url.hasError &&
@@ -140,9 +140,8 @@ class ImageService extends ChangeNotifier {
       height: height,
       fit: fit,
       imageUrl: url,
-      cacheKey: url,
       errorWidget: (context, str, error) =>
-          errorWidget ?? getImage('default', 'error'),
+          errorWidget ?? getImage('default-1', 'error'),
     );
   }
 
@@ -151,9 +150,6 @@ class ImageService extends ChangeNotifier {
   /// Example type: biodiversityMeasures
   Future<String> getImageURL(String name, String type, {int imageNr}) async {
     final key = _key(name, imageNr: imageNr);
-    if (_urls.containsKey(key)) {
-      return _urls[key];
-    }
     var doc = await _storage.database.doc('imageReferences/$key').get();
     if (!doc.exists) {
       final query = _storage.database

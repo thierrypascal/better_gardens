@@ -69,6 +69,12 @@ class _UploadImagesState extends State<UploadImages> {
     );
   }
 
+  String ref(dynamic name, dynamic index) {
+    index ??= 1;
+    return '${name.toString().toLowerCase()}-'
+        '${index.toString().toLowerCase()}';
+  }
+
   void _upload() async {
     setState(() => _progress = 0);
     await FirebaseAuth.instance.signInAnonymously();
@@ -123,11 +129,11 @@ class _UploadImagesState extends State<UploadImages> {
           final photo = File(photoRef.path);
           // upload image
           final task = await FirebaseStorage.instance
-              .ref('species/$art-$order')
+              .ref('species/${ref(art, order)}')
               .putFile(photo);
           // create reference in the database
           await FirebaseFirestore.instance
-              .doc('imageReferences/$art-$order')
+              .doc('imageReferences/${ref(art, order)}')
               .set({
             'copyright': copyright,
             'downloadURL': await task.ref.getDownloadURL(),
@@ -153,7 +159,6 @@ class _UploadImagesState extends State<UploadImages> {
         assert(rows[0][3] == 'Author');
         assert(rows[0][4] == 'Caption');
         for (final row in rows.skip(1)) {
-          // Start with column 1, since column 0 is the filename
           final lebensraum = row[1] ?? '';
           final order = row[2].round();
           final copyright = row[3] ?? '';
@@ -164,11 +169,11 @@ class _UploadImagesState extends State<UploadImages> {
 
           // upload image
           final task = await FirebaseStorage.instance
-              .ref('biodiversityMeasures/$lebensraum-$order')
+              .ref('biodiversityMeasures/${ref(lebensraum, order)}')
               .putFile(photo);
           // create reference in the database
           await FirebaseFirestore.instance
-              .doc('imageReferences/$lebensraum-$order')
+              .doc('imageReferences/${ref(lebensraum, order)}')
               .set({
             'copyright': copyright,
             'downloadURL': await task.ref.getDownloadURL(),
@@ -203,14 +208,13 @@ class _UploadImagesState extends State<UploadImages> {
               files.where((file) => file.path.contains('/${row[0]}')).first;
           final photo = File(photoRef.path);
 
-
           // upload image
           final task = await FirebaseStorage.instance
-              .ref('takeHomeMessages/$message-$order')
+              .ref('takeHomeMessages/${ref(message, order)}')
               .putFile(photo);
           // create reference in the database
           await FirebaseFirestore.instance
-              .doc('imageReferences/$message-$order')
+              .doc('imageReferences/${ref(message, order)}')
               .set({
             'copyright': copyright,
             'downloadURL': await task.ref.getDownloadURL(),
