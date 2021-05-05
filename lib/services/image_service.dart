@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer' as logging;
 import 'dart:io';
 
+
 import 'package:biodiversity/models/storage_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -198,19 +199,29 @@ class ImageService extends ChangeNotifier {
   /// Example: user/{USERID} would create a folder user
   /// and for each user id another subfolder
   Future<String> uploadImage(File file, String bucket,
-      {String filename, int quality = 80, int minImageSize = 500}) async {
-    // Resize image to make sure its smaller than the maxSize
-    final tempPath = (await getTemporaryDirectory()).path;
-    var uploadImage = await FlutterImageCompress.compressAndGetFile(
-        file.path, '$tempPath/temp.jpeg',
-        minHeight: minImageSize, minWidth: minImageSize, quality: quality);
-
+      {String filename,
+      int quality = 80,
+      int minImageSize = 500,
+      bool compress = true}) async {
+    var uploadImage;
+    var tempPath;
+    if (compress) {
+      // Resize image to make sure its smaller than the maxSize
+      tempPath = (await getTemporaryDirectory()).path;
+      uploadImage = await FlutterImageCompress.compressAndGetFile(
+          file.path, '$tempPath/temp.jpeg',
+          minHeight: minImageSize, minWidth: minImageSize, quality: quality);
+    } else {
+      uploadImage = file;
+    }
     // upload of the file
     final reference =
         _storage.fileStorage.ref().child('userUpload/$bucket/$filename');
     final task = reference.putFile(uploadImage);
     final docRef = await task;
-    File('$tempPath/temp.jpeg').delete(); // ignore: unawaited_futures
+    if (compress) {
+      File('$tempPath/temp.jpeg').delete(); // ignore: unawaited_futures
+    }
     return await docRef.ref.getDownloadURL();
   }
 }
