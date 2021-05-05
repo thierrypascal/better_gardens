@@ -9,7 +9,7 @@ void main() {
   test('empty garden', () {
     final garden = Garden.empty(storageProvider: storage);
     expect(garden.name, '', reason: 'name was not empty');
-    expect(garden.owner, [], reason: 'owner was not empty');
+    expect(garden.owner, '', reason: 'owner was not empty');
     expect(garden.street, '', reason: 'street was not empty');
     expect(garden.city, '', reason: 'city was not empty');
     expect(garden.longitude, isNull, reason: 'longitude was not null');
@@ -21,7 +21,7 @@ void main() {
       'name': "Mr. Lewis' Garden",
       'city': 'Locarno',
       'street': 'via G.G. Nessi 4B',
-      'owner': ['Tom', 'Lisa'],
+      'owner': 'Lisa',
       'latitude': 1.2345,
       'longitude': 4.2314,
       'ownedObjects': {'dummy': 9, 'second dummy': 1},
@@ -34,7 +34,7 @@ void main() {
         reason: 'city was not set correctly');
     expect(garden.street, gardenAttributes['street'],
         reason: 'street was not set correctly');
-    expect(garden.owner, containsAll(gardenAttributes['owner']),
+    expect(garden.owner, gardenAttributes['owner'],
         reason: 'owner was not set correctly');
     expect(garden.latitude, gardenAttributes['latitude'],
         reason: 'latitude was not set correctly');
@@ -54,7 +54,7 @@ void main() {
       'name': "Mr. Lewis' Garden",
       'city': 'Locarno',
       'street': 'via G.G. Nessi 4B',
-      'owner': ['Tom', 'Lisa'],
+      'owner': 'Tom',
       'ownedObjects': {'dummy': 9, 'second dummy': 1},
       'ownedLinkingProjects': ['grasfroschteam']
     };
@@ -67,7 +67,7 @@ void main() {
     expect(map['city'], gardenAttributes['city'], reason: 'city was not saved');
     expect(map['street'], gardenAttributes['street'],
         reason: 'street was not saved');
-    expect(map['owner'], containsAll(gardenAttributes['owner']),
+    expect(map['owner'], gardenAttributes['owner'],
         reason: 'owner was not saved');
     for (final obj in (gardenAttributes['ownedObjects'] as Map).entries) {
       expect(map['ownedObjects'], containsPair(obj.key, obj.value),

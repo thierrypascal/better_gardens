@@ -42,7 +42,8 @@ class MyApp extends StatelessWidget {
               ),
               ChangeNotifierProvider(
                   create: (context) => MapInteractionContainer.empty()),
-              ChangeNotifierProvider(create: (context) => InformationObjectAmountContainer())
+              ChangeNotifierProvider(
+                  create: (context) => InformationObjectAmountContainer())
             ],
             child: MaterialApp(
               title: 'Better Gardens',

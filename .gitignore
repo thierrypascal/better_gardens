@@ -41,3 +41,7 @@ app.*.symbols
 app.*.map.json
 /pubspec.lock
 /.gradle/
+
+# Don't commit data to the repo
+# Original data can be found under: https://drive.google.com/drive/folders/1d6JyPupuWmPz7WhVZFIHAjaHU4_bYZma
+res/data

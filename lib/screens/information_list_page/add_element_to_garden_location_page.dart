@@ -63,10 +63,10 @@ class _AddElementToGardenLocationPageState
                 MaterialPageRoute(
                     builder: (context) => AddElementToGardenOverviewPage()),
               );
-            }else{
+            } else {
               _showMyDialog();
             }
-          }else{
+          } else {
             _showMyDialog();
           }
         } else {

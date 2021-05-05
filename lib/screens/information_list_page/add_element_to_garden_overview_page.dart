@@ -71,13 +71,9 @@ class _AddElementToGardenOverviewPageState
             "Lebensraum hinzufügen",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          SizedBox(
-            height: 10,
-          ),
+          SizedBox(height: 10),
           Text("Element bestätigen."),
-          SizedBox(
-            height: 20,
-          ),
+          SizedBox(height: 20),
           SimpleInformationObjectCard(
             Provider.of<InformationObjectAmountContainer>(context,
                     listen: false)
@@ -91,9 +87,7 @@ class _AddElementToGardenOverviewPageState
                 .values
                 .first,
           ),
-          SizedBox(
-            height: 20,
-          ),
+          SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
@@ -105,9 +99,7 @@ class _AddElementToGardenOverviewPageState
                       .name),
             ],
           ),
-          SizedBox(
-            height: 20,
-          ),
+          SizedBox(height: 20),
           SubMap(),
         ],
       ),
