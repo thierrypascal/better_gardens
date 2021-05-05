@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/storage_provider.dart';
+import 'package:biodiversity/models/user.dart';
+import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -37,16 +39,18 @@ class GardenService extends ChangeNotifier {
   }
 
   /// Returns a list of Gardens which the provided User has
-  List<Garden> getAllGardensFromUser() {
-    // TODO: implement this method
-    return [];
+  List<Garden> getAllGardensFromUser(User user) {
+    return _gardens.where((garden) => garden.owner == user.userUUID).toList();
   }
 
   ///Returns all elements inside the users active garden
-  //TODO: implement these methods
-  List<BiodiversityMeasure> getAllBiodiversityMeasuresFromUsersActiveGarden() {
-    List<BiodiversityMeasure> result = [];
-
+  List<BiodiversityMeasure> getAllBiodiversityMeasuresFromGarden(
+      Garden garden) {
+    final result = <BiodiversityMeasure>[];
+    for (final item in garden.ownedObjects.keys) {
+      result.add(ServiceProvider.instance.biodiversityService
+          .getBiodiversityMeasureByName(item));
+    }
     return result;
   }
 

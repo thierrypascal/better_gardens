@@ -2,9 +2,9 @@ import 'dart:core';
 import 'dart:developer' as logging;
 
 import 'package:biodiversity/components/privacy_agreement.dart';
+import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/login_result.dart';
 import 'package:biodiversity/models/storage_provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -16,7 +16,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart' as fb_auth;
 /// so only one instance should be used throughout the app.
 class User extends ChangeNotifier {
   final StorageProvider _storage;
-  Set<DocumentReference> _gardens;
+  Set<String> _gardens;
   Set<String> _favoredObjects;
   bool _loggedIn;
 
@@ -45,7 +45,7 @@ class User extends ChangeNotifier {
   User.empty({StorageProvider storageProvider})
       : _storage = storageProvider ??= StorageProvider.instance,
         _loggedIn = false,
-        _gardens = <DocumentReference>{},
+        _gardens = <String>{},
         _favoredObjects = <String>{},
         nickname = '',
         name = '',
@@ -87,7 +87,7 @@ class User extends ChangeNotifier {
       imageURL = map['imageURL'];
     }
     if (map.containsKey('gardens') && map['gardens'] is List) {
-      _gardens = Set<DocumentReference>.from(map['gardens']);
+      _gardens = Set.from(map['gardens']);
     }
     if (map.containsKey('favoredObjects') && map['favoredObjects'] is List) {
       _favoredObjects = Set.from(map['favoredObjects']);
@@ -198,8 +198,22 @@ class User extends ChangeNotifier {
 
   /// returns a [String] with the path to the users profile in the database
   String get documentPath => _loggedIn && _storage.auth.currentUser != null
-      ? 'users/${_storage.auth.currentUser.uid}'
+      ? 'users/$userUUID'
       : 'users/anonymous';
+
+  /// returns the UUID of a logged in User
+  String get userUUID => _loggedIn ? _storage.auth.currentUser.uid : '';
+
+  /// Adds a garden to the owned garden list
+  void addGarden(Garden garden) {
+    if (garden == null || garden.name == null || garden.name.isEmpty) {
+      throw ArgumentError('Garden must have a name');
+    }
+    _gardens.add(garden.name);
+  }
+
+  /// Returns a list of all names from owned gardens
+  List<String> get gardens => _gardens.toList();
 
   /// signs the user out, saves all data to the database.
   /// Afterwards all fields are reset to empty fields.
@@ -214,7 +228,7 @@ class User extends ChangeNotifier {
     surname = '';
     imageURL = '';
     mail = '';
-    _gardens = <DocumentReference>{};
+    _gardens = <String>{};
     _favoredObjects = <String>{};
     _loggedIn = false;
     showNameOnMap = true;

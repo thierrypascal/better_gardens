@@ -35,6 +35,7 @@ class Garden extends ChangeNotifier {
   /// reference to the associated User
   String owner;
 
+  bool _isEmpty;
   final StorageProvider _storage;
 
   /// creates an empty garden as placeholder
@@ -47,6 +48,7 @@ class Garden extends ChangeNotifier {
     gardenType = '';
     ownedObjects = {};
     ownedLinkingProjects = [];
+    _isEmpty = true;
   }
 
   /// which [Vernetzungsprojekte] are contained in this garden
@@ -75,7 +77,8 @@ class Garden extends ChangeNotifier {
             : {},
         ownedLinkingProjects = map.containsKey('ownedLinkingProjects')
             ? List<String>.from(map['ownedLinkingProjects'] as Iterable)
-            : [];
+            : [],
+        _isEmpty = false;
 
   /// loads a garden form a database snapshot
   Garden.fromSnapshot(DocumentSnapshot snapshot)
@@ -97,6 +100,20 @@ class Garden extends ChangeNotifier {
       'ownedObjects': ownedObjects,
       'ownedLinkingProjects': ownedLinkingProjects,
     });
+  }
+
+  /// function to load the details of another garden
+  void switchGarden(Garden garden) {
+    name = garden.name;
+    street = garden.street;
+    city = garden.city;
+    owner = garden.owner;
+    ownedObjects.clear();
+    ownedObjects.addAll(garden.ownedObjects);
+    ownedLinkingProjects.clear();
+    ownedLinkingProjects.addAll(garden.ownedLinkingProjects);
+    _isEmpty = garden._isEmpty;
+    notifyListeners();
   }
 
   /// adds an element with to a garden with the specified count
@@ -154,5 +171,8 @@ class Garden extends ChangeNotifier {
 
   /// count of point objects
   int get totalSupportedSpecies => _countObjects('species');
+
+  /// is true if this garden is an empty placeholder
+  bool get isEmpty => _isEmpty;
 }
 

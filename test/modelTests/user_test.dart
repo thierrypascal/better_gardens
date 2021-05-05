@@ -114,17 +114,13 @@ void main() {
   test('User sign out test', () async {
     final storage = MockStorageProvider();
     final user = User.empty(storageProvider: storage);
-    await storage.database
-        .doc('gardens/testgarden')
-        .set({'name': 'Mein Garten'});
-    final garden = await storage.database.doc('gardens/testgarden').get();
     await storage.database.doc('users/some_random_id').set({
       'nickname': testNickname,
       'name': testName,
       'surname': testSurname,
       'mail': testMail,
       'imageURL': testImageURL,
-      'gardens': [garden.reference],
+      'gardens': ['testgarden'],
       'favoredObjects': testFavoredObjects
     });
     await user.signInWithEmail(testMail, testPassword);
