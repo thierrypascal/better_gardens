@@ -29,8 +29,10 @@ dependencies:
   firebase_core: ^1.0.3
   firebase_storage: ^8.0.1
   cloud_firestore: ^1.0.4
-
+  image: any
+  image_editor: ^1.0.0
   flutter_markdown:
+
 
   extended_image: ^4.0.1
 

@@ -1,11 +1,12 @@
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/text_field_with_descriptor.dart';
+import 'package:biodiversity/components/white_redirect_page.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/account_page/image_picker_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'package:uuid/uuid.dart';
 
 /// Displays the page with account information
 class AccountPage extends StatefulWidget {
@@ -139,7 +140,7 @@ class _AccountPageState extends State<AccountPage> {
     String _surname;
     String _nickname;
     String _email;
-    String _url;
+    String _imageURL;
     String _curPassword;
     String _firstPassword;
     String _secondPassword;
@@ -177,12 +178,43 @@ class _AccountPageState extends State<AccountPage> {
                             }),
                           ),
                           TextButton(
-                            //TODO redirect to ImagePickerPage if Implemented
-                            onPressed: () => {
+                            onPressed: () {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ImagePickerPage(aspectRatio: 1, originalImageURL: user.imageURL,)))
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ImagePickerPage(
+                                    aspectRatio: 1,
+                                    originalImageURL: user.imageURL,
+                                    deleteImageFunction: (toDeleteURL) {
+                                      ServiceProvider.instance.imageService
+                                          .deleteImage(
+                                              imageURL: toDeleteURL,
+                                              bucket: 'profilepictures');
+
+                                    },
+                                    saveImageFunction: (imageFile) async {
+
+                                      _imageURL = await ServiceProvider
+                                          .instance.imageService
+                                          .uploadImage(
+                                              imageFile, 'profilepictures',
+                                              filename:
+                                                  '${user.name}_${user.surname}_${const Uuid().v4()}');
+                                      print('saved to' + _imageURL);
+                                      user.updateUserData(
+                                          newImageURL: _imageURL);
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => WhiteRedirectPage(
+                                              'Das Profilbild wurde aktualisiert',
+                                              AccountPage()),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              );
                             },
                             child: const Text('Profilbild ändern'),
                           ),
