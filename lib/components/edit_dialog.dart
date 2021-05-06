@@ -53,6 +53,7 @@ class EditDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       drawer: MyDrawer(),
       appBar: AppBar(title: Text(title)),
       body: Padding(
