@@ -1,7 +1,10 @@
+import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/information_object.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/detailview_page/detailview_page_information_object.dart';
 import 'package:biodiversity/screens/information_list_page/add_element_to_garden_amount_page.dart';
+import 'package:biodiversity/screens/information_list_page/delete_element_garden_page.dart';
+import 'package:biodiversity/screens/information_list_page/edit_element_to_garden_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -15,6 +18,9 @@ class ExpandableInformationObjectCard extends StatefulWidget {
   /// if this flag is set, the buttons hinzufügen and merken will be removed
   final bool hideLikeAndAdd;
 
+  /// if this flag is set, the buttons bearbeiten and loschën will be removed
+  final bool showDeleteAndEdit;
+
   /// additional Info to be displayed instead of hinzufügen and merken buttons.
   /// the Buttons will be automatically removed if this string is set
   final String additionalInfo;
@@ -24,6 +30,7 @@ class ExpandableInformationObjectCard extends StatefulWidget {
   /// show a card to the provided InformationObject
   ExpandableInformationObjectCard(this.object,
       {hideLikeAndAdd = false,
+      this.showDeleteAndEdit = false,
       this.additionalInfo,
       ServiceProvider serviceProvider,
       Key key})
@@ -42,6 +49,7 @@ class _ExpandableInformationObjectCardState
 
   @override
   Widget build(BuildContext context) {
+    final garden = Provider.of<Garden>(context, listen: false);
     return Container(
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(5)),
@@ -77,13 +85,83 @@ class _ExpandableInformationObjectCardState
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: Text(
-                      widget.object.name,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16),
-                      softWrap: true,
+                    child: Column(
+                      
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.object.name,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                          softWrap: true,
+                        ),
+                        if(widget.showDeleteAndEdit)
+                          Text(garden.ownedObjects[widget.object.name].toString() +
+                            ' Anzahl'),
+                      ],
                     ),
                   ),
+                  if (widget.showDeleteAndEdit)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => DeleteElementGardenPage(
+                                        object: widget.object,
+                                      )),
+                            );
+                          },
+                          style: const ButtonStyle(
+                              visualDensity: VisualDensity.compact),
+                          child: Row(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(right: 8.0),
+                                child: Icon(
+                                  Icons.delete_forever,
+                                  color: Colors.black,
+                                  size: 20,
+                                ),
+                              ),
+                              const Text('löschen'),
+                            ],
+                          ),
+                        ),
+                        TextButton(
+                          //EditElementPage
+                          onPressed: () => {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EditElementPage(
+                                        object: widget.object,
+                                      )),
+                            ),
+                          },
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: Icon(
+                                  Icons.edit,
+                                  color: Provider.of<User>(context)
+                                          .doesLikeElement(widget.object.name)
+                                      ? Colors.red
+                                      : Colors.black,
+                                  size: 20,
+                                ),
+                              ),
+                              const Text('bearbeiten'),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   if (!widget.hideLikeAndAdd)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -194,6 +272,41 @@ class _ExpandableInformationObjectCardState
                             ),
                             onPressed: () {
                               setState(() {
+                                user.likeUnlikeElement(widget.object.name);
+                              });
+                            },
+                          ),
+                        ],
+                      );
+                    }),
+                  if (widget.showDeleteAndEdit)
+                    Consumer<User>(builder: (context, user, child) {
+                      if (user == null) {
+                        return const Text('');
+                      }
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.delete_forever),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        DeleteElementGardenPage(
+                                          object: widget.object,
+                                        )),
+                              );
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.edit,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                //bearbeiten start.
                                 user.likeUnlikeElement(widget.object.name);
                               });
                             },

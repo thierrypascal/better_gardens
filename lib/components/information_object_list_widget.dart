@@ -14,6 +14,9 @@ class InformationObjectListWidget extends StatefulWidget {
   /// if this flag is set, the buttons hinzufügen and merken will be removed
   final bool hideLikeAndAdd;
 
+  /// if this flag is set, the buttons bearbeiten and loschën will be removed
+  final bool showDeleteAndEdit;
+
   /// A list of InformationObjects which should be displayed
   final List<InformationObject> objects;
 
@@ -23,6 +26,7 @@ class InformationObjectListWidget extends StatefulWidget {
   InformationObjectListWidget(
       {Key key,
       this.objects,
+      this.showDeleteAndEdit = false,
       this.useSimpleCard = false,
       this.hideLikeAndAdd = false,
       ServiceProvider serviceProvider})
@@ -233,6 +237,7 @@ class _InformationObjectListWidgetState
                           element,
                                 hideLikeAndAdd: widget.hideLikeAndAdd,
                                 additionalInfo: element.additionalInfo,
+                                showDeleteAndEdit: widget.showDeleteAndEdit,
                                 serviceProvider: widget._serviceProvider,
                               );
                       },

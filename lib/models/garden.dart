@@ -2,6 +2,8 @@ import 'dart:core';
 
 import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/storage_provider.dart';
+import 'package:biodiversity/models/user.dart';
+import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
@@ -17,7 +19,7 @@ class Garden extends ChangeNotifier {
   /// city the garden is in
   String city;
 
-  //Type of garden
+  /// Type of garden
   String gardenType;
 
   /// latitude coordinates of garden placement on map
@@ -49,6 +51,27 @@ class Garden extends ChangeNotifier {
     ownedObjects = {};
     ownedLinkingProjects = [];
     _isEmpty = true;
+  }
+
+  /// creates a garden from the garden which is assigned to the user
+  factory Garden.fromUser(User user, {StorageProvider storageProvider}) {
+    final gardens =
+        ServiceProvider.instance.gardenService.getAllGardensFromUser(user);
+    if (gardens.isEmpty) {
+      return Garden.empty(storageProvider: storageProvider);
+    } else {
+      final garden = Garden.empty(storageProvider: storageProvider);
+      garden.name = gardens.first.name;
+      garden.street = gardens.first.street;
+      garden.city = gardens.first.city;
+      garden.owner = gardens.first.owner;
+      garden.gardenType = gardens.first.gardenType;
+      garden.ownedObjects = gardens.first.ownedObjects;
+      garden.ownedLinkingProjects = gardens.first.ownedLinkingProjects;
+      garden._isEmpty = gardens.first._isEmpty;
+      garden.reference = gardens.first.reference;
+      return garden;
+    }
   }
 
   /// which [Vernetzungsprojekte] are contained in this garden
@@ -87,8 +110,11 @@ class Garden extends ChangeNotifier {
   /// saves the garden object to the database
   /// any information already present on the database will be overridden
   Future<void> saveGarden() async {
-    final path =
-        reference == null ? 'gardens/${const Uuid().v4()}' : reference.path;
+    if (_isEmpty || reference == null) {
+      reference = _storage.database.doc('gardens/${const Uuid().v4()}');
+      _isEmpty = false;
+    }
+    final path = reference.path;
     await _storage.database.doc(path).set({
       'owner': owner,
       'name': name,
@@ -101,6 +127,9 @@ class Garden extends ChangeNotifier {
       'ownedLinkingProjects': ownedLinkingProjects,
     });
   }
+
+  /// fucntion to load the details from the first garden of a user
+  void switchGardenFromUser(User user) {}
 
   /// function to load the details of another garden
   void switchGarden(Garden garden) {
@@ -121,8 +150,7 @@ class Garden extends ChangeNotifier {
   void addOwnedObject(String object, int count) {
     if (object != null &&
         object.isNotEmpty &&
-        count > 0 &&
-        !ownedObjects.containsKey(object)) {
+        count > 0 ) {
       ownedObjects[object] = count;
       saveGarden();
     }
@@ -175,4 +203,3 @@ class Garden extends ChangeNotifier {
   /// is true if this garden is an empty placeholder
   bool get isEmpty => _isEmpty;
 }
-

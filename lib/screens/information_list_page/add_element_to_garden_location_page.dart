@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:biodiversity/components/edit_dialog.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/information_object_amount_container.dart';
@@ -24,11 +26,11 @@ class _AddElementToGardenLocationPageState
 
   @override
   void initState() {
-    super.initState();
-
     gardens = ServiceProvider.instance.gardenService
-        .getAllGardensFromUser(Provider.of<User>(context));
+        .getAllGardensFromUser(Provider.of<User>(context, listen: false));
     isSelected = List.generate(gardens.length, (index) => false);
+
+    super.initState();
   }
 
   @override
@@ -50,7 +52,7 @@ class _AddElementToGardenLocationPageState
           selected = isSelected.indexWhere((element) => element == true);
           if (selected != -1) {
             selectedGarden = gardens.elementAt(selected);
-            if (gardens.isEmpty || selectedGarden == null) {
+            if (gardens.isNotEmpty && selectedGarden != null) {
               //save to provider
               Provider.of<InformationObjectAmountContainer>(context,
                       listen: false)
@@ -88,6 +90,8 @@ class _AddElementToGardenLocationPageState
                 ? Container(
                     width: double.infinity,
                     child: ToggleButtons(
+                      selectedBorderColor: Theme.of(context).primaryColor,
+                        selectedColor:  Theme.of(context).primaryColor,
                         direction: Axis.vertical,
                         borderRadius:
                             const BorderRadius.all(Radius.circular(5)),

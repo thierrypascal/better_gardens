@@ -91,7 +91,7 @@ class _AddElementToGardenOverviewPageState
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Icon(IconsBiodiversity.wish),
+              Icon(Icons.house),
               Text(" Gewählter Garten: " +
                   Provider.of<InformationObjectAmountContainer>(context,
                           listen: false)

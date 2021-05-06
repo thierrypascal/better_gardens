@@ -6,6 +6,8 @@ import 'package:biodiversity/components/text_field_with_descriptor.dart';
 import 'package:biodiversity/fonts/icons_biodiversity_icons.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
+import 'package:biodiversity/screens/information_list_page/biodiversity_elements_list_page.dart';
+import 'package:biodiversity/screens/my_garden_page/my_garden_add.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +33,6 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     Icons.playlist_add,
     Icons.house,
   ];
-  bool expandBS = false;
 
   Set<Marker> _markers = {};
 
@@ -132,61 +133,44 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         barrierColor: Colors.transparent,
         backgroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft:  Radius.circular(20.0),
-            topRight:  Radius.circular(20.0),
-          )
-        ),
+            borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20.0),
+          topRight: Radius.circular(20.0),
+        )),
         context: context,
         isScrollControlled: true,
         builder: (context) {
-          return StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState) {
-            return Container(
-              //height:  MediaQuery.of(context).size.height * 0.75, // option?
-                child: Padding(
-              padding: const EdgeInsets.fromLTRB(8.0, 20, 8.0, 20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          expandBS = !expandBS;
-                        });
-                      },
-                      child: Text("expand/unexpand")),
-                  TextFieldWithDescriptor(
-                      'Spitzname Garten', Text(garden.name)),
-                  TextFieldWithDescriptor('Gartentyp', Text(garden.gardenType)),
-                  TextFieldWithDescriptor(
-                      'Garten Adresse', Text(garden.street)),
-                  TextFieldWithDescriptor('Besitzer', Text(garden.owner)),
-                  expandBS
-                      ? Container(
-                          child: Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              //TODO: All other stuff of expanded card
-                              _differentCircles(context),
-                              const SizedBox(height: 25.0),
-                              Image(
-                                width: MediaQuery.of(context).size.width,
-                                height: 200,
-                                fit: BoxFit.fitWidth,
-                                image: const AssetImage('res/myGarden.jpg'),
-                                semanticLabel: garden.name,
-                              ),
-                            ],
-                          ),
-                        ))
-                      : SizedBox(
-                          height: 0,
+          return DraggableScrollableSheet(
+              initialChildSize: 0.4,
+              minChildSize: 0.1,
+              expand: false,
+              builder: (context, scrollController) {
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 20, 8, 8),
+                  child: ListView(
+                      controller: scrollController,
+                      children: <Widget>[
+                        TextFieldWithDescriptor(
+                            'Spitzname Garten', Text(garden.name)),
+                        TextFieldWithDescriptor(
+                            'Gartentyp', Text(garden.gardenType)),
+                        TextFieldWithDescriptor(
+                            'Garten Adresse', Text(garden.street)),
+                        TextFieldWithDescriptor('Besitzer', Text(garden.owner)),
+                        _differentCircles(context),
+                        const SizedBox(height: 25.0),
+                        Image(
+                          width: MediaQuery.of(context).size.width,
+                          height: 200,
+                          fit: BoxFit.fitWidth,
+                          image: const AssetImage('res/myGarden.jpg'),  //TODO: show garden image
+                          semanticLabel: garden.name,
                         ),
-                ],
-              ),
-            ));
-          });
+                      ],
+                  ),
+                );
+              },
+            );
         });
   }
 
@@ -273,7 +257,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             tooltip: 'Vernetzungsprojekt starten',
             backgroundColor: Theme.of(context).cardColor,
             //TODO add onPressed functionality
-            onPressed: () {},
+            onPressed: null,
             child: Icon(icons[0], color: Theme.of(context).accentColor),
           ),
         ),
@@ -296,11 +280,10 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               Provider.of<MapInteractionContainer>(context, listen: false)
                   .selectedLocation = _focusedLocation;
               logging.log(_focusedLocation.toString());
-              //TODO: redirect to InformationList
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => MyGardenAdd()),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => BiodiversityElementListPage()),
+              );
             },
             child: Icon(icons[1], color: Theme.of(context).accentColor),
           ),
@@ -324,11 +307,10 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               Provider.of<MapInteractionContainer>(context, listen: false)
                   .selectedLocation = _focusedLocation;
               logging.log(_focusedLocation.toString());
-              //TODO: redirect to MyGardenAdd
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => MyGardenAdd()),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MyGardenAdd()),
+              );
             },
             child: Icon(icons[2], color: Theme.of(context).accentColor),
           ),
