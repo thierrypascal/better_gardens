@@ -3,6 +3,9 @@ import 'package:biodiversity/models/information_object_amount_container.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
+import 'package:biodiversity/screens/map_page/maps_page.dart';
+import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
+import 'package:biodiversity/services/garden_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +39,9 @@ class MyApp extends StatelessWidget {
                 create: (context) => User.empty(),
                 lazy: false,
               ),
-              ChangeNotifierProvider(create: (context) => Garden.empty()),
+              ChangeNotifierProxyProvider<User, Garden>(
+                  create: (context) => Garden.empty(),
+                  update: (context, user, garden) => Garden.fromUser(user)),
               ChangeNotifierProvider(
                   create: (context) => MapInteractionContainer.empty()),
               ChangeNotifierProvider(

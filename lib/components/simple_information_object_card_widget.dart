@@ -77,7 +77,7 @@ class SimpleInformationObjectCard extends StatelessWidget {
                   readOnly: amountLocked == true ? true : false,
                   initialValue: amount != null ? amount.toString() : "1",
                   decoration: InputDecoration(
-                      labelText: "Menge", border: OutlineInputBorder()),
+                      labelText: "Anzahl", border: OutlineInputBorder()),
                   keyboardType: TextInputType.number,
                   onSaved: (value) =>
                       Provider.of<InformationObjectAmountContainer>(context,

@@ -214,6 +214,7 @@ class User extends ChangeNotifier {
       throw ArgumentError('Garden must have a name');
     }
     _gardens.add(garden.name);
+    saveUser();
   }
 
   /// Returns a list of all names from owned gardens

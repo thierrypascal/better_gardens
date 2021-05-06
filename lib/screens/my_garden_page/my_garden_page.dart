@@ -219,6 +219,8 @@ class _MyGardenState extends State<MyGarden> {
                 child: InformationObjectListWidget(
                   objects: ServiceProvider.instance.gardenService
                       .getAllBiodiversityMeasuresFromGarden(garden),
+                  showDeleteAndEdit: true,
+                  hideLikeAndAdd: true,
                 ),
               ),
             ],

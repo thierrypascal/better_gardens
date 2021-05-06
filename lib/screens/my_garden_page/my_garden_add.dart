@@ -1,7 +1,9 @@
 import 'package:biodiversity/components/edit_dialog.dart';
 import 'package:biodiversity/components/white_redirect_page.dart';
 import 'package:biodiversity/models/garden.dart';
+import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/user.dart';
+import 'package:biodiversity/screens/map_page/maps_submap_widget.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -123,9 +125,14 @@ class _MyGardenAddState extends State<MyGardenAdd> {
                   decoration: const InputDecoration(
                       labelText: 'Garten Adresse',
                       contentPadding: EdgeInsets.symmetric(vertical: 4)),
-                  onSaved: (value) => _address = value,
+                  onSaved: (value) {
+                    _address = value;
+                    },
                 ),
               ),
+
+              //Show minimap of Garden
+              SubMap(),
 
               //Todo IMAGE select and show
             ],
