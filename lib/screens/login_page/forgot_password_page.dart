@@ -29,7 +29,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           child: Column(
             children: [
               const Text('Um dein Passwort zurückzusetzen,'
-                  ' gib deine Email adresse unten ein.'),
+                  ' gib deine Email Adresse unten ein.'),
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Email adresse'),
                 autofocus: true,
@@ -83,7 +83,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       title: const Text('Email verschickt'),
       content: Column(
         children: [
-          Text('Eine email wurde an deine Mailadresse $email verschickt.'),
+          Text('Eine Email wurde an deine Mailadresse $email verschickt.'),
         ],
       ),
       actions: [

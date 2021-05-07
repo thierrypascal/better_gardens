@@ -14,7 +14,7 @@ class EmailLoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LogoAndWavesScreen(
-      title: 'Email login',
+      title: 'Email Login',
       children: [
         EmailForm(),
         Row(
@@ -29,7 +29,7 @@ class EmailLoginPage extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) => ForgotPasswordPage())),
-                child: const Text('Forgot Password?')),
+                child: const Text('Passwort vergessen?')),
           ],
         ),
       ],

@@ -63,7 +63,7 @@ class LogoAndWavesScreen extends StatelessWidget {
                     ),
                   ),
                   SvgPicture.asset(
-                    'res/gardenDrawer.svg',
+                    'res/gardenDrawer_color.svg',
                     width: constraint.maxWidth,
                     fit: BoxFit.fitWidth,
                   ),
