@@ -381,9 +381,7 @@ class _ExpandableInformationObjectCardState
                                       showDeleteAndEdit: widget.showDeleteAndEdit,
                                       isSpecies: widget.isSpecies,
                                     )),
-                          ).then((value) {
-                            setState(() {});
-                          });
+                          );
                         }
                       },
                       child: const Text(
