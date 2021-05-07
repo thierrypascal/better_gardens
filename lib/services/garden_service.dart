@@ -67,7 +67,7 @@ class GardenService extends ChangeNotifier {
   }
 
   /// returns the nickname of the garden owner if showGardenOnMap is set to true for this user
-  Future<String> getNicknameOfOrder(Garden garden) async {
+  Future<String> getNicknameOfOwner(Garden garden) async {
     final doc = await _storage.database.doc('users/${garden.owner}').get();
     if (doc != null && doc.exists) {
       final data = doc.data();
