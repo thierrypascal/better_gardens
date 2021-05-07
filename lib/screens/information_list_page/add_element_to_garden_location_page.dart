@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 
 ///Workflow Add Element To One's Garden: define location of selected element/to which garden it will be added
 class AddElementToGardenLocationPage extends StatefulWidget {
+  ///Workflow Add Element To One's Garden: define location of selected element/to which garden it will be added
   AddElementToGardenLocationPage({Key key}) : super(key: key);
 
   @override
@@ -23,6 +24,8 @@ class _AddElementToGardenLocationPageState
     extends State<AddElementToGardenLocationPage> {
   List<Garden> gardens = [];
   List<bool> isSelected = [];
+
+  //TODO: default selection of first garden
 
   @override
   void initState() {
@@ -56,7 +59,10 @@ class _AddElementToGardenLocationPageState
               //save to provider
               Provider.of<InformationObjectAmountContainer>(context,
                       listen: false)
-                  .garden = selectedGarden;
+                  .garden = selectedGarden.name;
+              //switch garden to selected
+              final _garden = gardens.where((garden) => garden == selectedGarden).first;
+              Provider.of<Garden>(context, listen: false).switchGarden(_garden);
               //redirect to overview
               Navigator.push(
                 context,
@@ -72,6 +78,12 @@ class _AddElementToGardenLocationPageState
         } else {
           _showMyDialog();
         }
+      },
+      cancelCallback: (){
+        Provider.of<InformationObjectAmountContainer>(context, listen: false)
+            .amounts
+            .clear();
+        Navigator.pop(context);
       },
       body: Container(
         child: Column(

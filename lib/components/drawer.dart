@@ -1,6 +1,7 @@
 import 'package:biodiversity/components/white_redirect_page.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/account_page/account_page.dart';
+import 'package:biodiversity/screens/favored_list_page/favored_list_page.dart';
 import 'package:biodiversity/screens/information_list_page/biodiversity_elements_list_page.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:biodiversity/screens/map_page/maps_page.dart';
@@ -112,7 +113,24 @@ class MyDrawer extends StatelessWidget {
                             ),
                             ListTile(
                               title: const Text('Merkliste'),
-                              onTap: () {},
+                              onTap: () {
+                                if (Provider.of<User>(context, listen: false)
+                                    .isLoggedIn) {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            FavoredListPage()),
+                                  );
+                                } else {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => WhiteRedirectPage(
+                                              'Bitte melde dich zuerst noch an.',
+                                              LoginPage())));
+                                }
+                              },
                             ),
                             ListTile(
                               title: const Text('Take-Home Messages'),

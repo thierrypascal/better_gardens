@@ -1,6 +1,7 @@
 import 'dart:developer' as logging;
 import 'dart:math' as math;
 
+import 'package:biodiversity/components/circlesOverview.dart';
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/text_field_with_descriptor.dart';
 import 'package:biodiversity/fonts/icons_biodiversity_icons.dart';
@@ -13,11 +14,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:location/location.dart';
 
 /// Display the map with the markers
 class MapsPage extends StatefulWidget {
+  ///garden which should be displayed on map
+  final Garden garden;
+
   /// Display the map with the markers
-  MapsPage({Key key}) : super(key: key);
+  MapsPage({Key key, this.garden}) : super(key: key);
 
   @override
   _MapsPageState createState() => _MapsPageState();
@@ -27,12 +32,13 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   GoogleMapController mapController;
   LatLng _focusedLocation;
   AnimationController _fabController;
-  String _biodiversityMeasure = 'none';
+  Garden _tappedGarden = Garden.empty();
   static const List<IconData> icons = [
     IconsBiodiversity.wish,
     Icons.playlist_add,
     Icons.house,
   ];
+  LocationData currentLocation;
 
   Set<Marker> _markers = {};
 
@@ -42,7 +48,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     ServiceProvider.instance.mapMarkerService.getMarkerSet(
         onTapCallback: (element) {
       setState(() {
-        _biodiversityMeasure = element;
+        _tappedGarden = element;
       });
       displayModalBottomSheet(context);
     }).then((markers) {
@@ -54,6 +60,19 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
+    _getLocation();
+  }
+
+  Future<void> _getLocation() async {
+    var location = Location();
+    try {
+      currentLocation = await location.getLocation();
+      setState(() {});
+      mapController.animateCamera(CameraUpdate.newLatLng(
+          LatLng(currentLocation.latitude, currentLocation.longitude)));
+    } on Exception {
+      currentLocation = null;
+    }
   }
 
   @override
@@ -64,13 +83,16 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       ),
       drawer: MyDrawer(),
       body: Stack(
-        children: [
+        children: <Widget>[
           GoogleMap(
+            myLocationEnabled: true,
             onMapCreated: (controller) => mapController = controller,
-            initialCameraPosition: const CameraPosition(
-              target: LatLng(46.948915, 7.445423),
-              zoom: 14.0,
-            ),
+            initialCameraPosition: widget.garden != null
+                ? CameraPosition(target: widget.garden.getLatLng(), zoom: 14.0)
+                : const CameraPosition(
+                    target: LatLng(46.948915, 7.445423),
+                    zoom: 14.0,
+                  ),
             zoomControlsEnabled: false,
             rotateGesturesEnabled: false,
             mapToolbarEnabled: false,
@@ -127,8 +149,6 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   }
 
   Widget displayModalBottomSheet(BuildContext context) {
-    final garden = Provider.of<Garden>(context, listen: false);
-
     showModalBottomSheet(
         barrierColor: Colors.transparent,
         backgroundColor: Colors.white,
@@ -141,103 +161,53 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         isScrollControlled: true,
         builder: (context) {
           return DraggableScrollableSheet(
-              initialChildSize: 0.4,
-              minChildSize: 0.1,
-              expand: false,
-              builder: (context, scrollController) {
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 20, 8, 8),
-                  child: ListView(
-                      controller: scrollController,
-                      children: <Widget>[
-                        TextFieldWithDescriptor(
-                            'Spitzname Garten', Text(garden.name)),
-                        TextFieldWithDescriptor(
-                            'Gartentyp', Text(garden.gardenType)),
-                        TextFieldWithDescriptor(
-                            'Garten Adresse', Text(garden.street)),
-                        TextFieldWithDescriptor('Besitzer', Text(garden.owner)),
-                        _differentCircles(context),
-                        const SizedBox(height: 25.0),
-                        Image(
-                          width: MediaQuery.of(context).size.width,
-                          height: 200,
-                          fit: BoxFit.fitWidth,
-                          image: const AssetImage('res/myGarden.jpg'),  //TODO: show garden image
-                          semanticLabel: garden.name,
+            initialChildSize: 0.4,
+            minChildSize: 0.1,
+            expand: false,
+            builder: (context, scrollController) {
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(8, 20, 8, 8),
+                child: ListView(
+                  controller: scrollController,
+                  children: <Widget>[
+                    TextFieldWithDescriptor(
+                        'Spitzname Garten',
+                        Text(_tappedGarden.name ?? '')),
+                    TextFieldWithDescriptor(
+                        'Gartentyp',
+                        Text(_tappedGarden.gardenType ?? '')),
+                    TextFieldWithDescriptor(
+                        'Garten Adresse',
+                        Text(_tappedGarden.street ?? '')),
+                    TextFieldWithDescriptor(
+                        'Besitzer',
+                        FutureBuilder(
+                          future: ServiceProvider.instance.gardenService.getNicknameOfOrder(_tappedGarden),
+                          builder: (context, owner){
+                            if(owner.hasData){
+                              return Text(owner.data);
+                            }else{
+                              return const Text('');
+                            }
+                          },
                         ),
-                      ],
-                  ),
-                );
-              },
-            );
+                    ),
+                    CirclesOverview(context, _tappedGarden),
+                    const SizedBox(height: 25.0),
+                    Image(
+                      width: MediaQuery.of(context).size.width,
+                      height: 200,
+                      fit: BoxFit.fitWidth,
+                      image: const AssetImage('res/myGarden.jpg'),
+                      //TODO: show garden image
+                      semanticLabel: '',
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
         });
-  }
-
-  Widget _createCircle(String number, String text) {
-    return Container(
-      height: 100.0,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              border: Border.all(width: 2),
-              shape: BoxShape.circle,
-              // You can use like this way or like the below line
-              //borderRadius: new BorderRadius.circular(30.0),
-              color: Colors.white,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(number, style: const TextStyle(fontSize: 20.0)),
-              ],
-            ),
-          ),
-          Text(text, style: const TextStyle(color: Colors.grey))
-        ],
-      ),
-    );
-  }
-
-  Widget _differentCircles(BuildContext context) {
-    final garden = Provider.of<Garden>(context);
-    return Column(children: <Widget>[
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _createCircle('${garden.totalAreaObjects}', 'Flächen (m2)'),
-            ],
-          ),
-          Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            _createCircle('${garden.totalLengthObjects}', ' Längen (m)')
-          ]),
-        ],
-      ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _createCircle(
-                  '${garden.totalPointObjects}', 'Punktobjekt (Anzahl)'),
-            ],
-          ),
-          Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            _createCircle(
-                '${garden.totalSupportedSpecies}', 'Geförderte Arten (Anzahl)')
-          ]),
-        ],
-      )
-    ]);
   }
 
   List<Widget> getWidgetListForAdvFab() {
@@ -282,7 +252,8 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               logging.log(_focusedLocation.toString());
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => BiodiversityElementListPage()),
+                MaterialPageRoute(
+                    builder: (context) => BiodiversityElementListPage()),
               );
             },
             child: Icon(icons[1], color: Theme.of(context).accentColor),

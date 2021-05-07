@@ -18,8 +18,11 @@ class ExpandableInformationObjectCard extends StatefulWidget {
   /// if this flag is set, the buttons hinzufügen and merken will be removed
   final bool hideLikeAndAdd;
 
-  /// if this flag is set, the buttons bearbeiten and loschën will be removed
+  /// if this flag is set, the buttons bearbeiten and löschen will be removed
   final bool showDeleteAndEdit;
+
+  /// if this flag is set, the card is used for species and hinzufügen and merken will be changed to Aktivitätsradius and merken
+  final bool isSpecies;
 
   /// additional Info to be displayed instead of hinzufügen and merken buttons.
   /// the Buttons will be automatically removed if this string is set
@@ -31,6 +34,7 @@ class ExpandableInformationObjectCard extends StatefulWidget {
   ExpandableInformationObjectCard(this.object,
       {hideLikeAndAdd = false,
       this.showDeleteAndEdit = false,
+      this.isSpecies = false,
       this.additionalInfo,
       ServiceProvider serviceProvider,
       Key key})
@@ -47,6 +51,7 @@ class _ExpandableInformationObjectCardState
     extends State<ExpandableInformationObjectCard> {
   bool _expanded = false;
 
+  //TODO: check if user logged in
   @override
   Widget build(BuildContext context) {
     final garden = Provider.of<Garden>(context, listen: false);
@@ -86,7 +91,6 @@ class _ExpandableInformationObjectCardState
                 children: [
                   Expanded(
                     child: Column(
-                      
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
@@ -95,9 +99,10 @@ class _ExpandableInformationObjectCardState
                               fontWeight: FontWeight.bold, fontSize: 16),
                           softWrap: true,
                         ),
-                        if(widget.showDeleteAndEdit)
-                          Text(garden.ownedObjects[widget.object.name].toString() +
-                            ' Anzahl'),
+                        if (widget.showDeleteAndEdit)
+                          Text(garden.ownedObjects[widget.object.name]
+                                  .toString() +
+                              ' Anzahl'),
                       ],
                     ),
                   ),
@@ -143,6 +148,8 @@ class _ExpandableInformationObjectCardState
                                       )),
                             ),
                           },
+                          style: const ButtonStyle(
+                              visualDensity: VisualDensity.compact),
                           child: Row(
                             children: [
                               Padding(
@@ -167,32 +174,50 @@ class _ExpandableInformationObjectCardState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      AddElementToGardenAmountPage(
-                                        object: widget.object,
-                                      )),
-                            );
-                          },
-                          style: const ButtonStyle(
-                              visualDensity: VisualDensity.compact),
-                          child: Row(
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.only(right: 8.0),
-                                child: Icon(
-                                  Icons.add,
-                                  size: 20,
+                        (!widget.isSpecies)
+                            ? TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            AddElementToGardenAmountPage(
+                                              object: widget.object,
+                                            )),
+                                  );
+                                },
+                                style: const ButtonStyle(
+                                    visualDensity: VisualDensity.compact),
+                                child: Row(
+                                  children: [
+                                    const Padding(
+                                      padding: EdgeInsets.only(right: 8.0),
+                                      child: Icon(
+                                        Icons.add,
+                                        size: 20,
+                                      ),
+                                    ),
+                                    const Text('hinzufügen'),
+                                  ],
+                                ),
+                              )
+                            : TextButton(
+                                onPressed: null,
+                                style: const ButtonStyle(
+                                    visualDensity: VisualDensity.compact),
+                                child: Row(
+                                  children: [
+                                    const Padding(
+                                      padding: EdgeInsets.only(right: 8.0),
+                                      child: Icon(
+                                        Icons.add_circle_outline_outlined,
+                                        size: 20,
+                                      ),
+                                    ),
+                                    const Text('aktivitätsradius'),
+                                  ],
                                 ),
                               ),
-                              const Text('hinzufügen'),
-                            ],
-                          ),
-                        ),
                         TextButton(
                           onPressed: () =>
                               Provider.of<User>(context, listen: false)
@@ -248,21 +273,28 @@ class _ExpandableInformationObjectCardState
                       return Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          IconButton(
-                            icon: const Icon(
-                              Icons.add,
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        AddElementToGardenAmountPage(
-                                          object: widget.object,
-                                        )),
-                              );
-                            },
-                          ),
+                          (!widget.isSpecies)
+                              ? IconButton(
+                                  icon: const Icon(
+                                    Icons.add,
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              AddElementToGardenAmountPage(
+                                                object: widget.object,
+                                              )),
+                                    );
+                                  },
+                                )
+                              : const IconButton(
+                                  icon: Icon(
+                                    Icons.add_circle_outline_outlined,
+                                  ),
+                                  onPressed: null,
+                                ),
                           IconButton(
                             icon: Icon(
                               Icons.favorite,
@@ -301,14 +333,17 @@ class _ExpandableInformationObjectCardState
                             },
                           ),
                           IconButton(
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.edit,
                             ),
-                            onPressed: () {
-                              setState(() {
-                                //bearbeiten start.
-                                user.likeUnlikeElement(widget.object.name);
-                              });
+                            onPressed: () => {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EditElementPage(
+                                      object: widget.object,
+                                    )),
+                              ),
                             },
                           ),
                         ],
@@ -342,6 +377,9 @@ class _ExpandableInformationObjectCardState
                                 builder: (context) =>
                                     DetailViewPageInformationObject(
                                       widget.object,
+                                      hideLikeAndAdd: widget.hideLikeAndAdd,
+                                      showDeleteAndEdit: widget.showDeleteAndEdit,
+                                      isSpecies: widget.isSpecies,
                                     )),
                           ).then((value) {
                             setState(() {});

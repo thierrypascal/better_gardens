@@ -38,11 +38,11 @@ void main() {
           widget: Scaffold(
             body: SimpleInformationObjectCard(
               element,
-              serviceProvider: MockServiceProvider(storageProvider: storage),
+              serviceProvider: service,
             ),
           ),
           storageProvider: storage);
-      expect(find.text(attributes['name']), findsOneWidget,
+      expect(find.text(attributes['title']), findsOneWidget,
           reason: '${element.runtimeType}: title of the card is missing');
       expect(find.byType(CachedNetworkImage), findsOneWidget,
           reason: '${element.runtimeType}: image should be visible');

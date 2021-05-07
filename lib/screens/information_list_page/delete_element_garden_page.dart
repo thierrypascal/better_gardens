@@ -28,6 +28,7 @@ class _DeleteElementGardenPageState
 
   @override
   Widget build(BuildContext context) {
+    final garden = Provider.of<Garden>(context, listen: false);
     return EditDialog(
       title: "Element löschen",
       abortCallback: () {
@@ -65,6 +66,7 @@ class _DeleteElementGardenPageState
           SimpleInformationObjectCard(
             widget.object,
             formKey: _formKey,
+            amount: garden.ownedObjects[widget.object.name],
           ),
         ],
       ),

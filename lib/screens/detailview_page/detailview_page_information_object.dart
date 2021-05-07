@@ -3,6 +3,8 @@ import 'package:biodiversity/components/tags/flutter_tags.dart';
 import 'package:biodiversity/models/information_object.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/information_list_page/add_element_to_garden_amount_page.dart';
+import 'package:biodiversity/screens/information_list_page/delete_element_garden_page.dart';
+import 'package:biodiversity/screens/information_list_page/edit_element_to_garden_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -16,9 +18,22 @@ class DetailViewPageInformationObject extends StatefulWidget {
   /// which page the navigator should go to if no page is on the stack below
   final PageRoute fallbackRoute;
 
+  /// if this flag is set, the buttons hinzufügen and merken will be removed
+  final bool hideLikeAndAdd;
+
+  /// if this flag is set, the buttons bearbeiten and löschen will be removed
+  final bool showDeleteAndEdit;
+
+  /// if this flag is set, the card is used for species and hinzufügen and merken will be changed to Aktivitätsradius and merken
+  final bool isSpecies;
+
   /// Shows the details of a BiodiversityMeasure
   const DetailViewPageInformationObject(this.object,
-      {this.fallbackRoute, Key key})
+      {this.fallbackRoute,
+      this.hideLikeAndAdd = false,
+      this.isSpecies = false,
+      this.showDeleteAndEdit = false,
+      Key key})
       : super(key: key);
 
   @override
@@ -84,46 +99,93 @@ class _DetailViewPageInformationObjectState
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
         ),
-        Consumer<User>(
-          builder: (context, user, child) {
+        if (!widget.hideLikeAndAdd)
+          Consumer<User>(
+            builder: (context, user, child) {
+              return Row(
+                children: [
+                  (!widget.isSpecies) ?
+                  IconButton(
+                    icon: const Icon(
+                      Icons.add,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AddElementToGardenAmountPage(
+                                  object: widget.object,
+                                )),
+                      );
+                    },
+                  ) :
+                  const IconButton(
+                    icon: Icon(
+                      Icons.add_circle_outline_outlined,
+                    ),
+                    onPressed: null,
+                  ),
+                  IconButton(
+                    icon: user.doesLikeElement(widget.object.name)
+                        ? const Icon(Icons.favorite)
+                        : const Icon(Icons.favorite_border),
+                    color: user.doesLikeElement(widget.object.name)
+                        ? Colors.red
+                        : Colors.black38,
+                    onPressed: () {
+                      setState(() {
+                        user.likeUnlikeElement(widget.object.name);
+                      });
+                    },
+                  ),
+                ],
+              );
+            },
+          ),
+        if (widget.showDeleteAndEdit)
+          Consumer<User>(builder: (context, user, child) {
+            if (user == null) {
+              return const Text('');
+            }
             return Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
-                  icon: const Icon(
-                    Icons.add,
-                  ),
+                  icon: const Icon(Icons.delete_forever),
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => AddElementToGardenAmountPage(
+                          builder: (context) =>
+                              DeleteElementGardenPage(
                                 object: widget.object,
                               )),
                     );
                   },
                 ),
                 IconButton(
-                  icon: user.doesLikeElement(widget.object.name)
-                      ? const Icon(Icons.favorite)
-                      : const Icon(Icons.favorite_border),
-                  color: user.doesLikeElement(widget.object.name)
-                      ? Colors.red
-                      : Colors.black38,
-                  onPressed: () {
-                    setState(() {
-                      user.likeUnlikeElement(widget.object.name);
-                    });
+                  icon: const Icon(
+                    Icons.edit,
+                  ),
+                  onPressed: () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => EditElementPage(
+                            object: widget.object,
+                          )),
+                    ),
                   },
                 ),
               ],
             );
-          },
-        )
+          }),
       ],
     );
   }
 
   Widget _showTags() {
+    //TODO: change "connection" to "beneficial for"
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),

@@ -30,6 +30,9 @@ class SimpleInformationObjectCard extends StatelessWidget {
   /// formKey to control the amount input field
   final GlobalKey<FormState> formKey;
 
+  ///displays unit of element
+  String _unit;
+
   /// Non expandable ListTile, displaying a [BiodiversityMeasure]
   SimpleInformationObjectCard(this.object,
       {this.onTapHandler,
@@ -44,6 +47,17 @@ class SimpleInformationObjectCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if(object.runtimeType == BiodiversityMeasure) {
+      final biodiversityObject = object as BiodiversityMeasure;
+      if (biodiversityObject.dimension == 'Fläche') {
+        _unit = 'Fläche (m2)';
+      } else if (biodiversityObject.dimension == 'Linie') {
+        _unit = 'Linie (m)';
+      } else {
+        _unit = 'Anzahl';
+      }
+    }
+
     return InkWell(
       onTap: onTapHandler,
       child: Container(
@@ -68,6 +82,7 @@ class SimpleInformationObjectCard extends StatelessWidget {
                 ],
               ),
             ),
+            if(_unit != null)
             SizedBox(
               height: 40,
               width: 100,
@@ -77,7 +92,7 @@ class SimpleInformationObjectCard extends StatelessWidget {
                   readOnly: amountLocked == true ? true : false,
                   initialValue: amount != null ? amount.toString() : "1",
                   decoration: InputDecoration(
-                      labelText: "Anzahl", border: OutlineInputBorder()),
+                      labelText: _unit, border: OutlineInputBorder()),
                   keyboardType: TextInputType.number,
                   onSaved: (value) =>
                       Provider.of<InformationObjectAmountContainer>(context,

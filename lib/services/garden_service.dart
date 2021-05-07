@@ -43,6 +43,11 @@ class GardenService extends ChangeNotifier {
     return _gardens.where((garden) => garden.owner == user.userUUID).toList();
   }
 
+  /// Returns a list of all registred Gardens
+  List<Garden> getAllGardens() {
+    return _gardens;
+  }
+
   ///Returns all elements inside the users active garden
   List<BiodiversityMeasure> getAllBiodiversityMeasuresFromGarden(
       Garden garden) {
@@ -56,6 +61,21 @@ class GardenService extends ChangeNotifier {
 
   /// returns a single Garden referenced by the provided reference
   Garden getGardenByReference(DocumentReference reference) {
-    return _gardens.where((element) => element.reference == reference).first;
+    return _gardens
+        .where((element) => element.reference == reference)
+        .first;
+  }
+
+  /// returns the nickname of the garden owner if showGardenOnMap is set to true for this user
+  Future<String> getNicknameOfOrder(Garden garden) async {
+    final doc = await _storage.database.doc('users/${garden.owner}').get();
+    if (doc != null && doc.exists) {
+      final data = doc.data();
+      if (data.containsKey('showNameOnMap') && data.containsKey('nickname')) {
+        final showName = data['showNameOnMap'] as bool;
+        return showName ? doc.data()['nickname'] : 'Anonym';
+      }
+    }
+    return 'Anonym';
   }
 }

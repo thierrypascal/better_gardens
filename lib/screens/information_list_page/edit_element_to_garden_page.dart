@@ -55,8 +55,13 @@ class _EditElementPageState
                 .values
                 .first);
         Provider.of<Garden>(context, listen: false).saveGarden();
-        
-         Navigator.push(
+
+        //clear the container
+        Provider.of<InformationObjectAmountContainer>(context, listen: false)
+            .amounts
+            .clear();
+
+        Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => WhiteRedirectPage(

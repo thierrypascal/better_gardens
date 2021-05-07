@@ -24,6 +24,8 @@ class BiodiversityService extends ChangeNotifier {
         .snapshots()
         .listen((snapshot) =>
             _updateElements(snapshot, serviceProvider: serviceProvider));
+
+    print('service constructor done');
   }
 
   /// whether the service is ready and has fetched data from the server
@@ -52,9 +54,9 @@ class BiodiversityService extends ChangeNotifier {
   }
 
   /// returns a list of [BiodiversityMeasure] which have the given type
-  List<BiodiversityMeasure> getBiodiversityObjectList(String type) {
+  List<BiodiversityMeasure> getBiodiversityObjectList(String dimension) {
     return _measures
-        .where((element) => element.type.toLowerCase() == type.toLowerCase())
+        .where((element) => element.dimension.toLowerCase() == dimension.toLowerCase())
         .toList();
   }
 

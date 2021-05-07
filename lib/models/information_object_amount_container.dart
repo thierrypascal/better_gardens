@@ -9,5 +9,5 @@ class InformationObjectAmountContainer extends ChangeNotifier {
   final Map<InformationObject, int> amounts = {};
 
   /// to which garden the InformationObjects are associated
-  Garden garden;
+  String garden;
 }

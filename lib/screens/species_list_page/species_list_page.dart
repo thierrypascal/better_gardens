@@ -16,6 +16,7 @@ class SpeciesListPage extends StatelessWidget {
         body: InformationObjectListWidget(
           objects: ServiceProvider.instance.speciesService
               .getFullSpeciesObjectList(),
+          isSpecies: true,
         ));
   }
 }

@@ -5,7 +5,9 @@ import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/map_page/maps_submap_widget.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 class MyGardenAdd extends StatefulWidget {
@@ -51,6 +53,13 @@ class _MyGardenAddState extends State<MyGardenAdd> {
           garden.street = _address;
           garden.gardenType = _gartenType;
           garden.owner = user.userUUID;
+          garden.coordinates = GeoPoint(
+              Provider.of<MapInteractionContainer>(context, listen: false)
+                  .selectedLocation
+                  .latitude,
+              Provider.of<MapInteractionContainer>(context, listen: false)
+                  .selectedLocation
+                  .longitude);
           garden.saveGarden();
           user.addGarden(garden);
           Provider.of<Garden>(context, listen: false).switchGarden(garden);
@@ -127,7 +136,19 @@ class _MyGardenAddState extends State<MyGardenAdd> {
                       contentPadding: EdgeInsets.symmetric(vertical: 4)),
                   onSaved: (value) {
                     _address = value;
-                    },
+                  },
+                  onChanged: (value) {
+                    try{
+                      Provider.of<MapInteractionContainer>(context, listen: false)
+                          .getLocationOfAddress(value)
+                          .then((result) => Provider.of<MapInteractionContainer>(
+                          context,
+                          listen: false)
+                          .selectedLocation = result);
+                    }catch(e){
+                      Provider.of<MapInteractionContainer>(context, listen: false).selectedLocation = const LatLng(46.948915, 7.445423);
+                    }
+                  },
                 ),
               ),
 
