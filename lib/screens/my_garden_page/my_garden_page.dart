@@ -164,11 +164,11 @@ class _MyGardenState extends State<MyGarden> {
                 Stack(
                   alignment: AlignmentDirectional.center,
                   children: <Widget>[
-                    Image(
+                    Image.network(
+                      garden.imageURL,
                       width: MediaQuery.of(context).size.width,
                       height: 100,
                       fit: BoxFit.fitWidth,
-                      image: const AssetImage('res/myGarden.jpg'),
                       semanticLabel: garden.name,
                     ),
                     Center(
