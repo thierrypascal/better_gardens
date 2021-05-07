@@ -6,6 +6,7 @@ import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 /// Container class for the garden
@@ -16,17 +17,14 @@ class Garden extends ChangeNotifier {
   /// street and house number of the address of the garden
   String street;
 
-  /// city the garden is in
-  String city;
-
   /// Type of garden
   String gardenType;
 
-  /// latitude coordinates of garden placement on map
-  double latitude;
+  /// the coordinates as [GeoPoint] of the Address
+  GeoPoint coordinates;
 
-  /// longitude coordinates of garden placement on map
-  double longitude;
+  /// the time and date the object was created
+  DateTime creationDate;
 
   /// reference where the object is stored in the database
   DocumentReference reference;
@@ -45,11 +43,13 @@ class Garden extends ChangeNotifier {
       : _storage = storageProvider ??= StorageProvider.instance {
     name = '';
     street = '';
-    city = '';
     owner = '';
+    gardenType = '';
     gardenType = '';
     ownedObjects = {};
     ownedLinkingProjects = [];
+    coordinates = const GeoPoint(0, 0);
+    creationDate = DateTime.now();
     _isEmpty = true;
   }
 
@@ -63,13 +63,13 @@ class Garden extends ChangeNotifier {
       final garden = Garden.empty(storageProvider: storageProvider);
       garden.name = gardens.first.name;
       garden.street = gardens.first.street;
-      garden.city = gardens.first.city;
       garden.owner = gardens.first.owner;
+      garden.ownedObjects.addAll(gardens.first.ownedObjects);
       garden.gardenType = gardens.first.gardenType;
-      garden.ownedObjects = gardens.first.ownedObjects;
-      garden.ownedLinkingProjects = gardens.first.ownedLinkingProjects;
+      garden.ownedLinkingProjects.addAll(gardens.first.ownedLinkingProjects);
       garden._isEmpty = gardens.first._isEmpty;
       garden.reference = gardens.first.reference;
+      garden.coordinates = gardens.first.coordinates;
       return garden;
     }
   }
@@ -84,23 +84,22 @@ class Garden extends ChangeNotifier {
       {this.reference, StorageProvider storageProvider})
       : _storage = storageProvider ??= StorageProvider.instance,
         name = map.containsKey('name') ? map['name'] as String : '',
-        city = map.containsKey('city') ? map['city'] as String : '',
         street = map.containsKey('street') ? map['street'] as String : '',
         owner = map.containsKey('owner') ? map['owner'] as String : '',
-        latitude = map.containsKey('latitude')
-            ? map['latitude'] as double
-            // FIBL coordinates
-            : 47.516957350645754,
-        longitude = map.containsKey('longitude')
-            ? map['longitude'] as double
-            // FIBL coordinates
-            : 8.025010981051828,
+        gardenType =
+            map.containsKey('gardenType') ? map['gardenType'] as String : '',
         ownedObjects = map.containsKey('ownedObjects')
             ? Map<String, int>.from(map['ownedObjects'] as Map)
             : {},
         ownedLinkingProjects = map.containsKey('ownedLinkingProjects')
             ? List<String>.from(map['ownedLinkingProjects'] as Iterable)
             : [],
+        coordinates = map.containsKey('coordinates')
+            ? (map['coordinates'] as GeoPoint)
+            : const GeoPoint(0, 0),
+        creationDate = map.containsKey('creationDate')
+            ? (map['creationDate'] as Timestamp).toDate()
+            : DateTime.now(),
         _isEmpty = false;
 
   /// loads a garden form a database snapshot
@@ -120,10 +119,9 @@ class Garden extends ChangeNotifier {
       'name': name,
       'street': street,
       'gardenType': gardenType,
-      'city': city,
-      'latitude': latitude,
-      'longitude': longitude,
       'ownedObjects': ownedObjects,
+      'coordinates': coordinates,
+      'creationDate': creationDate,
       'ownedLinkingProjects': ownedLinkingProjects,
     });
   }
@@ -135,12 +133,15 @@ class Garden extends ChangeNotifier {
   void switchGarden(Garden garden) {
     name = garden.name;
     street = garden.street;
-    city = garden.city;
     owner = garden.owner;
     ownedObjects.clear();
     ownedObjects.addAll(garden.ownedObjects);
     ownedLinkingProjects.clear();
     ownedLinkingProjects.addAll(garden.ownedLinkingProjects);
+    coordinates = garden.coordinates;
+    gardenType = garden.gardenType;
+    creationDate = garden.creationDate;
+    reference = garden.reference;
     _isEmpty = garden._isEmpty;
     notifyListeners();
   }
@@ -148,9 +149,7 @@ class Garden extends ChangeNotifier {
   /// adds an element with to a garden with the specified count
   /// and saves the garden to the database
   void addOwnedObject(String object, int count) {
-    if (object != null &&
-        object.isNotEmpty &&
-        count > 0 ) {
+    if (object != null && object.isNotEmpty && count > 0) {
       ownedObjects[object] = count;
       saveGarden();
     }
@@ -183,22 +182,98 @@ class Garden extends ChangeNotifier {
     }
   }
 
-  int _countObjects(String type) {
-    // TODO actually count the different objects
-    return ownedObjects.length;
+  /// returns a [LatLng] object of the coordinates. Used for google Maps
+  LatLng getLatLng() {
+    return LatLng(coordinates.latitude, coordinates.longitude);
+  }
+
+  int _countAreaObjects(String dimension) {
+    final elementList = ServiceProvider.instance.biodiversityService
+        .getBiodiversityObjectList(dimension);
+    List<BiodiversityMeasure> areaElements = [];
+    int result = 0;
+
+    elementList.forEach((element) {
+      if (ownedObjects.keys.contains(element.name)) {
+        areaElements.add(element);
+      }
+    });
+
+    areaElements.forEach((element) {
+      result += ownedObjects[element.name];
+    });
+
+    return result;
+  }
+
+  int _countPointObjects(String dimension) {
+    final elementList = ServiceProvider.instance.biodiversityService
+        .getBiodiversityObjectList(dimension);
+    List<BiodiversityMeasure> areaElements = [];
+    int result = 0;
+
+    elementList.forEach((element) {
+      if (ownedObjects.keys.contains(element.name)) {
+        areaElements.add(element);
+      }
+    });
+
+    areaElements.forEach((element) {
+      result += ownedObjects[element.name];
+    });
+
+    return result;
+  }
+
+  int _countLenghtObjects(String dimension) {
+    final elementList = ServiceProvider.instance.biodiversityService
+        .getBiodiversityObjectList(dimension);
+    List<BiodiversityMeasure> areaElements = [];
+    int result = 0;
+
+    elementList.forEach((element) {
+      if (ownedObjects.keys.contains(element.name)) {
+        areaElements.add(element);
+      }
+    });
+
+    areaElements.forEach((element) {
+      result += ownedObjects[element.name];
+    });
+
+    return result;
+  }
+
+  int _countSupportedSpeciesObjects() {
+    final elementList = ServiceProvider.instance.biodiversityService
+        .getFullBiodiversityObjectList();
+    List<BiodiversityMeasure> areaElements = [];
+    int result = 0;
+
+    elementList.forEach((element) {
+      if (ownedObjects.keys.contains(element.name)) {
+        areaElements.add(element);
+      }
+    });
+
+    areaElements.forEach((element) {
+      result += element.beneficialFor.length;
+    });
+
+    return result;
   }
 
   /// count of area objects
-  int get totalAreaObjects => _countObjects('area');
+  int get totalAreaObjects => _countAreaObjects('Fläche');
 
   /// count of point objects
-  int get totalPointObjects => _countObjects('point');
+  int get totalPointObjects => _countPointObjects('Punkt');
 
   /// count of point objects
-  int get totalLengthObjects => _countObjects('length');
+  int get totalLengthObjects => _countLenghtObjects('Linie');
 
   /// count of point objects
-  int get totalSupportedSpecies => _countObjects('species');
+  int get totalSupportedSpecies => _countSupportedSpeciesObjects();
 
   /// is true if this garden is an empty placeholder
   bool get isEmpty => _isEmpty;

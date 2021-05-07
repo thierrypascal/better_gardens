@@ -35,12 +35,13 @@ Widget loadProviders(
       providers: [
         ChangeNotifierProvider(
           create: (context) => User.empty(storageProvider: storageProvider),
+          lazy: false,
         ),
         ChangeNotifierProvider(
-          create: (context) => Garden.empty(storageProvider: storageProvider),
-        ),
+            create: (context) => Garden.empty(storageProvider: storageProvider),
+            lazy: false),
         ChangeNotifierProvider(
-            create: (context) => MapInteractionContainer.empty()),
+            create: (context) => MapInteractionContainer.empty(), lazy: false),
       ],
       child: MaterialApp(
         key: globalKey,

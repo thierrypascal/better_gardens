@@ -1,4 +1,5 @@
 import 'package:biodiversity/models/garden.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../environment/mock_storage_provider.dart';
@@ -11,35 +12,27 @@ void main() {
     expect(garden.name, '', reason: 'name was not empty');
     expect(garden.owner, '', reason: 'owner was not empty');
     expect(garden.street, '', reason: 'street was not empty');
-    expect(garden.city, '', reason: 'city was not empty');
-    expect(garden.longitude, isNull, reason: 'longitude was not null');
-    expect(garden.latitude, isNull, reason: 'latitude was not null');
+    expect(garden.coordinates, GeoPoint(0, 0), reason: 'coordinates was not (0,0))');
   });
 
   test('Valid garden creation', () {
     final gardenAttributes = {
       'name': "Mr. Lewis' Garden",
-      'city': 'Locarno',
       'street': 'via G.G. Nessi 4B',
       'owner': 'Lisa',
-      'latitude': 1.2345,
-      'longitude': 4.2314,
+      'coordinates': GeoPoint(46.948915, 7.445423),
       'ownedObjects': {'dummy': 9, 'second dummy': 1},
       'ownedLinkingProjects': ['grasfroschteam']
     };
     final garden = Garden.fromMap(gardenAttributes, storageProvider: storage);
     expect(garden.name, gardenAttributes['name'],
         reason: 'name was not set correctly');
-    expect(garden.city, gardenAttributes['city'],
-        reason: 'city was not set correctly');
     expect(garden.street, gardenAttributes['street'],
         reason: 'street was not set correctly');
     expect(garden.owner, gardenAttributes['owner'],
         reason: 'owner was not set correctly');
-    expect(garden.latitude, gardenAttributes['latitude'],
-        reason: 'latitude was not set correctly');
-    expect(garden.longitude, gardenAttributes['longitude'],
-        reason: 'longitude was not set correctly');
+    expect(garden.coordinates, gardenAttributes['coordinates'],
+        reason: 'coordinates was not set correctly');
     for (final item in (gardenAttributes['ownedObjects'] as Map).entries) {
       expect(garden.ownedObjects, containsPair(item.key, item.value),
           reason: 'ownedObjects was not set correctly');
@@ -52,11 +45,11 @@ void main() {
   test('save garden', () async {
     final gardenAttributes = {
       'name': "Mr. Lewis' Garden",
-      'city': 'Locarno',
       'street': 'via G.G. Nessi 4B',
       'owner': 'Tom',
       'ownedObjects': {'dummy': 9, 'second dummy': 1},
-      'ownedLinkingProjects': ['grasfroschteam']
+      'ownedLinkingProjects': ['grasfroschteam'],
+      'coordinates': GeoPoint(46.948915, 7.445423),
     };
     final garden = Garden.fromMap(gardenAttributes, storageProvider: storage);
     await garden.saveGarden();
@@ -64,11 +57,12 @@ void main() {
     final map = snapshots.docs.first.data();
     expect(map, containsPair('name', "Mr. Lewis' Garden"),
         reason: 'garden was not saved');
-    expect(map['city'], gardenAttributes['city'], reason: 'city was not saved');
     expect(map['street'], gardenAttributes['street'],
         reason: 'street was not saved');
     expect(map['owner'], gardenAttributes['owner'],
         reason: 'owner was not saved');
+    expect(map['coordinates'], gardenAttributes['coordinates'],
+        reason: 'coordinates was not saved');
     for (final obj in (gardenAttributes['ownedObjects'] as Map).entries) {
       expect(map['ownedObjects'], containsPair(obj.key, obj.value),
           reason: 'ownedObjects was not saved correctly');

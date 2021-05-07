@@ -1,8 +1,9 @@
-import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/edit_dialog.dart';
-import 'package:biodiversity/components/tags/src/item_tags.dart';
 import 'package:biodiversity/models/garden.dart';
+import 'package:biodiversity/models/map_interactions_container.dart';
+import 'package:biodiversity/screens/map_page/maps_submap_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 class MyGardenEdit extends StatefulWidget {
@@ -30,6 +31,20 @@ class _MyGardenEditState extends State<MyGardenEdit> {
   @override
   Widget build(BuildContext context) {
     final garden = Provider.of<Garden>(context, listen: false);
+    if(garden.gardenType != null && _gardenType.contains(garden.gardenType)){
+      _selectedType = garden.gardenType;
+    }
+    try{
+      Provider.of<MapInteractionContainer>(context, listen: false)
+          .getLocationOfAddress(garden.street)
+          .then((result) => Provider.of<MapInteractionContainer>(
+          context,
+          listen: false)
+          .selectedLocation = result);
+    }catch(e){
+      Provider.of<MapInteractionContainer>(context, listen: false).selectedLocation = const LatLng(46.948915, 7.445423);
+    }
+
     return EditDialog(
       title: ('Mein Garten'),
       abortCallback: () {
@@ -112,10 +127,27 @@ class _MyGardenEditState extends State<MyGardenEdit> {
                   decoration: const InputDecoration(
                       labelText: 'Garten Adresse',
                       contentPadding: EdgeInsets.symmetric(vertical: 4)),
-                  onSaved: (value) => _address = value,
+                  onSaved: (value) {
+                    _address = value;
+                  },
+                  onChanged: (value) {
+                    try{
+                      Provider.of<MapInteractionContainer>(context, listen: false)
+                          .getLocationOfAddress(value)
+                          .then((result) => Provider.of<MapInteractionContainer>(
+                          context,
+                          listen: false)
+                          .selectedLocation = result);
+                    }catch(e){
+                      Provider.of<MapInteractionContainer>(context, listen: false).selectedLocation = const LatLng(46.948915, 7.445423);
+                    }
+                  },
                 ),
               ),
-             
+
+              //Show minimap of Garden
+              SubMap(),
+
               //Todo IMAGE select and show
             ],
           ),

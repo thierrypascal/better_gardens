@@ -1,20 +1,17 @@
 import 'package:biodiversity/components/edit_dialog.dart';
 import 'package:biodiversity/components/simple_information_object_card_widget.dart';
 import 'package:biodiversity/components/white_redirect_page.dart';
-import 'package:biodiversity/fonts/icons_biodiversity_icons.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/information_object_amount_container.dart';
-import 'package:biodiversity/models/map_interactions_container.dart';
-import 'package:biodiversity/screens/information_list_page/add_element_to_garden_location_page.dart';
 import 'package:biodiversity/screens/information_list_page/biodiversity_elements_list_page.dart';
 import 'package:biodiversity/screens/map_page/maps_submap_widget.dart';
-import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 ///Workflow Add Element To One's Garden: overview before saving the added element
 class AddElementToGardenOverviewPage extends StatefulWidget {
+  ///Workflow Add Element To One's Garden: overview before saving the added element
   AddElementToGardenOverviewPage({Key key}) : super(key: key);
 
   @override
@@ -26,27 +23,21 @@ class _AddElementToGardenOverviewPageState
     extends State<AddElementToGardenOverviewPage> {
   @override
   Widget build(BuildContext context) {
+
     return EditDialog(
-      title: "Lebensraum hinzufügen",
-      abort: "Zurück",
+      title: 'Lebensraum hinzufügen',
+      abort: 'Zurück',
       abortIcon: Icons.navigate_before,
       abortCallback: () {
         Navigator.pop(context);
       },
       saveCallback: () {
         //save amount and element to selected garden
-        Provider.of<Garden>(context, listen: false).addOwnedObject(
-            Provider.of<InformationObjectAmountContainer>(context,
-                    listen: false)
-                .amounts
-                .keys
-                .first
-                .name,
-            Provider.of<InformationObjectAmountContainer>(context,
-                    listen: false)
-                .amounts
-                .values
-                .first);
+        final amounts = Provider.of<InformationObjectAmountContainer>(context,
+                listen: false)
+            .amounts;
+        Provider.of<Garden>(context, listen: false)
+            .addOwnedObject(amounts.keys.first.name, amounts.values.first);
         Provider.of<Garden>(context, listen: false).saveGarden();
 
         //clear the container
@@ -59,21 +50,27 @@ class _AddElementToGardenOverviewPageState
           context,
           MaterialPageRoute(
               builder: (context) => WhiteRedirectPage(
-                  "Element gespeichert und hinzugefügt",
+                  'Element gespeichert und hinzugefügt',
                   BiodiversityElementListPage())),
         );
+      },
+      cancelCallback: (){
+        Provider.of<InformationObjectAmountContainer>(context, listen: false)
+            .amounts
+            .clear();
+        Navigator.pop(context);
       },
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           const Text(
-            "Lebensraum hinzufügen",
+            'Lebensraum hinzufügen',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 10),
-          Text("Element bestätigen."),
-          SizedBox(height: 20),
+          const SizedBox(height: 10),
+          const Text('Element bestätigen.'),
+          const SizedBox(height: 20),
           SimpleInformationObjectCard(
             Provider.of<InformationObjectAmountContainer>(context,
                     listen: false)
@@ -87,19 +84,18 @@ class _AddElementToGardenOverviewPageState
                 .values
                 .first,
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Icon(Icons.house),
-              Text(" Gewählter Garten: " +
+              const Icon(Icons.house),
+              Text(' Gewählter Garten: ' +
                   Provider.of<InformationObjectAmountContainer>(context,
                           listen: false)
-                      .garden
-                      .name),
+                      .garden),
             ],
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           SubMap(),
         ],
       ),

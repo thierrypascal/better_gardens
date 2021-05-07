@@ -1,11 +1,13 @@
 import 'dart:ui';
 
+import 'package:biodiversity/components/circlesOverview.dart';
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/information_object_list_widget.dart';
 import 'package:biodiversity/components/white_redirect_page.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
+import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_add.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_edit.dart';
 import 'package:biodiversity/services/service_provider.dart';
@@ -92,7 +94,7 @@ class _MyGardenState extends State<MyGarden> {
                           color: Colors.black,
                         ),
                       ),
-                      Text('Zu $_garden wechseln'),
+                      Flexible(child: Text('Zu $_garden wechseln',)),
                     ],
                   ),
                 ));
@@ -189,11 +191,16 @@ class _MyGardenState extends State<MyGarden> {
                             fontSize: 20, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
-                      _differentCircles(context),
+                      CirclesOverview(context, garden),
                       const SizedBox(height: 15.0),
                       TextButton(
                           //TODO functionality to see the garden in the map
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MapsPage(garden: garden,)));
+                          },
                           child: Row(
                             children: <Widget>[
                               const Icon(Icons.maps_ugc_outlined),
@@ -241,71 +248,5 @@ class _MyGardenState extends State<MyGarden> {
       final _garden = gardens.where((garden) => garden.name == value).first;
       Provider.of<Garden>(context, listen: false).switchGarden(_garden);
     }
-  }
-
-  Widget _createCircle(String number, String text) {
-    return Container(
-      height: 100.0,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              border: Border.all(width: 2),
-              shape: BoxShape.circle,
-              // You can use like this way or like the below line
-              //borderRadius: new BorderRadius.circular(30.0),
-              color: Colors.white,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(number, style: const TextStyle(fontSize: 20.0)),
-              ],
-            ),
-          ),
-          Text(text, style: const TextStyle(color: Colors.grey))
-        ],
-      ),
-    );
-  }
-
-  Widget _differentCircles(BuildContext context) {
-    final garden = Provider.of<Garden>(context);
-    return Column(children: <Widget>[
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _createCircle('${garden.totalAreaObjects}', 'Flächen (m2)'),
-            ],
-          ),
-          Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            _createCircle('${garden.totalLengthObjects}', ' Längen (m)')
-          ]),
-        ],
-      ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _createCircle(
-                  '${garden.totalPointObjects}', 'Punktobjekt (Anzahl)'),
-            ],
-          ),
-          Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            _createCircle(
-                '${garden.totalSupportedSpecies}', 'Geförderte Arten (Anzahl)')
-          ]),
-        ],
-      )
-    ]);
   }
 }

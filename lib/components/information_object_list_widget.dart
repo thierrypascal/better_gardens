@@ -14,8 +14,12 @@ class InformationObjectListWidget extends StatefulWidget {
   /// if this flag is set, the buttons hinzufügen and merken will be removed
   final bool hideLikeAndAdd;
 
-  /// if this flag is set, the buttons bearbeiten and loschën will be removed
+  /// if this flag is set, the buttons bearbeiten and löschen will be removed
   final bool showDeleteAndEdit;
+
+  /// if this flag is set, the card is used for species and hinzufügen and merken will be changed to vernetzungsprojekt erstellen and merken
+  /// as vernetzungsprojekte is not yet implemented, hinzufügen will be removed if isSpecies is set
+  final bool isSpecies;
 
   /// A list of InformationObjects which should be displayed
   final List<InformationObject> objects;
@@ -29,6 +33,7 @@ class InformationObjectListWidget extends StatefulWidget {
       this.showDeleteAndEdit = false,
       this.useSimpleCard = false,
       this.hideLikeAndAdd = false,
+      this.isSpecies = false,
       ServiceProvider serviceProvider})
       : _serviceProvider = serviceProvider ?? ServiceProvider.instance,
         super(key: key);
@@ -234,11 +239,12 @@ class _InformationObjectListWidgetState
                                 serviceProvider: widget._serviceProvider,
                               )
                             : ExpandableInformationObjectCard(
-                          element,
+                                element,
                                 hideLikeAndAdd: widget.hideLikeAndAdd,
                                 additionalInfo: element.additionalInfo,
                                 showDeleteAndEdit: widget.showDeleteAndEdit,
                                 serviceProvider: widget._serviceProvider,
+                                isSpecies: widget.isSpecies,
                               );
                       },
                       separatorBuilder: (context, index) {

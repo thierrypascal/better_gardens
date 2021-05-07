@@ -1,5 +1,7 @@
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +44,12 @@ class _SubMapState extends State<SubMap> {
                       if (!snapshot.hasData) {
                         return const Text('');
                       }
+                      Provider.of<MapInteractionContainer>(context)
+                              .getCameraPosition() ??
+                          mapController.animateCamera(
+                              CameraUpdate.newCameraPosition(
+                                  Provider.of<MapInteractionContainer>(context)
+                                      .getCameraPosition()));
                       return Text(
                         snapshot.data,
                         textScaleFactor: 1.3,
@@ -80,6 +88,9 @@ class _SubMapState extends State<SubMap> {
                       .selectedLocation = pos;
                 });
               },
+              gestureRecognizers: Set()
+                ..add(Factory<PanGestureRecognizer>(
+                    () => PanGestureRecognizer())),
             ),
           ),
         ],

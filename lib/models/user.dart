@@ -2,9 +2,12 @@ import 'dart:core';
 import 'dart:developer' as logging;
 
 import 'package:biodiversity/components/privacy_agreement.dart';
+import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/login_result.dart';
+import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/storage_provider.dart';
+import 'package:biodiversity/services/service_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -133,6 +136,8 @@ class User extends ChangeNotifier {
     return true;
   }
 
+  //TODO: _gardens needs to be updated together with garden object
+
   ///changes any field of the [User].
   ///Afterwards the changes are saved to the database
   ///and the listeners will be informed if the flag [informListeners] is set.
@@ -155,9 +160,6 @@ class User extends ChangeNotifier {
       }
     }
     if (newImageURL != null) imageURL = newImageURL;
-    if (newAddress != null) {
-      //TODO search for address objects
-    }
     if (newMail != null) mail = newMail;
     if (doesShowNameOnMap != null) showNameOnMap = doesShowNameOnMap;
     if (doesShowGardenImageOnMap != null) {
@@ -184,6 +186,43 @@ class User extends ChangeNotifier {
   /// returns a [bool] whether the User has liked the given element
   bool doesLikeElement(String element) {
     return _favoredObjects.contains(element);
+  }
+
+  /// returns the users favoredObjects
+  Set<String> get favoredObjects{
+    return _favoredObjects;
+  }
+
+  /// returns the users favoredObjects of type HabitatElement
+  List<BiodiversityMeasure> get favoredHabitatObjects{
+    List<BiodiversityMeasure> result = [];
+    List<BiodiversityMeasure> allMeasures = ServiceProvider.instance.biodiversityService.getFullBiodiversityObjectList();
+
+    for (var favored in _favoredObjects) {
+      for (var obj in allMeasures) {
+        if (favored == obj.name) {
+          result.add(obj);
+        }
+      }
+    }
+
+    return result;
+  }
+
+  /// returns the users favoredObjects of type Species
+  List<Species> get favoredSpeciesObjects{
+    List<Species> result = [];
+    List<Species> allSpecies = ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
+
+    for (var favored in _favoredObjects) {
+      for (var obj in allSpecies) {
+        if (favored == obj.name) {
+          result.add(obj);
+        }
+      }
+    }
+
+    return result;
   }
 
   /// is true if the User has confirmed his email address by the sent link
