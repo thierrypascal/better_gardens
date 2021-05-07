@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:developer' as logging;
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:biodiversity/models/storage_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
