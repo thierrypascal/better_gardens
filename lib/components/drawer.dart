@@ -9,6 +9,7 @@ import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
 import 'package:biodiversity/screens/species_list_page/species_list_page.dart';
 import 'package:biodiversity/screens/take_home_message_page/take_home_messages.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 /// The Drawer which is located at the right side of the screen
@@ -172,9 +173,9 @@ class MyDrawer extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const Image(
-                        image: AssetImage('res/gardenDrawer.png'),
-                        width: double.infinity,
+                    SvgPicture.asset(
+                        'res/gardenDrawer_color.svg',
+                        width: constraints.maxWidth,
                         fit: BoxFit.fitWidth,
                       ),
                     ]),
@@ -207,7 +208,7 @@ class MyDrawer extends StatelessWidget {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: const Text('ausloggen ?'),
+              title: const Text('Ausloggen ?'),
               content: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
