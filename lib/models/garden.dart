@@ -35,7 +35,11 @@ class Garden extends ChangeNotifier {
   /// reference to the associated User
   String owner;
 
+  ///image URL for the image of the garden
+  String imageURL;
+
   bool _isEmpty;
+
   final StorageProvider _storage;
 
   /// creates an empty garden as placeholder
@@ -51,6 +55,7 @@ class Garden extends ChangeNotifier {
     coordinates = const GeoPoint(0, 0);
     creationDate = DateTime.now();
     _isEmpty = true;
+    imageURL = '';
   }
 
   /// creates a garden from the garden which is assigned to the user
@@ -70,6 +75,7 @@ class Garden extends ChangeNotifier {
       garden._isEmpty = gardens.first._isEmpty;
       garden.reference = gardens.first.reference;
       garden.coordinates = gardens.first.coordinates;
+      garden.imageURL = gardens.first.imageURL;
       return garden;
     }
   }
@@ -100,6 +106,7 @@ class Garden extends ChangeNotifier {
         creationDate = map.containsKey('creationDate')
             ? (map['creationDate'] as Timestamp).toDate()
             : DateTime.now(),
+        imageURL = map.containsKey('imageURL') ? map['imageURL'] as String : '',
         _isEmpty = false;
 
   /// loads a garden form a database snapshot
@@ -123,6 +130,7 @@ class Garden extends ChangeNotifier {
       'coordinates': coordinates,
       'creationDate': creationDate,
       'ownedLinkingProjects': ownedLinkingProjects,
+      'imageURL': imageURL,
     });
   }
 
@@ -143,6 +151,7 @@ class Garden extends ChangeNotifier {
     creationDate = garden.creationDate;
     reference = garden.reference;
     _isEmpty = garden._isEmpty;
+    imageURL = garden.imageURL;
     notifyListeners();
   }
 
