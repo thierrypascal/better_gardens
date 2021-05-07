@@ -68,10 +68,7 @@ dev_dependencies:
   firebase_storage_mocks:
   firebase_auth_mocks:
   google_sign_in_mocks:
-  excel:
-  spreadsheet_decoder:
-  file_picker:
-  archive:
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
