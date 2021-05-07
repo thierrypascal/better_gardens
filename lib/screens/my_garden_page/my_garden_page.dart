@@ -94,7 +94,10 @@ class _MyGardenState extends State<MyGarden> {
                           color: Colors.black,
                         ),
                       ),
-                      Flexible(child: Text('Zu $_garden wechseln',)),
+                      Flexible(
+                          child: Text(
+                            'Zu $_garden wechseln',
+                          )),
                     ],
                   ),
                 ));
@@ -105,12 +108,12 @@ class _MyGardenState extends State<MyGarden> {
         ],
       ),
       drawer: MyDrawer(),
-      body: PageView(
-        scrollDirection: Axis.vertical,
+      body: ListView(
+        physics: ScrollPhysics(),
         children: <Widget>[
           if (gardens.isEmpty)
             Column(
-              children: [
+              children: <Widget>[
                 Image(
                   width: MediaQuery.of(context).size.width,
                   height: 200,
@@ -125,8 +128,8 @@ class _MyGardenState extends State<MyGarden> {
                     children: [
                       const Text(
                           'Hallo\n\nHier siehst du die Übersicht über deinen Garten.\n'
-                          'Damit du Lebensräume in deinem Garten hinzufügen kannst '
-                          'und dich mit anderen Gärtnern vernetzen kannst musst du zuerst einen Garten erstellen.',
+                              'Damit du Lebensräume in deinem Garten hinzufügen kannst '
+                              'und dich mit anderen Gärtnern vernetzen kannst musst du zuerst einen Garten erstellen.',
                           style: TextStyle(fontSize: 15)),
                       const SizedBox(height: 30),
                       ElevatedButton(
@@ -157,7 +160,7 @@ class _MyGardenState extends State<MyGarden> {
             Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 Stack(
                   alignment: AlignmentDirectional.center,
                   children: <Widget>[
@@ -194,16 +197,18 @@ class _MyGardenState extends State<MyGarden> {
                       CirclesOverview(context, garden),
                       const SizedBox(height: 15.0),
                       TextButton(
-                          //TODO functionality to see the garden in the map
+                        //TODO functionality to see the garden in the map
                           onPressed: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => MapsPage(garden: garden,)));
+                                    builder: (context) => MapsPage(
+                                      garden: garden,
+                                    )));
                           },
                           child: Row(
                             children: <Widget>[
-                              const Icon(Icons.maps_ugc_outlined),
+                              const Icon(Icons.map),
                               const SizedBox(width: 10.0),
                               const Text('Garten auf Karte anzeigen',
                                   style: TextStyle(
@@ -213,25 +218,21 @@ class _MyGardenState extends State<MyGarden> {
                     ],
                   ),
                 ),
-              ],
-            ),
-          Column(
-            children: <Widget>[
-              const Padding(
-                padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
-                child: Text('Lebensräume in Ihrem Garten suchen',
-                    style: TextStyle(fontSize: 20, color: Colors.black)),
-              ),
-              Expanded(
-                child: InformationObjectListWidget(
+                const Padding(
+                  padding: EdgeInsets.only(right: 30, left: 30, top: 30),
+                  child: Text('Lebensräume in Ihrem Garten suchen',
+                      style:
+                      TextStyle(fontSize: 18, color: Colors.black)),
+                ),
+                InformationObjectListWidget(
                   objects: ServiceProvider.instance.gardenService
                       .getAllBiodiversityMeasuresFromGarden(garden),
                   showDeleteAndEdit: true,
                   hideLikeAndAdd: true,
+                  physics: const NeverScrollableScrollPhysics(),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
         ],
       ),
     );

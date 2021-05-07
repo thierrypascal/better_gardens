@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:biodiversity/components/expandable_information_object_card_widget.dart';
 import 'package:biodiversity/components/simple_information_object_card_widget.dart';
 import 'package:biodiversity/components/tags/flutter_tags.dart';
@@ -26,6 +28,9 @@ class InformationObjectListWidget extends StatefulWidget {
 
   final ServiceProvider _serviceProvider;
 
+  ///ScrollPhysics for the list of Info
+  final ScrollPhysics physics;
+
   /// Creates a List Widget displaying all provided InformationObjects
   InformationObjectListWidget(
       {Key key,
@@ -34,6 +39,7 @@ class InformationObjectListWidget extends StatefulWidget {
       this.useSimpleCard = false,
       this.hideLikeAndAdd = false,
       this.isSpecies = false,
+      this.physics = const ScrollPhysics(),
       ServiceProvider serviceProvider})
       : _serviceProvider = serviceProvider ?? ServiceProvider.instance,
         super(key: key);
@@ -52,6 +58,7 @@ class _InformationObjectListWidgetState
   final categories = <String>[];
   final categorisedItems = <InformationObject>[];
   final filteredItems = <InformationObject>[];
+  bool scroll_visibility = true;
 
   @override
   void initState() {
@@ -59,8 +66,8 @@ class _InformationObjectListWidgetState
     categorisedItems.addAll(widget.objects);
     filteredItems.addAll(widget.objects);
     for (final item in widget.objects) {
-      if (!categories.contains(item.category)) {
-        categories.add(item.category);
+      if (!categories.contains(item.type)) {
+        categories.add(item.type);
       }
     }
     for (final s in categories) {
@@ -74,7 +81,7 @@ class _InformationObjectListWidgetState
       final filterResults = <InformationObject>[];
       for (final item in widget.objects) {
         for (final activeTag in activeItems) {
-          if (item.category.contains(activeTag)) {
+          if (item.type.contains(activeTag)) {
             filterResults.add(item);
           }
         }
@@ -142,15 +149,58 @@ class _InformationObjectListWidgetState
             ),
           ),
           if (categories.length > 1)
-            SizedBox(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                      child: Container(
+            Visibility(
+              visible: scroll_visibility,
+              replacement: IconButton(
+                onPressed: () {
+                  setState(() {
+                    scroll_visibility = true;
+                  });
+                },
+                iconSize: 20,
+                icon: Transform.rotate(
+                  angle: 90 * math.pi / 180,
+                  child: const Icon(Icons.arrow_forward_ios),
+                ),
+              ),
+              child: SizedBox(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Tags(
+                        key: _tagStateKey,
+                        itemCount: _tagItems.length,
+                        alignment: WrapAlignment.start,
+                        runSpacing: 6,
+                        horizontalScroll: false,
+                        heightHorizontalScroll: 40,
+                        itemBuilder: (index) {
+                          final item = _tagItems[index];
+
+                          return ItemTags(
+                            key: Key(index.toString()),
+                            index: index,
+                            title: item.title,
+                            active: item.active,
+                            textStyle: const TextStyle(
+                              fontSize: 14,
+                            ),
+                            textActiveColor: Colors.black,
+                            elevation: 3,
+                            textOverflow: TextOverflow.fade,
+                            combine: ItemTagsCombine.withTextBefore,
+                            onPressed: (item) {
+                              filterClassResults();
+                            },
+                            activeColor: Colors.grey[300],
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(5.0)),
+                          );
+                        },
+                      ),
+                      Container(
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -159,55 +209,37 @@ class _InformationObjectListWidgetState
                                 _tagStateKey.currentState.setAllItemsActive();
                                 filterClassResults();
                               },
-                              child: const Text('Alle selektieren'),
+                              child: const Text('alles selektieren'),
                             ),
                             TextButton(
                               onPressed: () {
                                 _tagStateKey.currentState.setAllItemsInactive();
                                 filterClassResults();
                               },
-                              child: const Text('Selektion aufheben'),
+                              child: const Text('selektion aufheben'),
+                            ),
+                            IconButton(
+                              alignment: Alignment.bottomCenter,
+                              onPressed: () {
+                                setState(() {
+                                  scroll_visibility = false;
+                                });
+                              },
+                              iconSize: 20,
+                              icon: Transform.rotate(
+                                angle: 90 * math.pi / 180,
+                                child: const Icon(Icons.arrow_back_ios),
+                              ),
                             ),
                           ],
                         ),
                       ),
-                    ),
-                    Tags(
-                      key: _tagStateKey,
-                      itemCount: _tagItems.length,
-                      alignment: WrapAlignment.start,
-                      runSpacing: 6,
-                      horizontalScroll: false,
-                      heightHorizontalScroll: 40,
-                      itemBuilder: (index) {
-                        final item = _tagItems[index];
-
-                        return ItemTags(
-                          key: Key(index.toString()),
-                          index: index,
-                          title: item.title,
-                          active: item.active,
-                          textStyle: const TextStyle(
-                            fontSize: 14,
-                          ),
-                          textActiveColor: Colors.black,
-                          elevation: 3,
-                          textOverflow: TextOverflow.fade,
-                          combine: ItemTagsCombine.withTextBefore,
-                          onPressed: (item) {
-                            filterClassResults();
-                          },
-                          activeColor: Colors.grey[300],
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(5.0)),
-                        );
-                      },
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-          Expanded(
+          Flexible(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: filteredItems.isEmpty
@@ -228,6 +260,7 @@ class _InformationObjectListWidgetState
                       ),
                     )
                   : ListView.separated(
+                      physics: widget.physics,
                       shrinkWrap: true,
                       itemCount: filteredItems.length,
                       itemBuilder: (context, index) {
