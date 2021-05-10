@@ -30,14 +30,14 @@ class _DeleteElementGardenPageState
   Widget build(BuildContext context) {
     final garden = Provider.of<Garden>(context, listen: false);
     return EditDialog(
-      title: "Element löschen",
+      title: 'Element löschen',
       abortCallback: () {
         Provider.of<InformationObjectAmountContainer>(context, listen: false)
             .amounts
             .clear();
         Navigator.pop(context);
       },
-      save: "Löschen",
+      save: 'Löschen',
       saveIcon: Icons.delete_forever,
       saveCallback: () {
         Provider.of<Garden>(context, listen: false)
@@ -47,7 +47,7 @@ class _DeleteElementGardenPageState
           context,
           MaterialPageRoute(
               builder: (context) => WhiteRedirectPage(
-                  "Element wurde entfernt",
+                  'Element wurde entfernt',
                   MyGarden())),
         );
       },
@@ -56,12 +56,12 @@ class _DeleteElementGardenPageState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           const Text(
-            "Lebensraum löschen",
+            'Lebensraum löschen',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 10),
           Text(
-              "Wollen Sie das ausgewählte Element wirklich löschen?"),
+              'Wollen Sie das ausgewählte Element wirklich löschen?'),
           SizedBox(height: 20),
           SimpleInformationObjectCard(
             widget.object,

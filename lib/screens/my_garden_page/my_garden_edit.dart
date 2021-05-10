@@ -7,17 +7,13 @@ import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/screens/map_page/maps_submap_widget.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
+/// This page handles the edit of an existing garden
 class MyGardenEdit extends StatefulWidget {
+  /// This page handles the edit of an existing garden
   MyGardenEdit({Key key}) : super(key: key);
-
-  String _toDeleteURL;
-  bool _deleteRequested = false;
-  bool _saveRequested = false;
-  Uint8List _toSaveImage;
 
   @override
   _MyGardenEditState createState() => _MyGardenEditState();
@@ -29,7 +25,11 @@ class _MyGardenEditState extends State<MyGardenEdit> {
   String _gartenType = '';
   String _selectedType;
   String _address;
-  var _gardenType = [
+  bool _deleteRequested = false;
+  bool _saveRequested = false;
+  Uint8List _toSaveImage;
+
+  final _gardenType = [
     'Familiengarten',
     'Hausgarten',
     'Dachgarten',
@@ -40,22 +40,16 @@ class _MyGardenEditState extends State<MyGardenEdit> {
 
   @override
   Widget build(BuildContext context) {
+    String _toDeleteURL;
     final garden = Provider.of<Garden>(context, listen: false);
+    final mapInteractions =
+        Provider.of<MapInteractionContainer>(context, listen: false);
     if (garden.gardenType != null && _gardenType.contains(garden.gardenType)) {
       _selectedType = garden.gardenType;
     }
-    try {
-      Provider.of<MapInteractionContainer>(context, listen: false)
-          .getLocationOfAddress(garden.street)
-          .then((result) =>
-      Provider
-          .of<MapInteractionContainer>(context, listen: false)
-          .selectedLocation = result);
-    } catch (e) {
-      Provider
-          .of<MapInteractionContainer>(context, listen: false)
-          .selectedLocation = const LatLng(46.948915, 7.445423);
-    }
+    mapInteractions.getLocationOfAddress(garden.street).then((result) =>
+        Provider.of<MapInteractionContainer>(context, listen: false)
+            .selectedLocation = result);
 
     return EditDialog(
       title: ('Mein Garten'),
@@ -63,14 +57,14 @@ class _MyGardenEditState extends State<MyGardenEdit> {
         Navigator.of(context).pop();
       },
       saveCallback: () async {
-        if (widget._saveRequested) {
+        if (_saveRequested) {
           garden.imageURL = await ServiceProvider.instance.imageService
-              .uploadImage(widget._toSaveImage, 'gardenpictures',
-              filename: '${garden.name}_${const Uuid().v4()}');
+              .uploadImage(_toSaveImage, 'gardenpictures',
+                  filename: '${garden.name}_${const Uuid().v4()}');
         }
-        if (widget._deleteRequested) {
-          ServiceProvider.instance.imageService.deleteImage(
-              imageURL: widget._toDeleteURL, bucket: 'gardenpictures');
+        if (_deleteRequested) {
+          ServiceProvider.instance.imageService
+              .deleteImage(imageURL: _toDeleteURL);
         }
         //update Image & delete old if necessary
         _formKey.currentState.save();
@@ -109,7 +103,7 @@ class _MyGardenEditState extends State<MyGardenEdit> {
               Padding(
                 padding: const EdgeInsets.only(left: 15, right: 15),
                 child: Container(
-                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                  padding: const EdgeInsets.only(left: 16.0, right: 16.0),
                   decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey, width: 1),
                       borderRadius: BorderRadius.circular(10)),
@@ -123,8 +117,7 @@ class _MyGardenEditState extends State<MyGardenEdit> {
                           child: Text(dropDownStringItem),
                         );
                       }).toList(),
-                      onChanged: (String _value) =>
-                      {
+                      onChanged: (String _value) => {
                         setState(() {
                           _gartenType = _value;
                           _selectedType = _value;
@@ -132,7 +125,7 @@ class _MyGardenEditState extends State<MyGardenEdit> {
                           print(_value);
                         }),
                       },
-                      hint: Text('Select your garden type'),
+                      hint: const Text('Select your garden type'),
                     ),
                   ),
                 ),
@@ -152,40 +145,27 @@ class _MyGardenEditState extends State<MyGardenEdit> {
                     _address = value;
                   },
                   onChanged: (value) {
-                    try {
-                      Provider.of<MapInteractionContainer>(context,
-                          listen: false)
-                          .getLocationOfAddress(value)
-                          .then((result) =>
-                      Provider
-                          .of<MapInteractionContainer>(context,
-                          listen: false)
-                          .selectedLocation = result);
-                    } catch (e) {
-                      Provider
-                          .of<MapInteractionContainer>(context,
-                          listen: false)
-                          .selectedLocation = const LatLng(46.948915, 7.445423);
-                    }
+                    mapInteractions.getLocationOfAddress(value).then(
+                        (result) => mapInteractions.selectedLocation = result);
                   },
                 ),
               ),
               select_garden_image(
                 deleteFunction: (toDeleteURL) {
-                  widget._toDeleteURL = toDeleteURL;
-                  widget._deleteRequested = true;
+                  _toDeleteURL = toDeleteURL;
+                  _deleteRequested = true;
                 },
                 saveFunction: (imageFile) {
                   setState(() {
-                    widget._toSaveImage = imageFile;
-                    widget._saveRequested = true;
+                    _toSaveImage = imageFile;
+                    _saveRequested = true;
                   });
                   Navigator.of(context).pop();
                 },
-                toSaveImage: widget._toSaveImage,
+                toSaveImage: _toSaveImage,
                 garden: garden,
               ),
-              //Show mianimap of Garden
+              //Show minimap of Garden
               SubMap(),
             ],
           ),
@@ -194,4 +174,3 @@ class _MyGardenEditState extends State<MyGardenEdit> {
     );
   }
 }
-

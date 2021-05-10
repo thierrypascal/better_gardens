@@ -152,14 +152,10 @@ class _ExpandableInformationObjectCardState
                               visualDensity: VisualDensity.compact),
                           child: Row(
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
+                              const Padding(
+                                padding:  EdgeInsets.only(right: 8.0),
                                 child: Icon(
                                   Icons.edit,
-                                  color: Provider.of<User>(context)
-                                          .doesLikeElement(widget.object.name)
-                                      ? Colors.red
-                                      : Colors.black,
                                   size: 20,
                                 ),
                               ),

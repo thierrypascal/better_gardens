@@ -133,6 +133,7 @@ class Garden extends ChangeNotifier {
       'imageURL': imageURL,
     });
   }
+ 
 
   /// fucntion to load the details from the first garden of a user
   void switchGardenFromUser(User user) {}

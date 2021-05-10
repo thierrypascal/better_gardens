@@ -54,11 +54,13 @@ class MapInteractionContainer extends ChangeNotifier {
   /// returns the address of the stored coordinates as string.
   /// a default message is returned if no coordinates are stored
   Future<LatLng> getLocationOfAddress(String adr) async {
-    if (adr == null) {
-      return LatLng(46.948915, 7.445423);
+    var result = const LatLng(46.948915, 7.445423);
+    try {
+      final location = await locationFromAddress(adr);
+      result = LatLng(location.first.latitude, location.first.longitude);
+    } catch (e) {
+      return result;
     }
-    final location = await locationFromAddress(adr);
-    final result = LatLng(location.first.latitude, location.first.longitude);
     return result;
   }
 

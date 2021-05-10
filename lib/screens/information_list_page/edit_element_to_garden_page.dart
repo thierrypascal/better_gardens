@@ -30,14 +30,14 @@ class _EditElementPageState
   Widget build(BuildContext context) {
     final garden = Provider.of<Garden>(context, listen: false);
     return EditDialog(
-      title: "Lebensraum bearbeiten",
+      title: 'Lebensraum bearbeiten',
       abortCallback: () {
         Provider.of<InformationObjectAmountContainer>(context, listen: false)
             .amounts
             .clear();
         Navigator.pop(context);
       },
-      save: "Speichern",
+      save: 'Speichern',
       saveIcon: Icons.save,
       saveCallback: () {
         _formKey.currentState.save();    
@@ -65,7 +65,7 @@ class _EditElementPageState
           context,
           MaterialPageRoute(
               builder: (context) => WhiteRedirectPage(
-                  "Element wurde angepasst",
+                  'Element wurde angepasst',
                   MyGarden())),
         );
       },
@@ -74,7 +74,7 @@ class _EditElementPageState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           const Text(
-            "Lebensraum bearbeiten",
+            'Lebensraum bearbeiten',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 10),

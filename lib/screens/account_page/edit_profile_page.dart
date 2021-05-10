@@ -48,7 +48,8 @@ class _EditProfilePage extends State<EditProfilePage> {
               context,
               MaterialPageRoute(
                   builder: (context) => WhiteRedirectPage(
-                      'Die Profilinformationen wurden angepasst', AccountPage())));
+                      'Die Profilinformationen wurden angepasst',
+                      AccountPage())));
         },
         body: Form(
           key: _formKey,
@@ -74,8 +75,8 @@ class _EditProfilePage extends State<EditProfilePage> {
                         aspectRatio: 1,
                         originalImageURL: user.imageURL,
                         deleteImageFunction: (toDeleteURL) {
-                          ServiceProvider.instance.imageService.deleteImage(
-                              imageURL: toDeleteURL, bucket: 'profilepictures');
+                          ServiceProvider.instance.imageService
+                              .deleteImage(imageURL: toDeleteURL);
                         },
                         saveImageFunction: (imageFile) async {
                           _imageURL = await ServiceProvider
