@@ -15,15 +15,17 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
+///creates a new garden for the user
 class MyGardenAdd extends StatefulWidget {
   String _toDeleteURL;
 
-  bool _deleteRequested;
+  bool _deleteRequested = false;
 
   Uint8List _toSaveImage;
 
-  bool _saveRequested;
+  bool _saveRequested = false;
 
+  ///MyGardenAdd constructor
   MyGardenAdd({Key key}) : super(key: key);
 
   @override
@@ -48,6 +50,7 @@ class _MyGardenAddState extends State<MyGardenAdd> {
   @override
   Widget build(BuildContext context) {
     final garden = Garden.empty();
+
     return EditDialog(
       title: ('Mein Garten'),
       abortCallback: () {
