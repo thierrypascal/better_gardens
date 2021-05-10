@@ -4,7 +4,6 @@ import 'package:biodiversity/components/edit_dialog.dart';
 import 'package:biodiversity/components/select_image_for_garden.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
-import 'package:biodiversity/screens/account_page/image_picker_page.dart';
 import 'package:biodiversity/screens/map_page/maps_submap_widget.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +13,6 @@ import 'package:uuid/uuid.dart';
 
 class MyGardenEdit extends StatefulWidget {
   MyGardenEdit({Key key}) : super(key: key);
-
 
   String _toDeleteURL;
   bool _deleteRequested = false;

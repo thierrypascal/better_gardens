@@ -10,6 +10,7 @@ import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_add.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_edit.dart';
+import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -96,8 +97,8 @@ class _MyGardenState extends State<MyGarden> {
                       ),
                       Flexible(
                           child: Text(
-                            'Zu $_garden wechseln',
-                          )),
+                        'Zu $_garden wechseln',
+                      )),
                     ],
                   ),
                 ));
@@ -128,8 +129,8 @@ class _MyGardenState extends State<MyGarden> {
                     children: [
                       const Text(
                           'Hallo\n\nHier siehst du die Übersicht über deinen Garten.\n'
-                              'Damit du Lebensräume in deinem Garten hinzufügen kannst '
-                              'und dich mit anderen Gärtnern vernetzen kannst musst du zuerst einen Garten erstellen.',
+                          'Damit du Lebensräume in deinem Garten hinzufügen kannst '
+                          'und dich mit anderen Gärtnern vernetzen kannst musst du zuerst einen Garten erstellen.',
                           style: TextStyle(fontSize: 15)),
                       const SizedBox(height: 30),
                       ElevatedButton(
@@ -164,13 +165,18 @@ class _MyGardenState extends State<MyGarden> {
                 Stack(
                   alignment: AlignmentDirectional.center,
                   children: <Widget>[
-                    Image.network(
-                      garden.imageURL,
-                      width: MediaQuery.of(context).size.width,
-                      height: 100,
-                      fit: BoxFit.fitWidth,
-                      semanticLabel: garden.name,
-                    ),
+                    (garden.imageURL.isNotEmpty)
+                        ? ImageService().getImageByUrl(garden.imageURL,
+                            height: 100,
+                            width: MediaQuery.of(context).size.width,
+                            fit: BoxFit.fitWidth)
+                        : Image(
+                            image: AssetImage('res/myGarden.jpg'),
+                            height: 100,
+                            width: MediaQuery.of(context).size.width,
+                            fit: BoxFit.fitWidth,
+                            semanticLabel: garden.name,
+                          ),
                     Center(
                       child: Text(
                         garden.name,
@@ -197,14 +203,14 @@ class _MyGardenState extends State<MyGarden> {
                       CirclesOverview(context, garden),
                       const SizedBox(height: 15.0),
                       TextButton(
-                        //TODO functionality to see the garden in the map
+                          //TODO functionality to see the garden in the map
                           onPressed: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => MapsPage(
-                                      garden: garden,
-                                    )));
+                                          garden: garden,
+                                        )));
                           },
                           child: Row(
                             children: <Widget>[
@@ -212,7 +218,7 @@ class _MyGardenState extends State<MyGarden> {
                               const SizedBox(width: 10.0),
                               const Text('Garten auf Karte anzeigen',
                                   style: TextStyle(
-                                      fontSize: 16, color: Colors.black))
+                                      fontSize: 16))
                             ],
                           )),
                     ],
@@ -221,8 +227,7 @@ class _MyGardenState extends State<MyGarden> {
                 const Padding(
                   padding: EdgeInsets.only(right: 30, left: 30, top: 30),
                   child: Text('Lebensräume in Ihrem Garten suchen',
-                      style:
-                      TextStyle(fontSize: 18, color: Colors.black)),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 ),
                 InformationObjectListWidget(
                   objects: ServiceProvider.instance.gardenService
