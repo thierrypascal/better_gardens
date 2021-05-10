@@ -61,9 +61,7 @@ class GardenService extends ChangeNotifier {
 
   /// returns a single Garden referenced by the provided reference
   Garden getGardenByReference(DocumentReference reference) {
-    return _gardens
-        .where((element) => element.reference == reference)
-        .first;
+    return _gardens.where((element) => element.reference == reference).first;
   }
 
   /// returns the nickname of the garden owner if showGardenOnMap is set to true for this user
@@ -77,5 +75,17 @@ class GardenService extends ChangeNotifier {
       }
     }
     return 'Anonym';
+  }
+
+  ///function to delete the garden from an user
+  Future<void> deleteGarden(Garden garden) async {
+    if (garden.reference != null) {
+      if (garden.imageURL != null && garden.imageURL.isNotEmpty) {
+        ServiceProvider.instance.imageService
+            .deleteImage(imageURL: garden.imageURL);
+      }
+      _storage.database.doc(garden.reference.path).delete();
+    }
+    _gardens.remove(garden);
   }
 }

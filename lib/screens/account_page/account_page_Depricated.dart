@@ -187,9 +187,7 @@ class _AccountPage_DepricatedState extends State<AccountPage_Depricated> {
                                     originalImageURL: user.imageURL,
                                     deleteImageFunction: (toDeleteURL) {
                                       ServiceProvider.instance.imageService
-                                          .deleteImage(
-                                              imageURL: toDeleteURL,
-                                              bucket: 'profilepictures');
+                                          .deleteImage(imageURL: toDeleteURL);
                                     },
                                     saveImageFunction: (imageFile) async {
                                       _imageURL = await ServiceProvider

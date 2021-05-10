@@ -11,20 +11,11 @@ import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 ///creates a new garden for the user
 class MyGardenAdd extends StatefulWidget {
-  String _toDeleteURL;
-
-  bool _deleteRequested = false;
-
-  Uint8List _toSaveImage;
-
-  bool _saveRequested = false;
-
   ///MyGardenAdd constructor
   MyGardenAdd({Key key}) : super(key: key);
 
@@ -34,6 +25,10 @@ class MyGardenAdd extends StatefulWidget {
 
 class _MyGardenAddState extends State<MyGardenAdd> {
   final _formKey = GlobalKey<FormState>();
+  String _toDeleteURL;
+  bool _deleteRequested = false;
+  Uint8List _toSaveImage;
+  bool _saveRequested = false;
   String _name;
   String _gartenType = '';
   String _selectedType;
@@ -57,14 +52,17 @@ class _MyGardenAddState extends State<MyGardenAdd> {
         Navigator.of(context).pop();
       },
       saveCallback: () async {
-        if (widget._saveRequested) {
+        final selLoc =
+            Provider.of<MapInteractionContainer>(context, listen: false)
+                .selectedLocation;
+        if (_saveRequested) {
           garden.imageURL = await ServiceProvider.instance.imageService
-              .uploadImage(widget._toSaveImage, 'gardenpictures',
-              filename: '${garden.name}_${const Uuid().v4()}');
+              .uploadImage(_toSaveImage, 'gardenpictures',
+                  filename: '${garden.name}_${const Uuid().v4()}');
         }
-        if (widget._deleteRequested) {
-          ServiceProvider.instance.imageService.deleteImage(
-              imageURL: widget._toDeleteURL, bucket: 'gardenpictures');
+        if (_deleteRequested) {
+          ServiceProvider.instance.imageService
+              .deleteImage(imageURL: _toDeleteURL);
         }
         _formKey.currentState.save();
         final user = Provider.of<User>(context, listen: false);
@@ -78,13 +76,9 @@ class _MyGardenAddState extends State<MyGardenAdd> {
           garden.street = _address;
           garden.gardenType = _gartenType;
           garden.owner = user.userUUID;
-          garden.coordinates = GeoPoint(
-              Provider.of<MapInteractionContainer>(context, listen: false)
-                  .selectedLocation
-                  .latitude,
-              Provider.of<MapInteractionContainer>(context, listen: false)
-                  .selectedLocation
-                  .longitude);
+          garden.coordinates = (selLoc != null)
+              ? GeoPoint(selLoc.latitude, selLoc.longitude)
+              : const GeoPoint(0, 0);
           garden.saveGarden();
           user.addGarden(garden);
           Provider.of<Garden>(context, listen: false).switchGarden(garden);
@@ -163,38 +157,33 @@ class _MyGardenAddState extends State<MyGardenAdd> {
                     _address = value;
                   },
                   onChanged: (value) {
-                    try{
-                      Provider.of<MapInteractionContainer>(context, listen: false)
-                          .getLocationOfAddress(value)
-                          .then((result) => Provider.of<MapInteractionContainer>(
-                          context,
-                          listen: false)
-                          .selectedLocation = result);
-                    }catch(e){
-                      Provider.of<MapInteractionContainer>(context, listen: false).selectedLocation = const LatLng(46.948915, 7.445423);
-                    }
+                    Provider.of<MapInteractionContainer>(context, listen: false)
+                        .getLocationOfAddress(value)
+                        .then((result) => Provider.of<MapInteractionContainer>(
+                                context,
+                                listen: false)
+                            .selectedLocation = result);
                   },
                 ),
               ),
 
               select_garden_image(
                 deleteFunction: (toDeleteURL) {
-                  widget._toDeleteURL = toDeleteURL;
-                  widget._deleteRequested = true;
+                  _toDeleteURL = toDeleteURL;
+                  _deleteRequested = true;
                 },
                 saveFunction: (imageFile) {
                   setState(() {
-                    widget._toSaveImage = imageFile;
-                    widget._saveRequested = true;
+                    _toSaveImage = imageFile;
+                    _saveRequested = true;
                   });
                   Navigator.of(context).pop();
                 },
-                toSaveImage: widget._toSaveImage,
+                toSaveImage: _toSaveImage,
                 garden: garden,
               ),
               //Show minimap of Garden
               SubMap(),
-
             ],
           ),
         ),
