@@ -71,6 +71,7 @@ pages:
     - development
     - doc_generation
   script:
+    - flutter pub global activate dartdoc
     - dartdoc
     - cp -r doc/api
   artifacts:
