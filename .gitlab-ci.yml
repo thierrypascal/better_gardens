@@ -1,4 +1,8 @@
 stages:
+  - setup
+  - test
+  - build
+  - analyze
   - deploy
 
 
