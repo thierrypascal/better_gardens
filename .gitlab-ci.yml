@@ -71,8 +71,9 @@ pages:
     - development
     - doc_generation
   before_script:
-    - flutter pub global activate dartdoc
+    - export PATH="$PATH":"$HOME/snap/flutter/common/flutter/.pub-cache/bin"
     - export PATH="$PATH":"/snap/flutter/current/bin"
+    - flutter pub global activate dartdoc
   script:
     - dartdoc
     - cp -r doc/api
