@@ -73,6 +73,7 @@ pages:
   before_script:
     - export PATH="$PATH":"$HOME/snap/flutter/common/flutter/.pub-cache/bin"
     - export PATH="$PATH":"/snap/flutter/current/bin"
+    - export FLUTTER_ROOT=$HOME/snap/flutter/common/flutter
     - flutter pub global activate dartdoc
   script:
     - dartdoc
