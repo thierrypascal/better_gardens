@@ -3,6 +3,7 @@ stages:
   - test
   - build
   - analyze
+  - deploy
 
 setup_phase:
   stage: setup
@@ -62,3 +63,16 @@ cache:
   key: ${CI_JOB_NAME}
   paths:
     - .sonar/cache
+
+pages:
+  stage: deploy
+  only:
+    - master
+    - development
+    - doc_generation
+  script:
+    - dartdoc
+    - cp -r doc/api
+  artifacts:
+    paths:
+      - public
