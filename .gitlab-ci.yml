@@ -1,8 +1,8 @@
 stages:
-  #- setup
-  #- test
-  #- build
-  #- analyze
+  - setup
+  - test
+  - build
+  - analyze
   - deploy
 
 setup_phase:
