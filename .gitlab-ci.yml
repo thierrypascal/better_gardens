@@ -8,6 +8,7 @@ pages:
     - development
     - doc_generation
   before_script:
+    - export PATH="$PATH:/usr/lib/dart/bin"
     - export PATH="$PATH":"$HOME/snap/flutter/common/flutter/.pub-cache/bin"
     - export PATH="$PATH":"/snap/flutter/current/bin"
     - export FLUTTER_ROOT=$HOME/snap/flutter/common/flutter
