@@ -72,7 +72,7 @@ pages:
     - development
     - doc_generation
   before_script:
-    - sudo pkill -f '.*GradleDaemon.*' #make sure there is enough ram
+    - pkill -f '.*GradleDaemon.*' #make sure there is enough ram
     - export PATH="$PATH:/usr/lib/dart/bin"
     - export PATH="$PATH":"$HOME/snap/flutter/common/flutter/.pub-cache/bin"
     - export PATH="$PATH":"/snap/flutter/current/bin"
