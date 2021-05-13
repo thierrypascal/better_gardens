@@ -15,7 +15,7 @@ pages:
     - flutter pub global activate dartdoc
   script:
     - dartdoc
-    - cp -r doc/api
+    - cp -r doc/api public
   artifacts:
     paths:
       - public
