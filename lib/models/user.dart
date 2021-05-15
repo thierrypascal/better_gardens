@@ -576,4 +576,10 @@ class User extends ChangeNotifier {
     }
     return null;
   }
+
+  /// Remove a garden from the owned gardens
+  void deleteGarden(Garden garden) {
+    _gardens.remove(garden.name);
+    notifyListeners();
+  }
 }

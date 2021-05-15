@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer' as logging;
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:biodiversity/models/storage_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -236,8 +237,9 @@ class ImageService extends ChangeNotifier {
     return await docRef.ref.getDownloadURL();
   }
 
-  ///
-  void deleteImage({@required String imageURL, @required String bucket}) {
-    //TODO Implement
+  /// deletes a image from Storage
+  void deleteImage({@required String imageURL}) {
+    final ref = _storage.fileStorage.refFromURL(imageURL);
+    ref.delete();
   }
 }

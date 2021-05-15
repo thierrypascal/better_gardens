@@ -1,35 +1,35 @@
 import 'package:biodiversity/components/edit_dialog.dart';
-import 'package:biodiversity/components/simple_information_object_card_widget.dart';
 import 'package:biodiversity/components/white_redirect_page.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/information_object.dart';
 import 'package:biodiversity/models/information_object_amount_container.dart';
+import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
+import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 ///Workflow Add Element To One's Garden: define amount of selected element
-class DeleteElementGardenPage extends StatefulWidget {
-  DeleteElementGardenPage({Key key, this.object}) : super(key: key);
+class MyGardenDelete extends StatefulWidget {
+  ///Workflow Add Element To One's Garden: define amount of selected element
+  MyGardenDelete({Key key, this.object}) : super(key: key);
 
   @override
-  _DeleteElementGardenPageState createState() =>
-      _DeleteElementGardenPageState();
+  _MyGardenDeleteState createState() => _MyGardenDeleteState();
 
   ///Selected InformationObject
   final InformationObject object;
 }
 
-class _DeleteElementGardenPageState
-    extends State<DeleteElementGardenPage> {
-  final _formKey = GlobalKey<FormState>();
+class _MyGardenDeleteState extends State<MyGardenDelete> {
+  final List<bool> isSelected = [true];
 
   @override
   Widget build(BuildContext context) {
     final garden = Provider.of<Garden>(context, listen: false);
     return EditDialog(
-      title: 'Element löschen',
+      title: 'Garten löschen',
       abortCallback: () {
         Provider.of<InformationObjectAmountContainer>(context, listen: false)
             .amounts
@@ -39,14 +39,13 @@ class _DeleteElementGardenPageState
       save: 'Löschen',
       saveIcon: Icons.delete_forever,
       saveCallback: () {
-        Provider.of<Garden>(context, listen: false)
-            .removeFromOwnedObjects(widget.object.name);
-
-        Navigator.push(
+        ServiceProvider.instance.gardenService.deleteGarden(garden);
+        Provider.of<User>(context, listen: false).deleteGarden(garden);
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  WhiteRedirectPage('Element wurde entfernt', MyGarden())),
+                  WhiteRedirectPage('Garten wurde entfernt', MyGarden())),
         );
       },
       body: Column(
@@ -54,17 +53,24 @@ class _DeleteElementGardenPageState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           const Text(
-            'Lebensraum löschen',
+            'Garten löschen',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 10),
-          Text('Wollen Sie das ausgewählte Element wirklich löschen?'),
-          SizedBox(height: 20),
-          SimpleInformationObjectCard(
-            widget.object,
-            formKey: _formKey,
-            amount: garden.ownedObjects[widget.object.name],
-          ),
+          const SizedBox(height: 10),
+          const SizedBox(height: 20),
+          const Text('Wollen Sie den ausgewählten Garten wirklich löschen?'),
+          const SizedBox(height: 20),
+          Container(
+              width: double.infinity,
+              child: ToggleButtons(
+                selectedBorderColor: Theme.of(context).primaryColor,
+                selectedColor: Theme.of(context).primaryColor,
+                direction: Axis.vertical,
+                borderRadius: const BorderRadius.all(Radius.circular(5)),
+                onPressed: (value) {},
+                isSelected: isSelected,
+                children: [Center(child: Text(garden.name))],
+              )),
         ],
       ),
     );

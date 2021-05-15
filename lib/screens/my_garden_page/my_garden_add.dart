@@ -1,16 +1,22 @@
+import 'dart:typed_data';
+
 import 'package:biodiversity/components/edit_dialog.dart';
+import 'package:biodiversity/components/select_image_for_garden.dart';
 import 'package:biodiversity/components/white_redirect_page.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/map_page/maps_submap_widget.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
+import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
+///creates a new garden for the user
 class MyGardenAdd extends StatefulWidget {
+  ///MyGardenAdd constructor
   MyGardenAdd({Key key}) : super(key: key);
 
   @override
@@ -19,6 +25,10 @@ class MyGardenAdd extends StatefulWidget {
 
 class _MyGardenAddState extends State<MyGardenAdd> {
   final _formKey = GlobalKey<FormState>();
+  String _toDeleteURL;
+  bool _deleteRequested = false;
+  Uint8List _toSaveImage;
+  bool _saveRequested = false;
   String _name;
   String _gartenType = '';
   String _selectedType;
@@ -35,12 +45,25 @@ class _MyGardenAddState extends State<MyGardenAdd> {
   @override
   Widget build(BuildContext context) {
     final garden = Garden.empty();
+
     return EditDialog(
       title: ('Mein Garten'),
       abortCallback: () {
         Navigator.of(context).pop();
       },
       saveCallback: () async {
+        final selLoc =
+            Provider.of<MapInteractionContainer>(context, listen: false)
+                .selectedLocation;
+        if (_saveRequested) {
+          garden.imageURL = await ServiceProvider.instance.imageService
+              .uploadImage(_toSaveImage, 'gardenpictures',
+                  filename: '${garden.name}_${const Uuid().v4()}');
+        }
+        if (_deleteRequested) {
+          ServiceProvider.instance.imageService
+              .deleteImage(imageURL: _toDeleteURL);
+        }
         _formKey.currentState.save();
         final user = Provider.of<User>(context, listen: false);
         if (user.gardens.contains(_name)) {
@@ -53,13 +76,9 @@ class _MyGardenAddState extends State<MyGardenAdd> {
           garden.street = _address;
           garden.gardenType = _gartenType;
           garden.owner = user.userUUID;
-          garden.coordinates = GeoPoint(
-              Provider.of<MapInteractionContainer>(context, listen: false)
-                  .selectedLocation
-                  .latitude,
-              Provider.of<MapInteractionContainer>(context, listen: false)
-                  .selectedLocation
-                  .longitude);
+          garden.coordinates = (selLoc != null)
+              ? GeoPoint(selLoc.latitude, selLoc.longitude)
+              : const GeoPoint(0, 0);
           garden.saveGarden();
           user.addGarden(garden);
           Provider.of<Garden>(context, listen: false).switchGarden(garden);
@@ -81,7 +100,7 @@ class _MyGardenAddState extends State<MyGardenAdd> {
 
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
                 child: TextFormField(
                   decoration: const InputDecoration(
                       labelText: 'Spitzname Garten',
@@ -129,7 +148,7 @@ class _MyGardenAddState extends State<MyGardenAdd> {
 
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
                 child: TextFormField(
                   decoration: const InputDecoration(
                       labelText: 'Garten Adresse',
@@ -138,24 +157,33 @@ class _MyGardenAddState extends State<MyGardenAdd> {
                     _address = value;
                   },
                   onChanged: (value) {
-                    try{
-                      Provider.of<MapInteractionContainer>(context, listen: false)
-                          .getLocationOfAddress(value)
-                          .then((result) => Provider.of<MapInteractionContainer>(
-                          context,
-                          listen: false)
-                          .selectedLocation = result);
-                    }catch(e){
-                      Provider.of<MapInteractionContainer>(context, listen: false).selectedLocation = const LatLng(46.948915, 7.445423);
-                    }
+                    Provider.of<MapInteractionContainer>(context, listen: false)
+                        .getLocationOfAddress(value)
+                        .then((result) => Provider.of<MapInteractionContainer>(
+                                context,
+                                listen: false)
+                            .selectedLocation = result);
                   },
                 ),
               ),
 
+              select_garden_image(
+                deleteFunction: (toDeleteURL) {
+                  _toDeleteURL = toDeleteURL;
+                  _deleteRequested = true;
+                },
+                saveFunction: (imageFile) {
+                  setState(() {
+                    _toSaveImage = imageFile;
+                    _saveRequested = true;
+                  });
+                  Navigator.of(context).pop();
+                },
+                toSaveImage: _toSaveImage,
+                garden: garden,
+              ),
               //Show minimap of Garden
               SubMap(),
-
-              //Todo IMAGE select and show
             ],
           ),
         ),

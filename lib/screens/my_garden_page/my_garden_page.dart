@@ -9,7 +9,9 @@ import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_add.dart';
+import 'package:biodiversity/screens/my_garden_page/my_garden_delete.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_edit.dart';
+import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -77,6 +79,21 @@ class _MyGardenState extends State<MyGarden> {
                     ],
                   ),
                 ),
+                PopupMenuItem(
+                  value: 'MyGardenDelete',
+                  child: Row(
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(right: 10),
+                        child: Icon(
+                          Icons.delete_forever,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const Text('Garten löschen')
+                    ],
+                  ),
+                ),
               ];
               final _gardens = gardens.map((garden) => garden.name);
               if (_gardens.length <= 1) {
@@ -96,8 +113,8 @@ class _MyGardenState extends State<MyGarden> {
                       ),
                       Flexible(
                           child: Text(
-                            'Zu $_garden wechseln',
-                          )),
+                        'Zu $_garden wechseln',
+                      )),
                     ],
                   ),
                 ));
@@ -109,7 +126,7 @@ class _MyGardenState extends State<MyGarden> {
       ),
       drawer: MyDrawer(),
       body: ListView(
-        physics: ScrollPhysics(),
+        physics: const ScrollPhysics(),
         children: <Widget>[
           if (gardens.isEmpty)
             Column(
@@ -128,8 +145,8 @@ class _MyGardenState extends State<MyGarden> {
                     children: [
                       const Text(
                           'Hallo\n\nHier siehst du die Übersicht über deinen Garten.\n'
-                              'Damit du Lebensräume in deinem Garten hinzufügen kannst '
-                              'und dich mit anderen Gärtnern vernetzen kannst musst du zuerst einen Garten erstellen.',
+                          'Damit du Lebensräume in deinem Garten hinzufügen kannst '
+                          'und dich mit anderen Gärtnern vernetzen kannst musst du zuerst einen Garten erstellen.',
                           style: TextStyle(fontSize: 15)),
                       const SizedBox(height: 30),
                       ElevatedButton(
@@ -164,13 +181,18 @@ class _MyGardenState extends State<MyGarden> {
                 Stack(
                   alignment: AlignmentDirectional.center,
                   children: <Widget>[
-                    Image(
-                      width: MediaQuery.of(context).size.width,
-                      height: 100,
-                      fit: BoxFit.fitWidth,
-                      image: const AssetImage('res/myGarden.jpg'),
-                      semanticLabel: garden.name,
-                    ),
+                    (garden.imageURL.isNotEmpty)
+                        ? ImageService().getImageByUrl(garden.imageURL,
+                            height: 100,
+                            width: MediaQuery.of(context).size.width,
+                            fit: BoxFit.fitWidth)
+                        : Image(
+                            image: const AssetImage('res/myGarden.jpg'),
+                            height: 100,
+                            width: MediaQuery.of(context).size.width,
+                            fit: BoxFit.fitWidth,
+                            semanticLabel: garden.name,
+                          ),
                     Center(
                       child: Text(
                         garden.name,
@@ -203,16 +225,15 @@ class _MyGardenState extends State<MyGarden> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => MapsPage(
-                                      garden: garden,
-                                    )));
+                                          garden: garden,
+                                        )));
                           },
                           child: Row(
                             children: <Widget>[
                               const Icon(Icons.map),
                               const SizedBox(width: 10.0),
                               const Text('Garten auf Karte anzeigen',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.black))
+                                  style: TextStyle(fontSize: 16))
                             ],
                           )),
                     ],
@@ -222,7 +243,7 @@ class _MyGardenState extends State<MyGarden> {
                   padding: EdgeInsets.only(right: 30, left: 30, top: 30),
                   child: Text('Lebensräume in Ihrem Garten suchen',
                       style:
-                      TextStyle(fontSize: 18, color: Colors.black)),
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 ),
                 InformationObjectListWidget(
                   objects: ServiceProvider.instance.gardenService
@@ -240,14 +261,25 @@ class _MyGardenState extends State<MyGarden> {
 
   void _handleTopMenu(String value) {
     if (value == 'MyGardenEdit') {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => MyGardenEdit()));
+      setState(() {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => MyGardenEdit()));
+      });
     } else if (value == 'gardenAddPage') {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => MyGardenAdd()));
+      setState(() {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => MyGardenAdd()));
+      });
+    } else if (value == 'MyGardenDelete') {
+      setState(() {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => MyGardenDelete()));
+      });
     } else {
-      final _garden = gardens.where((garden) => garden.name == value).first;
-      Provider.of<Garden>(context, listen: false).switchGarden(_garden);
+      setState(() {
+        final _garden = gardens.where((garden) => garden.name == value).first;
+        Provider.of<Garden>(context, listen: false).switchGarden(_garden);
+      });
     }
   }
 }
