@@ -85,7 +85,7 @@ class _MyGardenEditState extends State<MyGardenEdit> {
 
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
                 child: TextFormField(
                   initialValue: garden.name,
                   decoration: const InputDecoration(
@@ -135,7 +135,7 @@ class _MyGardenEditState extends State<MyGardenEdit> {
 
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
                 child: TextFormField(
                   initialValue: garden.street,
                   decoration: const InputDecoration(

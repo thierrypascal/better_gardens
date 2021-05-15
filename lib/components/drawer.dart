@@ -167,16 +167,13 @@ class MyDrawer extends StatelessWidget {
                             // ignore: prefer_if_elements_to_conditional_expressions
                             _loginLogoutButton(context),
                             ListTile(
-                              title: const Text(
-                                'Impressum',
-                                style: TextStyle(fontSize: 12),
-                              ),
+                              title: const Text('Impressum', style: TextStyle(fontSize: 12),),
                               onTap: () {},
                             ),
                           ],
                         ),
                       ),
-                      SvgPicture.asset(
+                    SvgPicture.asset(
                         'res/gardenDrawer_color.svg',
                         width: constraints.maxWidth,
                         fit: BoxFit.fitWidth,
@@ -211,7 +208,7 @@ class MyDrawer extends StatelessWidget {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Ausloggen ?'),
+              title: const Text('Ausloggen ?'),
               content: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [

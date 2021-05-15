@@ -153,7 +153,7 @@ class _ExpandableInformationObjectCardState
                           child: Row(
                             children: [
                               const Padding(
-                                padding: EdgeInsets.only(right: 8.0),
+                                padding:  EdgeInsets.only(right: 8.0),
                                 child: Icon(
                                   Icons.edit,
                                   size: 20,

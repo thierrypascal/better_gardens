@@ -4,6 +4,7 @@ import 'package:biodiversity/components/white_redirect_page.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/information_object.dart';
 import 'package:biodiversity/models/information_object_amount_container.dart';
+import 'package:biodiversity/screens/information_list_page/add_element_to_garden_location_page.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -39,8 +40,8 @@ class _EditElementPageState
       save: 'Speichern',
       saveIcon: Icons.save,
       saveCallback: () {
-        _formKey.currentState.save();
-        //save amount and element to selected garden
+        _formKey.currentState.save();    
+         //save amount and element to selected garden
         Provider.of<Garden>(context, listen: false).addOwnedObject(
             Provider.of<InformationObjectAmountContainer>(context,
                     listen: false)
@@ -64,7 +65,8 @@ class _EditElementPageState
           context,
           MaterialPageRoute(
               builder: (context) => WhiteRedirectPage(
-                  'Element wurde angepasst', MyGarden())),
+                  'Element wurde angepasst',
+                  MyGarden())),
         );
       },
       body: Column(

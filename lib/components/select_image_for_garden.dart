@@ -22,7 +22,7 @@ class select_garden_image extends StatefulWidget {
   final Function(String toDeleteURL) deleteFunction;
 
   /// the function that is called to acquire the new imageData
-  final Function(Uint8List rawImageData) saveFunction;
+  final Function(Uint8List rawImageData ) saveFunction;
 
   /// The image that will be saved upon saveCallback. used to Display
   Uint8List toSaveImage;
@@ -32,6 +32,7 @@ class select_garden_image extends StatefulWidget {
 }
 
 class _select_garden_imageState extends State<select_garden_image> {
+
   @override
   Widget build(BuildContext context) {
     return OutlinedButton(
@@ -39,11 +40,12 @@ class _select_garden_imageState extends State<select_garden_image> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ImagePickerPage(
-              originalImageURL: widget.garden.imageURL,
-              deleteImageFunction: widget.deleteFunction,
-              saveImageFunction: widget.saveFunction,
-            ),
+            builder: (context) =>
+                ImagePickerPage(
+                  originalImageURL: widget.garden.imageURL,
+                  deleteImageFunction: widget.deleteFunction,
+                  saveImageFunction: widget.saveFunction,
+                ),
           ),
         );
       },
@@ -52,20 +54,25 @@ class _select_garden_imageState extends State<select_garden_image> {
         children: [
           ColorFiltered(
             colorFilter: ColorFilter.mode(
-                Theme.of(context).canvasColor.withOpacity(0.4),
+                Theme
+                    .of(context)
+                    .canvasColor
+                    .withOpacity(0.4),
                 BlendMode.dstATop),
-            child: widget.toSaveImage != null
-                ? Image.memory(
-                    widget.toSaveImage,
-                  )
-                : Image.network(widget.garden.imageURL, errorBuilder:
-                    (BuildContext context, Object exception,
-                        StackTrace stackTrace) {
-                    return Image(
-                        color: Theme.of(context).canvasColor.withOpacity(1),
-                        colorBlendMode: BlendMode.saturation,
-                        image: const AssetImage('res/Logo_basic.png'));
-                  }),
+            child:
+            widget.toSaveImage != null ?
+            Image.memory(widget.toSaveImage,) :
+            Image.network(widget.garden.imageURL,
+                errorBuilder: (BuildContext context, Object exception,
+                    StackTrace stackTrace) {
+                  return Image(
+                      color: Theme
+                          .of(context)
+                          .canvasColor
+                          .withOpacity(1),
+                      colorBlendMode: BlendMode.saturation,
+                      image: const AssetImage('res/Logo_basic.png'));
+                }),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,

@@ -23,10 +23,12 @@ class MyGardenDelete extends StatefulWidget {
 }
 
 class _MyGardenDeleteState extends State<MyGardenDelete> {
-  final List<bool> isSelected = [true];
+  final List<bool> isSelected=[true];
+ 
 
   @override
   Widget build(BuildContext context) {
+
     final garden = Provider.of<Garden>(context, listen: false);
     return EditDialog(
       title: 'Garten löschen',
@@ -61,16 +63,19 @@ class _MyGardenDeleteState extends State<MyGardenDelete> {
           const Text('Wollen Sie den ausgewählten Garten wirklich löschen?'),
           const SizedBox(height: 20),
           Container(
-              width: double.infinity,
-              child: ToggleButtons(
+            width: double.infinity,
+            child: ToggleButtons(
                 selectedBorderColor: Theme.of(context).primaryColor,
                 selectedColor: Theme.of(context).primaryColor,
                 direction: Axis.vertical,
                 borderRadius: const BorderRadius.all(Radius.circular(5)),
-                onPressed: (value) {},
+                onPressed: (value) {
+                  
+                },
                 isSelected: isSelected,
-                children: [Center(child: Text(garden.name))],
-              )),
+                children:[Center(child: Text(garden.name))],
+                )
+                ),
         ],
       ),
     );

@@ -187,7 +187,7 @@ class _MyGardenState extends State<MyGarden> {
                             width: MediaQuery.of(context).size.width,
                             fit: BoxFit.fitWidth)
                         : Image(
-                            image: const AssetImage('res/myGarden.jpg'),
+                      image: const AssetImage('res/myGarden.jpg'),
                             height: 100,
                             width: MediaQuery.of(context).size.width,
                             fit: BoxFit.fitWidth,
@@ -219,7 +219,7 @@ class _MyGardenState extends State<MyGarden> {
                       CirclesOverview(context, garden),
                       const SizedBox(height: 15.0),
                       TextButton(
-                        //TODO functionality to see the garden in the map
+                          //TODO functionality to see the garden in the map
                           onPressed: () {
                             Navigator.push(
                                 context,

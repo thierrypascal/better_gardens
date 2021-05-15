@@ -4,6 +4,7 @@ import 'package:biodiversity/components/white_redirect_page.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/information_object.dart';
 import 'package:biodiversity/models/information_object_amount_container.dart';
+import 'package:biodiversity/screens/information_list_page/add_element_to_garden_location_page.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -41,12 +42,13 @@ class _DeleteElementGardenPageState
       saveCallback: () {
         Provider.of<Garden>(context, listen: false)
             .removeFromOwnedObjects(widget.object.name);
-
-        Navigator.push(
+          
+       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) =>
-                  WhiteRedirectPage('Element wurde entfernt', MyGarden())),
+              builder: (context) => WhiteRedirectPage(
+                  'Element wurde entfernt',
+                  MyGarden())),
         );
       },
       body: Column(
@@ -58,7 +60,8 @@ class _DeleteElementGardenPageState
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 10),
-          Text('Wollen Sie das ausgewählte Element wirklich löschen?'),
+          Text(
+              'Wollen Sie das ausgewählte Element wirklich löschen?'),
           SizedBox(height: 20),
           SimpleInformationObjectCard(
             widget.object,
