@@ -216,6 +216,20 @@ class Garden extends ChangeNotifier {
     return result;
   }
 
+  /// returns the nickname of the garden owner if showGardenOnMap is set to true for this user
+  Future<bool> isShowImageOnGarden() async {
+    final doc = await _storage.database.doc('users/$owner').get();
+    if (doc != null && doc.exists) {
+      final data = doc.data();
+      if (data.containsKey('showGardenImageOnMap')) {
+        final showImage = data['showGardenImageOnMap'] as bool;
+        return showImage ? doc.data()['showGardenImageOnMap'] : false;
+      }
+    }
+    return false;
+  }
+
+
   int _countPointObjects(String dimension) {
     final elementList = ServiceProvider.instance.biodiversityService
         .getBiodiversityObjectList(dimension);

@@ -104,27 +104,28 @@ class _DetailViewPageInformationObjectState
             builder: (context, user, child) {
               return Row(
                 children: [
-                  (!widget.isSpecies) ?
-                  IconButton(
-                    icon: const Icon(
-                      Icons.add,
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AddElementToGardenAmountPage(
-                                  object: widget.object,
-                                )),
-                      );
-                    },
-                  ) :
-                  const IconButton(
-                    icon: Icon(
-                      Icons.add_circle_outline_outlined,
-                    ),
-                    onPressed: null,
-                  ),
+                  if (!widget.isSpecies)
+                      IconButton(
+                          icon: const Icon(
+                            Icons.add,
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      AddElementToGardenAmountPage(
+                                        object: widget.object,
+                                      )),
+                            );
+                          },
+                        ),
+                      // : const IconButton(
+                      //     icon: Icon(
+                      //       Icons.add_circle_outline_outlined,
+                      //     ),
+                      //     onPressed: null,
+                      //   ),
                   IconButton(
                     icon: user.doesLikeElement(widget.object.name)
                         ? const Icon(Icons.favorite)
@@ -156,8 +157,7 @@ class _DetailViewPageInformationObjectState
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              DeleteElementGardenPage(
+                          builder: (context) => DeleteElementGardenPage(
                                 object: widget.object,
                               )),
                     );
@@ -172,8 +172,8 @@ class _DetailViewPageInformationObjectState
                       context,
                       MaterialPageRoute(
                           builder: (context) => EditElementPage(
-                            object: widget.object,
-                          )),
+                                object: widget.object,
+                              )),
                     ),
                   },
                 ),

@@ -6,7 +6,9 @@ import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/screens/map_page/maps_submap_widget.dart';
 import 'package:biodiversity/services/service_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -47,9 +49,9 @@ class _MyGardenEditState extends State<MyGardenEdit> {
     if (garden.gardenType != null && _gardenType.contains(garden.gardenType)) {
       _selectedType = garden.gardenType;
     }
-    mapInteractions.getLocationOfAddress(garden.street).then((result) =>
-        Provider.of<MapInteractionContainer>(context, listen: false)
-            .selectedLocation = result);
+    mapInteractions
+        .getLocationOfAddress(garden.street)
+        .then((result) => mapInteractions.selectedLocation = result);
 
     return EditDialog(
       title: ('Mein Garten'),
@@ -57,6 +59,7 @@ class _MyGardenEditState extends State<MyGardenEdit> {
         Navigator.of(context).pop();
       },
       saveCallback: () async {
+        final selLoc = mapInteractions.selectedLocation;
         if (_saveRequested) {
           garden.imageURL = await ServiceProvider.instance.imageService
               .uploadImage(_toSaveImage, 'gardenpictures',
@@ -71,6 +74,9 @@ class _MyGardenEditState extends State<MyGardenEdit> {
         garden.name = _name;
         garden.street = _address;
         garden.gardenType = _gartenType;
+        if (selLoc != null) {
+          garden.coordinates = GeoPoint(selLoc.latitude, selLoc.longitude);
+        }
         garden.saveGarden();
         Navigator.of(context).pop();
       },
@@ -85,7 +91,7 @@ class _MyGardenEditState extends State<MyGardenEdit> {
 
               Padding(
                 padding:
-                const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
                 child: TextFormField(
                   initialValue: garden.name,
                   decoration: const InputDecoration(
@@ -135,7 +141,7 @@ class _MyGardenEditState extends State<MyGardenEdit> {
 
               Padding(
                 padding:
-                const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
                 child: TextFormField(
                   initialValue: garden.street,
                   decoration: const InputDecoration(
@@ -166,7 +172,7 @@ class _MyGardenEditState extends State<MyGardenEdit> {
                 garden: garden,
               ),
               //Show minimap of Garden
-              SubMap(),
+              SubMap(garden: garden,),
             ],
           ),
         ),

@@ -1,3 +1,4 @@
+import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -11,7 +12,10 @@ import 'package:provider/provider.dart';
 class SubMap extends StatefulWidget {
   /// Small Map widget which displays the selection
   /// stored in [MapInteractionContainer]
-  SubMap({Key key}) : super(key: key);
+  SubMap({this.garden, Key key}) : super(key: key);
+
+  /// the garden the submap should be displaying
+  final Garden garden;
 
   @override
   _SubMapState createState() => _SubMapState();
@@ -19,9 +23,36 @@ class SubMap extends StatefulWidget {
 
 class _SubMapState extends State<SubMap> {
   GoogleMapController mapController;
+  Set<Marker> markers = {};
+
+  void loadUserLocation() async {
+    final mapInteraction =
+        Provider.of<MapInteractionContainer>(context, listen: false);
+    if (widget.garden == null && mapInteraction.selectedLocation == null) {
+      await mapInteraction
+          .getLocation()
+          .then((loc) => mapInteraction.selectedLocation = loc);
+      mapController.moveCamera(CameraUpdate.newLatLng(mapInteraction.selectedLocation));
+    }
+  }
+
+  void loadMarkers() {
+    final mapInteraction = Provider.of<MapInteractionContainer>(context);
+    markers = <Marker>{
+      Marker(
+        position: mapInteraction.selectedLocation,
+        markerId: const MarkerId('subMapMarker'),
+      )
+    };
+    print("+++++++++++++++++ marker");
+  }
 
   @override
   Widget build(BuildContext context) {
+    final mapInteraction = Provider.of<MapInteractionContainer>(context);
+    loadUserLocation();
+    loadMarkers();
+
     return SizedBox(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,18 +69,15 @@ class _SubMapState extends State<SubMap> {
                 ),
                 Flexible(
                   child: FutureBuilder(
-                    future: Provider.of<MapInteractionContainer>(context)
-                        .getAddressOfSelectedLocation(),
+                    future: mapInteraction.getAddressOfSelectedLocation(),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
                         return const Text('');
                       }
-                      Provider.of<MapInteractionContainer>(context)
-                              .getCameraPosition() ??
+                      mapInteraction.getCameraPosition() ??
                           mapController.animateCamera(
                               CameraUpdate.newCameraPosition(
-                                  Provider.of<MapInteractionContainer>(context)
-                                      .getCameraPosition()));
+                                  mapInteraction.getCameraPosition()));
                       return Text(
                         snapshot.data,
                         textScaleFactor: 1.3,
@@ -64,29 +92,20 @@ class _SubMapState extends State<SubMap> {
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height / 3,
             child: GoogleMap(
+              myLocationEnabled: true,
+              myLocationButtonEnabled: false,
               onMapCreated: (controller) => mapController = controller,
-              initialCameraPosition:
-                  Provider.of<MapInteractionContainer>(context)
-                      .getCameraPosition(),
+              initialCameraPosition: (widget.garden != null)
+                  ? CameraPosition(
+                      target: widget.garden.getLatLng(), zoom: 18.0)
+                  : mapInteraction.getCameraPosition(),
               zoomControlsEnabled: false,
               mapToolbarEnabled: false,
               mapType: MapType.hybrid,
-              markers: Provider.of<MapInteractionContainer>(context)
-                          .selectedLocation !=
-                      null
-                  ? <Marker>{
-                      Marker(
-                        position: Provider.of<MapInteractionContainer>(context)
-                            .selectedLocation,
-                        markerId: MarkerId('subMapMarker'),
-                      )
-                    }
-                  : <Marker>{},
+              markers: markers,
               onTap: (pos) {
-                setState(() {
-                  Provider.of<MapInteractionContainer>(context, listen: false)
-                      .selectedLocation = pos;
-                });
+                mapInteraction.selectedLocation = pos;
+                mapController.animateCamera(CameraUpdate.newLatLng(pos));
               },
               gestureRecognizers: Set()
                 ..add(Factory<PanGestureRecognizer>(
