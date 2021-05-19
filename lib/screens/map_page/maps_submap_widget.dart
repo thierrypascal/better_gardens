@@ -44,7 +44,6 @@ class _SubMapState extends State<SubMap> {
         markerId: const MarkerId('subMapMarker'),
       )
     };
-    print("+++++++++++++++++ marker");
   }
 
   @override
