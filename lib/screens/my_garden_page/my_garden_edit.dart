@@ -127,8 +127,6 @@ class _MyGardenEditState extends State<MyGardenEdit> {
                         setState(() {
                           _gartenType = _value;
                           _selectedType = _value;
-
-                          print(_value);
                         }),
                       },
                       hint: const Text('Select your garden type'),
@@ -172,7 +170,7 @@ class _MyGardenEditState extends State<MyGardenEdit> {
                 garden: garden,
               ),
               //Show minimap of Garden
-              SubMap(garden: garden,),
+              SubMap(garden: garden),
             ],
           ),
         ),

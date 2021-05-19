@@ -22,7 +22,7 @@ class MapInteractionContainer extends ChangeNotifier {
   BiodiversityMeasure get element => _element;
 
   /// returns a [LatLng] object of the stored location
-  LatLng get selectedLocation => _selectedLocation ?? _defaultLocation;
+  LatLng get selectedLocation => _selectedLocation;
 
   ///returns a [LatLng] object of the default location
   LatLng get defaultLocation => _defaultLocation;
