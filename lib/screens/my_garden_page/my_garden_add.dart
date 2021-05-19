@@ -11,13 +11,17 @@ import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 ///creates a new garden for the user
 class MyGardenAdd extends StatefulWidget {
   ///MyGardenAdd constructor
-  MyGardenAdd({Key key}) : super(key: key);
+  MyGardenAdd({this.route, Key key}) : super(key: key);
+
+  /// the Page which you will be redirected to after the timeout
+  final Widget route;
 
   @override
   _MyGardenAddState createState() => _MyGardenAddState();
@@ -45,6 +49,9 @@ class _MyGardenAddState extends State<MyGardenAdd> {
   @override
   Widget build(BuildContext context) {
     final garden = Garden.empty();
+    final mapInteractions =
+        Provider.of<MapInteractionContainer>(context, listen: false);
+    mapInteractions.reset();
 
     return EditDialog(
       title: ('Mein Garten'),
@@ -52,9 +59,7 @@ class _MyGardenAddState extends State<MyGardenAdd> {
         Navigator.of(context).pop();
       },
       saveCallback: () async {
-        final selLoc =
-            Provider.of<MapInteractionContainer>(context, listen: false)
-                .selectedLocation;
+        final selLoc = mapInteractions.selectedLocation;
         if (_saveRequested) {
           garden.imageURL = await ServiceProvider.instance.imageService
               .uploadImage(_toSaveImage, 'gardenpictures',
@@ -78,14 +83,14 @@ class _MyGardenAddState extends State<MyGardenAdd> {
           garden.owner = user.userUUID;
           garden.coordinates = (selLoc != null)
               ? GeoPoint(selLoc.latitude, selLoc.longitude)
-              : const GeoPoint(0, 0);
+              : GeoPoint(mapInteractions.defaultLocation.latitude, mapInteractions.defaultLocation.longitude);
           garden.saveGarden();
           user.addGarden(garden);
           Provider.of<Garden>(context, listen: false).switchGarden(garden);
           Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (context) => WhiteRedirectPage(
                     'Der Garten $_name wurde erstellt.',
-                    MyGarden(),
+                    (widget.route != null) ? widget.route : MyGarden(),
                     duration: 2,
                   )));
         }
@@ -135,7 +140,6 @@ class _MyGardenAddState extends State<MyGardenAdd> {
                         setState(() {
                           _gartenType = _value;
                           _selectedType = _value;
-                          print(_value);
                         }),
                       },
                       hint: const Text('Garten auswählen'),
@@ -157,12 +161,8 @@ class _MyGardenAddState extends State<MyGardenAdd> {
                     _address = value;
                   },
                   onChanged: (value) {
-                    Provider.of<MapInteractionContainer>(context, listen: false)
-                        .getLocationOfAddress(value)
-                        .then((result) => Provider.of<MapInteractionContainer>(
-                                context,
-                                listen: false)
-                            .selectedLocation = result);
+                    mapInteractions.getLocationOfAddress(value).then(
+                        (result) => mapInteractions.selectedLocation = result);
                   },
                 ),
               ),

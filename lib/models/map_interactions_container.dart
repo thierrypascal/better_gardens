@@ -2,6 +2,7 @@ import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart' as loc;
 
 /// container class to manage map interactions over different screens.
 class MapInteractionContainer extends ChangeNotifier {
@@ -14,11 +15,17 @@ class MapInteractionContainer extends ChangeNotifier {
   /// creates an empty Container
   MapInteractionContainer.empty();
 
+  /// a default location if no other location could be evaluated
+  final LatLng _defaultLocation = const LatLng(47.516940, 8.025059);
+
   /// returns a [BiodiversityMeasure] object of the stored element
   BiodiversityMeasure get element => _element;
 
   /// returns a [LatLng] object of the stored location
-  LatLng get selectedLocation => _selectedLocation;
+  LatLng get selectedLocation => _selectedLocation ?? _defaultLocation;
+
+  ///returns a [LatLng] object of the default location
+  LatLng get defaultLocation => _defaultLocation;
 
   /// returns the type of the stored element
   String get type => _element != null ? _element.type : '';
@@ -40,6 +47,19 @@ class MapInteractionContainer extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// returns the users current location as LatLng
+  /// a default location is returned if no coordinates were found
+  Future<LatLng> getLocation() async {
+    loc.LocationData currentLocation;
+    var location = loc.Location();
+    try {
+      currentLocation = await location.getLocation();
+      return LatLng(currentLocation.latitude, currentLocation.longitude);
+    } on Exception {
+      return _defaultLocation;
+    }
+  }
+
   /// returns the address of the stored coordinates as string.
   /// a default message is returned if no coordinates are stored
   Future<String> getAddressOfSelectedLocation() async {
@@ -54,7 +74,7 @@ class MapInteractionContainer extends ChangeNotifier {
   /// returns the address of the stored coordinates as string.
   /// a default message is returned if no coordinates are stored
   Future<LatLng> getLocationOfAddress(String adr) async {
-    var result = const LatLng(46.948915, 7.445423);
+    var result = _defaultLocation;
     try {
       final location = await locationFromAddress(adr);
       result = LatLng(location.first.latitude, location.first.longitude);
@@ -67,7 +87,6 @@ class MapInteractionContainer extends ChangeNotifier {
   /// returns a [CameraPosition] which has the stored location in focus
   CameraPosition getCameraPosition() {
     return CameraPosition(
-        zoom: 18.0,
-        target: _selectedLocation ?? const LatLng(46.948915, 7.445423));
+        zoom: 18.0, target: _selectedLocation ?? _defaultLocation);
   }
 }

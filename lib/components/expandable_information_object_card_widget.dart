@@ -153,7 +153,7 @@ class _ExpandableInformationObjectCardState
                           child: Row(
                             children: [
                               const Padding(
-                                padding:  EdgeInsets.only(right: 8.0),
+                                padding: EdgeInsets.only(right: 8.0),
                                 child: Icon(
                                   Icons.edit,
                                   size: 20,
@@ -170,50 +170,50 @@ class _ExpandableInformationObjectCardState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        (!widget.isSpecies)
-                            ? TextButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            AddElementToGardenAmountPage(
-                                              object: widget.object,
-                                            )),
-                                  );
-                                },
-                                style: const ButtonStyle(
-                                    visualDensity: VisualDensity.compact),
-                                child: Row(
-                                  children: [
-                                    const Padding(
-                                      padding: EdgeInsets.only(right: 8.0),
-                                      child: Icon(
-                                        Icons.add,
-                                        size: 20,
-                                      ),
-                                    ),
-                                    const Text('hinzufügen'),
-                                  ],
+                        if (!widget.isSpecies)
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        AddElementToGardenAmountPage(
+                                          object: widget.object,
+                                        )),
+                              );
+                            },
+                            style: const ButtonStyle(
+                                visualDensity: VisualDensity.compact),
+                            child: Row(
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.only(right: 8.0),
+                                  child: Icon(
+                                    Icons.add,
+                                    size: 20,
+                                  ),
                                 ),
-                              )
-                            : TextButton(
-                                onPressed: null,
-                                style: const ButtonStyle(
-                                    visualDensity: VisualDensity.compact),
-                                child: Row(
-                                  children: [
-                                    const Padding(
-                                      padding: EdgeInsets.only(right: 8.0),
-                                      child: Icon(
-                                        Icons.add_circle_outline_outlined,
-                                        size: 20,
-                                      ),
-                                    ),
-                                    const Text('aktivitätsradius'),
-                                  ],
-                                ),
-                              ),
+                                const Text('hinzufügen'),
+                              ],
+                            ),
+                          ),
+                        // : TextButton(
+                        //     onPressed: null,
+                        //     style: const ButtonStyle(
+                        //         visualDensity: VisualDensity.compact),
+                        //     child: Row(
+                        //       children: [
+                        //         const Padding(
+                        //           padding: EdgeInsets.only(right: 8.0),
+                        //           child: Icon(
+                        //             Icons.add_circle_outline_outlined,
+                        //             size: 20,
+                        //           ),
+                        //         ),
+                        //         const Text('aktivitätsradius'),
+                        //       ],
+                        //     ),
+                        //   ),
                         TextButton(
                           onPressed: () =>
                               Provider.of<User>(context, listen: false)
@@ -269,28 +269,28 @@ class _ExpandableInformationObjectCardState
                       return Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          (!widget.isSpecies)
-                              ? IconButton(
-                                  icon: const Icon(
-                                    Icons.add,
-                                  ),
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              AddElementToGardenAmountPage(
-                                                object: widget.object,
-                                              )),
-                                    );
-                                  },
-                                )
-                              : const IconButton(
-                                  icon: Icon(
-                                    Icons.add_circle_outline_outlined,
-                                  ),
-                                  onPressed: null,
-                                ),
+                          if (!widget.isSpecies)
+                            IconButton(
+                              icon: const Icon(
+                                Icons.add,
+                              ),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          AddElementToGardenAmountPage(
+                                            object: widget.object,
+                                          )),
+                                );
+                              },
+                            ),
+                          // : const IconButton(
+                          //     icon: Icon(
+                          //       Icons.add_circle_outline_outlined,
+                          //     ),
+                          //     onPressed: null,
+                          //   ),
                           IconButton(
                             icon: Icon(
                               Icons.favorite,
@@ -337,8 +337,8 @@ class _ExpandableInformationObjectCardState
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => EditElementPage(
-                                      object: widget.object,
-                                    )),
+                                          object: widget.object,
+                                        )),
                               ),
                             },
                           ),
@@ -374,7 +374,8 @@ class _ExpandableInformationObjectCardState
                                     DetailViewPageInformationObject(
                                       widget.object,
                                       hideLikeAndAdd: widget.hideLikeAndAdd,
-                                      showDeleteAndEdit: widget.showDeleteAndEdit,
+                                      showDeleteAndEdit:
+                                          widget.showDeleteAndEdit,
                                       isSpecies: widget.isSpecies,
                                     )),
                           );

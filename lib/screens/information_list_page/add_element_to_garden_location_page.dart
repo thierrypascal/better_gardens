@@ -5,6 +5,8 @@ import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/information_object_amount_container.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/information_list_page/add_element_to_garden_overview_page.dart';
+import 'package:biodiversity/screens/information_list_page/biodiversity_elements_list_page.dart';
+import 'package:biodiversity/screens/my_garden_page/my_garden_add.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -130,8 +132,13 @@ class _AddElementToGardenLocationPageState
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        //Todo: redirect to MyGardenCreate
-                        setState(() {});
+                        setState(() {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MyGardenAdd(route: BiodiversityElementListPage(),)),
+                          );
+                        });
                       },
                       child: const Text('Erstelle einen Garten'),
                     ),
