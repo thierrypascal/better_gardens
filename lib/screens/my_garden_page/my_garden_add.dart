@@ -100,7 +100,7 @@ class _MyGardenAddState extends State<MyGardenAdd> {
 
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
                 child: TextFormField(
                   decoration: const InputDecoration(
                       labelText: 'Spitzname Garten',
@@ -148,7 +148,7 @@ class _MyGardenAddState extends State<MyGardenAdd> {
 
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
                 child: TextFormField(
                   decoration: const InputDecoration(
                       labelText: 'Garten Adresse',

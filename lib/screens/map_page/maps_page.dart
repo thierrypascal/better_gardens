@@ -13,8 +13,8 @@ import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:location/location.dart';
+import 'package:provider/provider.dart';
 
 /// Display the map with the markers
 class MapsPage extends StatefulWidget {
@@ -182,15 +182,16 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                     TextFieldWithDescriptor(
                         'Besitzer',
                         FutureBuilder(
-                          future: ServiceProvider.instance.gardenService.getNicknameOfOrder(_tappedGarden),
-                          builder: (context, owner){
-                            if(owner.hasData){
-                              return Text(owner.data);
-                            }else{
-                              return const Text('');
-                            }
-                          },
-                        ),
+                          future: ServiceProvider.instance.gardenService
+                            .getNicknameOfOwner(_tappedGarden),
+                        builder: (context, owner) {
+                          if (owner.hasData) {
+                            return Text(owner.data);
+                          } else {
+                            return const Text('');
+                          }
+                        },
+                      ),
                     ),
                     CirclesOverview(context, _tappedGarden),
                     const SizedBox(height: 25.0),
