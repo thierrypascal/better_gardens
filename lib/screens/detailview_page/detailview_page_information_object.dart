@@ -9,6 +9,7 @@ import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// Shows the details of a BiodiversityMeasure
 class DetailViewPageInformationObject extends StatefulWidget {
@@ -75,7 +76,10 @@ class _DetailViewPageInformationObjectState
               padding: const EdgeInsets.all(20.0),
               children: [
                 _headRow(),
-                MarkdownBody(data: widget.object.description),
+                MarkdownBody(
+                  data: widget.object.description,
+                  onTapLink: (text, link, title) => launch(link),
+                ),
                 const SizedBox(
                   height: 20,
                 ),

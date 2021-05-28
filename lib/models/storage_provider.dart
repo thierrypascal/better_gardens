@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -41,7 +42,11 @@ class StorageProvider {
 
   /// returns the content of a file from the fileStorage as String
   Future<String> getTextFromFileStorage(String path) async {
-    final data = await fileStorage.ref().child(path).getData(1024 * 1024);
-    return const Utf8Decoder().convert(data);
+    try {
+      final data = await fileStorage.ref().child(path).getData(1024 * 1024);
+      return data != null ? const Utf8Decoder().convert(data) : null;
+    } on PlatformException {
+      return null;
+    }
   }
 }

@@ -25,8 +25,8 @@ void main() {
           list.add(BiodiversityMeasure.fromMap({'name': 'biodiversity$i'},
               storageProvider: storage, serviceProvider: service));
         } else if (obj == Species) {
-          list.add(
-              Species.fromMap({'name': 'species$i'}, serviceProvider: service));
+          list.add(Species.fromMap({'name': 'species$i'},
+              serviceProvider: service, storageProvider: storage));
         } else {
           list.add(TakeHomeMessage.fromMap({'title': 'take-home-message$i'},
               storageProvider: storage));
@@ -140,7 +140,7 @@ void main() {
           } else {
             list.add(Species.fromMap(
                 {'name': 'species$i', 'class': 'filterTag$i'},
-                serviceProvider: service));
+                serviceProvider: service, storageProvider: storage));
           }
         }
         for (final b in [false, true]) {

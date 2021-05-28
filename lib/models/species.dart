@@ -1,5 +1,6 @@
 import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/information_object.dart';
+import 'package:biodiversity/models/storage_provider.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -9,10 +10,10 @@ class Species implements InformationObject {
   final String name;
 
   @override
-  final String shortDescription;
+  String shortDescription;
 
   @override
-  final String description;
+  String description;
 
   @override
   final String type;
@@ -35,12 +36,17 @@ class Species implements InformationObject {
   /// reference to an imageSource of the species
   final String imageSource;
 
+  final _descriptionPath = 'species/description';
+  final StorageProvider _storage;
   final ServiceProvider _service;
 
   /// creates a Species object from a Map
   Species.fromMap(Map<String, dynamic> map,
-      {this.reference, ServiceProvider serviceProvider})
-      : _service = serviceProvider ??= ServiceProvider.instance,
+      {this.reference,
+      ServiceProvider serviceProvider,
+      StorageProvider storageProvider})
+      : _service = serviceProvider ?? ServiceProvider.instance,
+        _storage = storageProvider ?? StorageProvider.instance,
         category = map.containsKey('class') ? map['class'] as String : '',
         name = map.containsKey('name') ? map['name'] as String : '',
         shortDescription = map.containsKey('shortDescription')
@@ -49,15 +55,22 @@ class Species implements InformationObject {
         imageSource = map.containsKey('imageSource')
             ? map['imageSource'] as String
             : 'res/Logo_basic.png',
-        description =
-            map.containsKey('description') ? map['description'] as String : '',
+        description = 'Lädt...',
         type = map.containsKey('type') ? map['type'] as String : '',
         connectedTo = map.containsKey('connectedTo')
             ? map['connectedTo'].cast<String>()
             : [],
         supportedBy = map.containsKey('supportedBy')
             ? map['supportedBy'].cast<String>()
-            : [];
+            : [] {
+    _loadDescription();
+  }
+
+  Future<void> _loadDescription() async {
+    description =
+        await _storage.getTextFromFileStorage('$_descriptionPath/$name.md');
+    description ??= shortDescription;
+  }
 
   /// creates a Species object from a database snapshot
   Species.fromSnapshot(DocumentSnapshot snapshot,

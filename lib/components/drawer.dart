@@ -2,6 +2,7 @@ import 'package:biodiversity/components/white_redirect_page.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/account_page/account_page.dart';
 import 'package:biodiversity/screens/favored_list_page/favored_list_page.dart';
+import 'package:biodiversity/screens/impressum_page/impressum_page.dart';
 import 'package:biodiversity/screens/information_list_page/biodiversity_elements_list_page.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:biodiversity/screens/map_page/maps_page.dart';
@@ -167,8 +168,17 @@ class MyDrawer extends StatelessWidget {
                             // ignore: prefer_if_elements_to_conditional_expressions
                             _loginLogoutButton(context),
                             ListTile(
-                              title: const Text('Impressum', style: TextStyle(fontSize: 12),),
-                              onTap: () {},
+                              title: const Text(
+                                'Impressum',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                              onTap: () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ImpressumPage()),
+                                );
+                              },
                             ),
                           ],
                         ),

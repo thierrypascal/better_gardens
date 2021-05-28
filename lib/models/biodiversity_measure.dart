@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:biodiversity/models/information_object.dart';
 import 'package:biodiversity/models/storage_provider.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/services.dart';
 
 /// A container class of a Measure to improve biodiversity.
 /// Example: A pile of branches
@@ -16,7 +13,7 @@ class BiodiversityMeasure implements InformationObject {
   String description;
 
   @override
-  final String shortDescription;
+  String shortDescription;
 
   @override
   final String type;
@@ -42,7 +39,7 @@ class BiodiversityMeasure implements InformationObject {
   /// the reference to the location in the database
   final DocumentReference reference;
 
-  final _descriptionPath = 'biodiversityMeasures/descriptions';
+  final _descriptionPath = 'biodiversityMeasures/description';
   final StorageProvider _storage;
   final ServiceProvider _service;
 
@@ -67,27 +64,19 @@ class BiodiversityMeasure implements InformationObject {
             ? map['goodTogetherWith'].cast<String>()
             : [],
         type = map.containsKey('type') ? map['type'] as String : '',
-        imageSource =
-            map.containsKey('image') ? map['image'] as String : 'res/Logo_basic.png',
+        imageSource = map.containsKey('image')
+            ? map['image'] as String
+            : 'res/Logo_basic.png',
         dimension =
-            map.containsKey('dimension') ? map['dimension'] as String : '' {
+            map.containsKey('dimension') ? map['dimension'] as String : '',
+        description = 'Lädt...' {
     _loadDescription();
   }
 
   Future<void> _loadDescription() async {
-    try {
-      final data = await _storage.fileStorage
-          .ref()
-          .child('$_descriptionPath/$name.md')
-          .getData(1024 * 1024);
-      if (data != null) {
-        description = const Utf8Decoder().convert(data);
-      } else {
-        description = shortDescription;
-      }
-    } on PlatformException {
-      description = shortDescription;
-    }
+    description =
+        await _storage.getTextFromFileStorage('$_descriptionPath/$name.md');
+    description ??= shortDescription;
   }
 
   /// load a [BiodiversityMeasure] form a database snapshot

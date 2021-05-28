@@ -54,7 +54,7 @@ class MockFacebookAuth extends Mock implements FacebookAuth {
   @override
   Future<LoginResult> login(
       {List<String> permissions = const ['email', 'public_profile'],
-      String loginBehavior = LoginBehavior.DIALOG_ONLY,
+      LoginBehavior loginBehavior = LoginBehavior.dialogOnly,
       bool failLogin}) {
     if (failLogin) {
       return Future.value(
