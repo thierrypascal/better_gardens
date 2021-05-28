@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// shows a pop up with the privacy agreement.<br>
 /// Returns [true] if the agreement was accepted
@@ -25,7 +26,9 @@ Future<bool> showPrivacyAgreement(BuildContext context) async {
       content: SingleChildScrollView(
         child: Column(
           children: [
-            MarkdownBody(data: _privacyAgreement),
+            MarkdownBody(
+                data: _privacyAgreement,
+                onTapLink: (_, url, __) => launch(url)),
           ],
         ),
       ),

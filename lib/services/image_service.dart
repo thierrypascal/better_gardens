@@ -242,4 +242,21 @@ class ImageService extends ChangeNotifier {
     final ref = _storage.fileStorage.refFromURL(imageURL);
     ref.delete();
   }
+
+  /// returns a list of URLs wich are associated to the given name and type
+  Future<List<String>> getListOfImageURLs(
+      {@required String name, String type}) async {
+    final docs = await _storage.database
+        .collection('imageReferences')
+        .where('name', isEqualTo: name)
+        .where('type', isEqualTo: type)
+        .get();
+    final urls = <String>[];
+    for (final doc in docs.docs) {
+      if (doc.data().containsKey('downloadURL')) {
+        urls.add(doc.data()['downloadURL'] as String);
+      }
+    }
+    return urls;
+  }
 }

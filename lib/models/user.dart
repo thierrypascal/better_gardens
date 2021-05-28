@@ -189,14 +189,16 @@ class User extends ChangeNotifier {
   }
 
   /// returns the users favoredObjects
-  Set<String> get favoredObjects{
+  Set<String> get favoredObjects {
     return _favoredObjects;
   }
 
   /// returns the users favoredObjects of type HabitatElement
-  List<BiodiversityMeasure> get favoredHabitatObjects{
+  List<BiodiversityMeasure> get favoredHabitatObjects {
     List<BiodiversityMeasure> result = [];
-    List<BiodiversityMeasure> allMeasures = ServiceProvider.instance.biodiversityService.getFullBiodiversityObjectList();
+    List<BiodiversityMeasure> allMeasures = ServiceProvider
+        .instance.biodiversityService
+        .getFullBiodiversityObjectList();
 
     for (var favored in _favoredObjects) {
       for (var obj in allMeasures) {
@@ -210,9 +212,10 @@ class User extends ChangeNotifier {
   }
 
   /// returns the users favoredObjects of type Species
-  List<Species> get favoredSpeciesObjects{
+  List<Species> get favoredSpeciesObjects {
     List<Species> result = [];
-    List<Species> allSpecies = ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
+    List<Species> allSpecies =
+        ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
 
     for (var favored in _favoredObjects) {
       for (var obj in allSpecies) {
@@ -318,8 +321,9 @@ class User extends ChangeNotifier {
     }
     fb_auth.LoginResult token;
     try {
-      token = await _storage.facebookAuth
-          .login(loginBehavior: 'dialog', permissions: ['email']);
+      token = await _storage.facebookAuth.login(
+          loginBehavior: fb_auth.LoginBehavior.dialogOnly,
+          permissions: ['email']);
       if (token.status == fb_auth.LoginStatus.cancelled ||
           token.status == fb_auth.LoginStatus.failed) {
         return LoginResult('Anmeldung abgebrochen');
@@ -471,8 +475,9 @@ class User extends ChangeNotifier {
     }
     fb_auth.LoginResult token;
     try {
-      token = await _storage.facebookAuth
-          .login(loginBehavior: 'dialog', permissions: ['email']);
+      token = await _storage.facebookAuth.login(
+          loginBehavior: fb_auth.LoginBehavior.dialogOnly,
+          permissions: ['email']);
       if (token.status == fb_auth.LoginStatus.cancelled ||
           token.status == fb_auth.LoginStatus.failed) {
         return 'Registrierung abgebrochen';

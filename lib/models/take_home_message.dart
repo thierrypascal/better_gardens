@@ -1,7 +1,6 @@
 import 'package:biodiversity/models/information_object.dart';
 import 'package:biodiversity/models/storage_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/services.dart';
 
 /// A container class of a take home message.
 class TakeHomeMessage implements InformationObject {
@@ -44,13 +43,9 @@ class TakeHomeMessage implements InformationObject {
   }
 
   Future<void> _loadDescription() async {
-    try {
-      description = await _storage
-          .getTextFromFileStorage('/takeHomeMessages/body/$name.md');
-    } on PlatformException {
-      description = null;
-    }
-    description ??= 'Fehler: keine Beschreibung gefunden.';
+    description = await _storage
+        .getTextFromFileStorage('/takeHomeMessages/body/$name.md');
+    description ??= 'Keine Beschreibung gefunden.';
 
     if (description.length > 400) {
       var pointIndex = description.indexOf('\.', 400);

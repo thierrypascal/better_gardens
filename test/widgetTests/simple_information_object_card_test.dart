@@ -29,7 +29,8 @@ void main() {
     final elements = <InformationObject>[];
     elements.add(BiodiversityMeasure.fromMap(attributes,
         storageProvider: storage, serviceProvider: service));
-    elements.add(Species.fromMap(attributes, serviceProvider: service));
+    elements.add(Species.fromMap(attributes,
+        serviceProvider: service, storageProvider: storage));
     elements.add(TakeHomeMessage.fromMap(attributes, storageProvider: storage));
 
     for (final element in elements) {
