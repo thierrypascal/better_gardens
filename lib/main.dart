@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
                     alignment: MainAxisAlignment.spaceBetween),
                 // This is the theme of your application.
                 //brightness: Brightness.dark, // set this for darkmode
-                primarySwatch: createMaterialColor( Color(0xFFC05410)),
+                primarySwatch: createMaterialColor(const Color(0xFFC05410)),
 
                 disabledColor:
                     Theme.of(context).colorScheme.onPrimary.withOpacity(0.5),
