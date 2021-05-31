@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 /// Displays four circles with a number in each as overview
 class CirclesOverview extends StatelessWidget {
-  ///passed buildcontext
+  ///passed BuildContext
   final BuildContext context;
 
   ///the garden of which the information needs to be displayed
@@ -22,11 +22,11 @@ class CirclesOverview extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _createCircle('${garden.totalAreaObjects}', 'Flächen (m2)'),
+              _createCircle('${garden.totalAreaObjects}', 'Lebensraum-Flächen\n(m\u00B2)'),
             ],
           ),
           Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            _createCircle('${garden.totalLengthObjects}', ' Längen (m)')
+            _createCircle('${garden.totalLengthObjects}', 'Lebensraum-Längen\n(m)')
           ]),
         ],
       ),
@@ -37,12 +37,12 @@ class CirclesOverview extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _createCircle(
-                  '${garden.totalPointObjects}', 'Punktobjekt (Anzahl)'),
+                  '${garden.totalPointObjects}', 'Lebensraum-Strukturen\n(Anzahl)'),
             ],
           ),
           Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             _createCircle(
-                '${garden.totalSupportedSpecies}', 'Geförderte Arten (Anzahl)')
+                '${garden.totalSupportedSpecies}', 'Geförderte Arten\n(Anzahl)')
           ]),
         ],
       )

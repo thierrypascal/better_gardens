@@ -235,14 +235,6 @@ class _ItemTagsState extends State<ItemTags> {
             widget.pressEnabled ? widget.highlightColor : Colors.transparent,
         splashColor:
             widget.pressEnabled ? widget.splashColor : Colors.transparent,
-        child: Container(
-            decoration: BoxDecoration(
-                border: widget.border ??
-                    Border.all(color: widget.activeColor, width: 0.5),
-                borderRadius: widget.borderRadius ??
-                    BorderRadius.circular(_initBorderRadius)),
-            padding: widget.padding * (fontSize / 14),
-            child: _combine),
         onTap: widget.pressEnabled
             ? () {
                 if (widget.singleItem) {
@@ -268,6 +260,14 @@ class _ItemTagsState extends State<ItemTags> {
                 active: _dataList.active,
                 customData: widget.customData))
             : null,
+        child: Container(
+            decoration: BoxDecoration(
+                border: widget.border ??
+                    Border.all(color: widget.activeColor, width: 0.5),
+                borderRadius: widget.borderRadius ??
+                    BorderRadius.circular(_initBorderRadius)),
+            padding: widget.padding * (fontSize / 14),
+            child: _combine),
       ),
     );
   }
@@ -381,12 +381,18 @@ class _ItemTagsState extends State<ItemTags> {
                     alignment: Alignment.centerRight,
                     fit: BoxFit.fill,
                     child: GestureDetector(
+                      onTap: () {
+                        if (widget.removeButton.onRemoved != null) {
+                          if (widget.removeButton.onRemoved())
+                            _dataListInherited.list.removeAt(widget.index);
+                        }
+                      },
                       child: Container(
                         margin: widget.removeButton.margin ??
                             EdgeInsets.only(left: 5),
                         padding:
-                            (widget.removeButton.padding ?? EdgeInsets.all(2)) *
-                                (widget.textStyle.fontSize / 14),
+                        (widget.removeButton.padding ?? EdgeInsets.all(2)) *
+                            (widget.textStyle.fontSize / 14),
                         decoration: BoxDecoration(
                           color: widget.removeButton.backgroundColor ??
                               Colors.black,
@@ -401,12 +407,6 @@ class _ItemTagsState extends State<ItemTags> {
                                   (widget.textStyle.fontSize / 14),
                             ),
                       ),
-                      onTap: () {
-                        if (widget.removeButton.onRemoved != null) {
-                          if (widget.removeButton.onRemoved())
-                            _dataListInherited.list.removeAt(widget.index);
-                        }
-                      },
                     )))
           ]);
 

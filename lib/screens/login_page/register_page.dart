@@ -48,21 +48,21 @@ class RegisterPage extends StatelessWidget {
                       builder: (context) => RegisterGooglePage())),
               child: const Text('Google'),
             ),
-            ElevatedButton(
-              style: _buttonStyle,
-              onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => RegisterFacebookPage())),
-              child: const Text('Facebook'),
-            ),
-            ElevatedButton(
-              style: _buttonStyle,
-              onPressed: () {
-                //TODO add Twitter login
-              },
-              child: const Text('Twitter'),
-            ),
+            // ElevatedButton(
+            //   style: _buttonStyle,
+            //   onPressed: () => Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //           builder: (context) => RegisterFacebookPage())),
+            //   child: const Text('Facebook'),
+            // ),
+            // ElevatedButton(
+            //   style: _buttonStyle,
+            //   onPressed: () {
+            //     //TODO add Twitter login
+            //   },
+            //   child: const Text('Twitter'),
+            // ),
           ],
         ),
       ],

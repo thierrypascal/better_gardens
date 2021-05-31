@@ -2,7 +2,7 @@ import 'package:biodiversity/components/screen_with_logo_and_waves.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/login_page/forgot_password_page.dart';
 import 'package:biodiversity/screens/login_page/register_page.dart';
-import 'package:biodiversity/screens/login_page/welcome_page.dart';
+import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -120,7 +120,7 @@ class _EmailFormState extends State<EmailForm> {
         .signInWithEmail(_email, _password);
     if (errorMessage == null) {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => WelcomePage()));
+          context, MaterialPageRoute(builder: (context) => MyGarden()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Column(

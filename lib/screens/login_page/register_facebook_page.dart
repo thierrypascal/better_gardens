@@ -1,6 +1,6 @@
 import 'package:biodiversity/components/screen_with_logo_and_waves.dart';
 import 'package:biodiversity/models/user.dart';
-import 'package:biodiversity/screens/login_page/welcome_page.dart';
+import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -49,7 +49,7 @@ class _RegisterFacebookPageState extends State<RegisterFacebookPage> {
         .registerWithFacebook(context);
     if (result == null) {
       Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => WelcomePage()));
+          MaterialPageRoute(builder: (context) => MyGarden()));
     } else {
       setState(() {
         _errorText = result;

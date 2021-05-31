@@ -209,14 +209,14 @@ class _InformationObjectListWidgetState
                                 _tagStateKey.currentState.setAllItemsActive();
                                 filterClassResults();
                               },
-                              child: const Text('alles selektieren'),
+                              child: const Text('Alles selektieren'),
                             ),
                             TextButton(
                               onPressed: () {
                                 _tagStateKey.currentState.setAllItemsInactive();
                                 filterClassResults();
                               },
-                              child: const Text('selektion aufheben'),
+                              child: const Text('Selektion aufheben'),
                             ),
                             IconButton(
                               alignment: Alignment.bottomCenter,

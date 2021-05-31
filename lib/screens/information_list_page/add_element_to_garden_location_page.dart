@@ -34,6 +34,7 @@ class _AddElementToGardenLocationPageState
     gardens = ServiceProvider.instance.gardenService
         .getAllGardensFromUser(Provider.of<User>(context, listen: false));
     isSelected = List.generate(gardens.length, (index) => false);
+    isSelected[0] = true;
 
     super.initState();
   }

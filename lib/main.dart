@@ -3,7 +3,9 @@ import 'package:biodiversity/models/information_object_amount_container.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
+import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -67,7 +69,9 @@ class MyApp extends StatelessWidget {
                 // than on mobile platforms.
                 visualDensity: VisualDensity.adaptivePlatformDensity,
               ),
-              home: LoginPage(),
+              home: auth.FirebaseAuth.instance.currentUser != null
+                  ? MyGarden()
+                  : LoginPage(),
             ),
           );
         }
@@ -76,6 +80,7 @@ class MyApp extends StatelessWidget {
     );
   }
 
+  ///Creates a MaterialColor from a given Color
   MaterialColor createMaterialColor(Color color) {
     List strengths = <double>[.05];
     Map swatch = <int, Color>{};

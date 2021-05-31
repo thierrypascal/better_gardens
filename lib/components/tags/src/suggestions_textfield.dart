@@ -71,10 +71,8 @@ class _SuggestionsTextFieldState extends State<SuggestionsTextField> {
               softWrap: false,
               overflow: TextOverflow.fade,
               style: TextStyle(
-                height: widget.tagsTextField.textStyle.height == null
-                    ? 1
-                    : widget.tagsTextField.textStyle.height,
-                fontSize: _fontSize ?? null,
+                height: widget.tagsTextField.textStyle.height ?? 1,
+                fontSize: _fontSize ?? 16,
                 color: widget.tagsTextField.suggestionTextColor ?? Colors.red,
               ),
             ),
@@ -84,10 +82,10 @@ class _SuggestionsTextFieldState extends State<SuggestionsTextField> {
           controller: _controller,
           enabled: widget.tagsTextField.enabled,
           autofocus: widget.tagsTextField.autofocus ?? true,
-          keyboardType: widget.tagsTextField.keyboardType ?? null,
+          keyboardType: widget.tagsTextField.keyboardType,
           textCapitalization: widget.tagsTextField.textCapitalization ??
               TextCapitalization.none,
-          maxLength: widget.tagsTextField.maxLength ?? null,
+          maxLength: widget.tagsTextField.maxLength ?? 10,
           maxLines: 1,
           autocorrect: widget.tagsTextField.autocorrect ?? false,
           style: widget.tagsTextField.textStyle.copyWith(

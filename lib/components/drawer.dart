@@ -33,7 +33,31 @@ class MyDrawer extends StatelessWidget {
                   color: Theme.of(context).colorScheme.onPrimary, fontSize: 16),
             )),
         child: Scaffold(
-          appBar: AppBar(),
+          appBar: AppBar(
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: IconButton(
+                    icon: const Icon(Icons.person),
+                    onPressed: () {
+                      if (Provider.of<User>(context, listen: false)
+                          .isLoggedIn) {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AccountPage()));
+                      } else {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => WhiteRedirectPage(
+                                  'Bitte melde Dich zuerst an', LoginPage())),
+                        );
+                      }
+                    }),
+              )
+            ],
+          ),
           body: LayoutBuilder(builder: (context, constraints) {
             return SingleChildScrollView(
               child: ConstrainedBox(
@@ -50,8 +74,7 @@ class MyDrawer extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   const Image(
                                       width: 100,
@@ -125,17 +148,18 @@ class MyDrawer extends StatelessWidget {
                                             FavoredListPage()),
                                   );
                                 } else {
-                                  Navigator.push(
+                                  Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => WhiteRedirectPage(
-                                              'Bitte melde dich zuerst noch an.',
-                                              LoginPage())));
+                                          builder: (context) =>
+                                              WhiteRedirectPage(
+                                                  'Bitte melde Dich zuerst an',
+                                                  LoginPage())));
                                 }
                               },
                             ),
                             ListTile(
-                              title: const Text('Take-Home Messages'),
+                              title: const Text('Wissensgrundlagen'),
                               onTap: () {
                                 Navigator.pushReplacement(
                                   context,
@@ -143,26 +167,6 @@ class MyDrawer extends StatelessWidget {
                                       builder: (context) =>
                                           TakeHomeMessagePage()),
                                 );
-                              },
-                            ),
-                            ListTile(
-                              title: const Text('Account'),
-                              onTap: () {
-                                if (Provider.of<User>(context, listen: false)
-                                    .isLoggedIn) {
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => AccountPage()));
-                                } else {
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => WhiteRedirectPage(
-                                            'Bitte melde Dich zuerst an',
-                                            LoginPage())),
-                                  );
-                                }
                               },
                             ),
                             // ignore: prefer_if_elements_to_conditional_expressions
@@ -183,7 +187,7 @@ class MyDrawer extends StatelessWidget {
                           ],
                         ),
                       ),
-                    SvgPicture.asset(
+                      SvgPicture.asset(
                         'res/gardenDrawer_color.svg',
                         width: constraints.maxWidth,
                         fit: BoxFit.fitWidth,
@@ -200,9 +204,7 @@ class MyDrawer extends StatelessWidget {
   Widget _loginLogoutButton(BuildContext context) {
     if (Provider.of<User>(context).isLoggedIn) {
       return ListTile(
-        title: const Text('Logout'),
-        onTap: () => _signOut(context),
-      );
+          title: const Text('Logout'), onTap: () => _signOut(context));
     } else {
       return ListTile(
         title: const Text('Login'),
@@ -222,28 +224,29 @@ class MyDrawer extends StatelessWidget {
               content: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  ElevatedButton(
-                    onPressed: () => Navigator.pop(context, true),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Theme.of(context).primaryColor),
-                    ),
-                    child: const Text('Ausloggen'),
-                  ),
+
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
                     style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Theme.of(context).primaryColor),
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          const Color(0xFFC05410)),
                     ),
                     child: const Text('Abbrechen'),
                   ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Provider.of<User>(context, listen: false).signOut();
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) => LoginPage()));
+                    },
+                    style: ButtonStyle(
+                      backgroundColor:
+                      MaterialStateProperty.all<Color>(const Color(0xFFC05410)),
+                    ),
+                    child: const Text('Ausloggen'),
+                  ),
                 ],
               ),
-            )).then((value) {
-      if (value != null) {
-        Provider.of<User>(context, listen: false).signOut();
-      }
-    });
+            ));
   }
 }

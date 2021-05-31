@@ -1,6 +1,7 @@
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/text_field_with_descriptor.dart';
 import 'package:biodiversity/models/user.dart';
+import 'package:biodiversity/screens/account_page/account_delete_page.dart';
 import 'package:biodiversity/screens/account_page/change_password_page.dart';
 import 'package:biodiversity/screens/account_page/edit_profile_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
@@ -82,7 +83,7 @@ class _AccountPage extends State<AccountPage> {
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
-                    const Text('Profil bearbeiten')
+                    const Text('Account bearbeiten')
                   ],
                 ),
               ),
@@ -102,6 +103,21 @@ class _AccountPage extends State<AccountPage> {
                     ],
                   ),
                 ),
+                PopupMenuItem(
+                value: 'DeleteAccountPage',
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: Icon(
+                        Icons.delete_forever,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                    const Text('Account löschen')
+                  ],
+                ),
+              ),
             ],
             onSelected: _handleTopMenu,
           ),
@@ -152,6 +168,15 @@ class _AccountPage extends State<AccountPage> {
                       ChangePasswordPage()));
           break;
         }
+      case 'DeleteAccountPage':
+      {
+        Navigator.push(
+          context,
+           MaterialPageRoute(
+             builder: (context) =>
+              MyAccountDelete()));
+            break;
+      }
     }
   }
 }

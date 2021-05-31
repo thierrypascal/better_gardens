@@ -8,7 +8,6 @@ import 'package:biodiversity/screens/map_page/maps_submap_widget.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -129,7 +128,7 @@ class _MyGardenEditState extends State<MyGardenEdit> {
                           _selectedType = _value;
                         }),
                       },
-                      hint: const Text('Select your garden type'),
+                      hint: const Text('Garten auswählen'),
                     ),
                   ),
                 ),
@@ -144,6 +143,7 @@ class _MyGardenEditState extends State<MyGardenEdit> {
                   initialValue: garden.street,
                   decoration: const InputDecoration(
                       labelText: 'Garten Adresse',
+                      hintText: 'Strasse Nr, PLZ Ort',
                       contentPadding: EdgeInsets.symmetric(vertical: 4)),
                   onSaved: (value) {
                     _address = value;

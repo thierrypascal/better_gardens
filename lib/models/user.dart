@@ -13,6 +13,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart' as fb_auth;
+import 'package:google_sign_in/google_sign_in.dart';
 
 /// The User class holds all information about the User of the app
 /// The class is built to be used as a singleton,
@@ -265,9 +266,11 @@ class User extends ChangeNotifier {
   /// signs the user out, saves all data to the database.
   /// Afterwards all fields are reset to empty fields.
   /// The listeners will be notified
-  Future<void> signOut() async {
+  Future<void> signOut({bool save = true}) async {
     if (_loggedIn) {
-      await saveUser();
+      if (save) {
+        await saveUser();
+      }
       _storage.auth.signOut();
     }
     nickname = '';
@@ -571,12 +574,12 @@ class User extends ChangeNotifier {
       await _storage.auth.currentUser.updatePassword(newPassword);
     } on FirebaseAuthException catch (exception) {
       if (exception.code == 'weak-password') {
-        return 'Das neue Passwort ist zu schwach.';
+        return 'Das neue Passwort ist zu schwach';
       }
       if (exception.code == 'wrong-password') {
-        return 'Das alte Password ist falsch.';
+        return 'Das alte Password ist falsch';
       } else {
-        return 'Etwas ist schiefgelaufen.';
+        return 'Etwas ist schiefgelaufen';
       }
     }
     return null;
@@ -585,6 +588,78 @@ class User extends ChangeNotifier {
   /// Remove a garden from the owned gardens
   void deleteGarden(Garden garden) {
     _gardens.remove(garden.name);
+    saveUser();
     notifyListeners();
+  }
+
+  ///Remove a user account.
+  Future<String> deleteAccount() async {
+    try {
+      await _storage.database.doc(documentPath).delete();
+      await _storage.auth.currentUser.delete();
+      return 'Der Account wurde erfolgreich entfernt';
+    } on FirebaseAuthException {
+      return 'Etwas is schiefgelaufen';
+    }
+  }
+
+  /// ensures all providers the user is signed up with are authenticated
+  Future<String> reauthenticate() async {
+    final token = await _storage.auth.currentUser.getIdToken();
+    final providers = _storage.auth.currentUser.providerData;
+    var credential;
+    for (final info in providers) {
+      if (info.providerId == GoogleAuthProvider.PROVIDER_ID) {
+        final googleUser = await GoogleSignIn().signIn();
+
+        // Obtain the auth details from the request
+        final googleAuth = await googleUser.authentication;
+
+        // Create a new credential
+        credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+      } else if (info.providerId == FacebookAuthProvider.PROVIDER_ID) {
+        credential = FacebookAuthProvider.credential(token); // TODO might need some fixes once facebook login is available
+      } else {
+        return 'Dein Anmelde Provider wurde nicht gefunden';
+      }
+      try {
+        print(credential);
+        await _storage.auth.currentUser
+            .reauthenticateWithCredential(credential);
+      } on FirebaseAuthException catch (e) {
+        print(e.message);
+        return 'Etwas ist schiefgelaufen';
+      }
+    }
+    return null;
+  }
+
+  /// ensures the user is authenticated with his email address and password.
+  /// Only usable with email Provider<br>
+  /// throws: StateError if the user is not registered with email;
+  Future<String> reauthenticate_with_email(String password) async {
+    if (!isRegisteredWithEmail) {
+      throw StateError(
+          'function can only be used with a user which is registered with email and password.');
+    }
+    if (password == '' || password == null) {
+      return 'Bitte gib ein Passwort ein';
+    }
+    final credential =
+        EmailAuthProvider.credential(email: mail, password: password);
+    try {
+      await FirebaseAuth.instance.currentUser
+          .reauthenticateWithCredential(credential);
+      return null;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'wrong-password') {
+        return 'Das Passwort ist falsch';
+      } else {
+        return 'Etwas ist schiefgelaufen';
+      }
+    }
   }
 }

@@ -2,6 +2,7 @@ import 'package:biodiversity/components/screen_with_logo_and_waves.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/login_page/email_login_page.dart';
 import 'package:biodiversity/screens/login_page/register_page.dart';
+import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -59,18 +60,18 @@ class LoginPage extends StatelessWidget {
           signInFunction:
               Provider.of<User>(context, listen: false).signInWithGoogle,
         ),
-        SignInButton(
-          name: 'Facebook',
-          icon: FontAwesomeIcons.facebook,
-          signInFunction:
-              Provider.of<User>(context, listen: false).signInWithFacebook,
-        ),
+        // SignInButton(
+        //   name: 'Facebook',
+        //   icon: FontAwesomeIcons.facebook,
+        //   signInFunction:
+        //       Provider.of<User>(context, listen: false).signInWithFacebook,
+        // ),
         TextButton(
             onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => RegisterPage()));
             },
-            child: const Text('Sign-Up')),
+            child: const Text('Sign-Up', style: TextStyle(fontSize: 18))),
       ],
     );
   }
@@ -122,19 +123,18 @@ class SignInButton extends StatelessWidget {
       {@required Function() signInFunction}) async {
     final result = await signInFunction();
     if (result == null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Anmeldung erfolgreich'),
-      ));
-      return;
-    }
-    if (!result.isRegistered) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Du bist noch nicht registriert mit deinem account.\n'
-              'Bitte registriere dich zuerst, bevor du dich anmeldest.')));
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (context) => MyGarden()));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(result.message),
-      ));
+      if (!result.isRegistered) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Du bist noch nicht registriert mit deinem account.\n'
+                'Bitte registriere dich zuerst, bevor du dich anmeldest.')));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(result.message),
+        ));
+      }
     }
   }
 }

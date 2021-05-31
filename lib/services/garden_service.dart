@@ -1,13 +1,18 @@
 import 'dart:async';
 
+import 'package:biodiversity/components/white_redirect_page.dart';
 import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/storage_provider.dart';
 import 'package:biodiversity/models/user.dart';
+import 'package:biodiversity/screens/login_page/login_page.dart';
+import 'package:biodiversity/screens/my_garden_page/my_garden_add.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 /// A service which loads all gardens and stores them
 class GardenService extends ChangeNotifier {
@@ -38,12 +43,38 @@ class GardenService extends ChangeNotifier {
     notifyListeners();
   }
 
+  ///handles the routing to MyGardenAdd, if logged in: redirects to MyGardenAdd, if not: redirect to LoginPage
+  void handle_create_garden(BuildContext context) {
+    if (Provider.of<User>(context, listen: false).isLoggedIn) {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => MyGardenAdd()));
+    } else {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => WhiteRedirectPage(
+                  'Bitte melde Dich zuerst an', LoginPage())));
+    }
+  }
+
   /// Returns a list of Gardens which the provided User has
   List<Garden> getAllGardensFromUser(User user) {
     return _gardens.where((garden) => garden.owner == user.userUUID).toList();
   }
+  
+  ///Delete all gardens from the user when the account is being deleted
+  void deleteAllGardensFromUser(User user) {
+    final gardens = [];
+    
+    gardens.addAll(_gardens
+        .where((garden) => garden.owner == user.userUUID)
+    );
+    gardens.forEach((element) {
+      deleteGarden(element);
+    });
+  }
 
-  /// Returns a list of all registred Gardens
+  /// Returns a list of all registered Gardens
   List<Garden> getAllGardens() {
     return _gardens;
   }

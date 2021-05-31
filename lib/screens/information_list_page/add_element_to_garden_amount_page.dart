@@ -1,6 +1,5 @@
 import 'package:biodiversity/components/edit_dialog.dart';
 import 'package:biodiversity/components/simple_information_object_card_widget.dart';
-import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/information_object.dart';
 import 'package:biodiversity/models/information_object_amount_container.dart';
 import 'package:biodiversity/screens/information_list_page/add_element_to_garden_location_page.dart';
@@ -61,7 +60,7 @@ class _AddElementToGardenAmountPageState
           ),
           const SizedBox(height: 10),
           const Text(
-              'Gib die Menge des Lebensraumes an, den Du hinzufügen möchtest.'),
+              'Gib die Menge an, welche Du hinzufügen möchtest'),
           const SizedBox(height: 20),
           SimpleInformationObjectCard(
             widget.object,
