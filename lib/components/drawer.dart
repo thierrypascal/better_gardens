@@ -226,7 +226,7 @@ class MyDrawer extends StatelessWidget {
                     onPressed: () => Navigator.pop(context, true),
                     style: ButtonStyle(
                       backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.green),
+                          MaterialStateProperty.all<Color>(Theme.of(context).primaryColor),
                     ),
                     child: const Text('Ausloggen'),
                   ),
@@ -234,7 +234,7 @@ class MyDrawer extends StatelessWidget {
                     onPressed: () => Navigator.pop(context),
                     style: ButtonStyle(
                       backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.green),
+                          MaterialStateProperty.all<Color>(Theme.of(context).primaryColor),
                     ),
                     child: const Text('Abbrechen'),
                   ),
