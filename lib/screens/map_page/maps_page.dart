@@ -7,13 +7,11 @@ import 'package:biodiversity/components/text_field_with_descriptor.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/screens/information_list_page/biodiversity_elements_list_page.dart';
-import 'package:biodiversity/screens/my_garden_page/my_garden_add.dart';
 import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 
 /// Display the map with the markers
@@ -62,16 +60,21 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   }
 
   void loadUserLocation() async {
-    if (widget.garden == null && Provider.of<MapInteractionContainer>(context, listen: false).selectedLocation == null) {
+    if (widget.garden == null &&
+        Provider.of<MapInteractionContainer>(context, listen: false)
+                .selectedLocation ==
+            null) {
       await Provider.of<MapInteractionContainer>(context, listen: false)
           .getLocation()
-          .then((loc) => mapController.animateCamera(CameraUpdate.newLatLng(loc)));
+          .then((loc) =>
+              mapController.animateCamera(CameraUpdate.newLatLng(loc)));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final mapInteraction = Provider.of<MapInteractionContainer>(context, listen: false);
+    final mapInteraction =
+        Provider.of<MapInteractionContainer>(context, listen: false);
     loadUserLocation();
 
     return Scaffold(
@@ -86,10 +89,13 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             onMapCreated: (controller) => mapController = controller,
             initialCameraPosition: (widget.garden != null)
                 ? CameraPosition(target: widget.garden.getLatLng(), zoom: _zoom)
-                : (mapInteraction.selectedLocation != null) ? CameraPosition(target: mapInteraction.selectedLocation, zoom: _zoom) : CameraPosition(
-                    target: mapInteraction.defaultLocation,
-                    zoom: _zoom,
-                  ),
+                : (mapInteraction.selectedLocation != null)
+                    ? CameraPosition(
+                        target: mapInteraction.selectedLocation, zoom: _zoom)
+                    : CameraPosition(
+                        target: mapInteraction.defaultLocation,
+                        zoom: _zoom,
+                      ),
             zoomControlsEnabled: false,
             rotateGesturesEnabled: false,
             mapToolbarEnabled: false,
@@ -145,8 +151,8 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget displayModalBottomSheet(BuildContext context) {
-    showModalBottomSheet(
+  Future<Widget> displayModalBottomSheet(BuildContext context) async {
+    return await showModalBottomSheet(
         barrierColor: Colors.transparent,
         backgroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
@@ -231,6 +237,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                 curve: Curves.easeOut),
           ),
           child: FloatingActionButton(
+            //TODO should be "Vernetzungsprojekte", not "Lebensräume" (Tooltip, Icon and Redirect)
             heroTag: null,
             tooltip: 'Lebensraum hinzufügen',
             backgroundColor: Theme.of(context).cardColor,
@@ -259,17 +266,13 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                 curve: Curves.easeOut),
           ),
           child: FloatingActionButton(
+            //TODO make the creation of the Garden use the selected location (and make apparent which location this is), if we dont use the location, giving this option makes no sense here
             heroTag: null,
             tooltip: 'Garten erstellen',
             backgroundColor: Theme.of(context).cardColor,
             onPressed: () {
-              Provider.of<MapInteractionContainer>(context, listen: false)
-                  .selectedLocation = _focusedLocation;
-              logging.log(_focusedLocation.toString());
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MyGardenAdd()),
-              );
+              ServiceProvider.instance.gardenService
+                  .handle_create_garden(context); //TODO maybe replace by Snackbar
             },
             child: Icon(icons[1], color: Theme.of(context).accentColor),
           ),

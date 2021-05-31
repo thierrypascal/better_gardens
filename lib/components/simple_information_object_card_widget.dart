@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-/// same as expandable_information_object_card_widget.dart, but with less infos,
+/// same as expandable\_information\_object\_card\_widget.dart, but with less infos,
 /// not expandable
 class SimpleInformationObjectCard extends StatelessWidget {
   /// the [InformationObject] to display
@@ -30,8 +30,7 @@ class SimpleInformationObjectCard extends StatelessWidget {
   /// formKey to control the amount input field
   final GlobalKey<FormState> formKey;
 
-  ///displays unit of element
-  String _unit;
+
 
   /// Non expandable ListTile, displaying a [BiodiversityMeasure]
   SimpleInformationObjectCard(this.object,
@@ -47,12 +46,13 @@ class SimpleInformationObjectCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String _unit;
     if(object.runtimeType == BiodiversityMeasure) {
       final biodiversityObject = object as BiodiversityMeasure;
       if (biodiversityObject.dimension == 'Fläche') {
-        _unit = 'Fläche (m2)';
+        _unit = 'Fläche (m\u00B2)';
       } else if (biodiversityObject.dimension == 'Linie') {
-        _unit = 'Linie (m)';
+        _unit = 'Linie (m)'; //TODO Linie -> Länge?
       } else {
         _unit = 'Anzahl';
       }
@@ -90,9 +90,9 @@ class SimpleInformationObjectCard extends StatelessWidget {
                 key: formKey,
                 child: TextFormField(
                   readOnly: amountLocked == true ? true : false,
-                  initialValue: amount != null ? amount.toString() : "1",
+                  initialValue: amount != null ? amount.toString() : '1',
                   decoration: InputDecoration(
-                      labelText: _unit, border: OutlineInputBorder()),
+                      labelText: _unit, border: const OutlineInputBorder()),
                   keyboardType: TextInputType.number,
                   onSaved: (value) =>
                       Provider.of<InformationObjectAmountContainer>(context,

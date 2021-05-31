@@ -1,3 +1,4 @@
+import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/information_object.dart';
 import 'package:biodiversity/models/user.dart';
@@ -51,10 +52,21 @@ class _ExpandableInformationObjectCardState
     extends State<ExpandableInformationObjectCard> {
   bool _expanded = false;
 
-  //TODO: check if user logged in
+  //TODO: check if user logged in (and if garden exists)
   @override
   Widget build(BuildContext context) {
+    String _unit;
     final garden = Provider.of<Garden>(context, listen: false);
+    if (widget.object.runtimeType == BiodiversityMeasure) {
+      final biodiversityObject = widget.object as BiodiversityMeasure;
+      if (biodiversityObject.dimension == 'Fläche') {
+        _unit = 'm\u00B2';
+      } else if (biodiversityObject.dimension == 'Linie') {
+        _unit = 'm';
+      } else {
+        _unit = 'Anzahl'; //TODO suggestion: replace with "Stück"
+      }
+    }
     return Container(
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(5)),
@@ -102,7 +114,7 @@ class _ExpandableInformationObjectCardState
                         if (widget.showDeleteAndEdit)
                           Text(garden.ownedObjects[widget.object.name]
                                   .toString() +
-                              ' Anzahl'),
+                              ' $_unit'),
                       ],
                     ),
                   ),
@@ -111,7 +123,13 @@ class _ExpandableInformationObjectCardState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        TextButton(
+                        TextButton.icon(
+                          icon: const Icon(
+                            Icons.delete_forever,
+                            color: Colors.black,
+                            size: 20,
+                          ),
+                          label: const Text('löschen'),
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -123,21 +141,14 @@ class _ExpandableInformationObjectCardState
                           },
                           style: const ButtonStyle(
                               visualDensity: VisualDensity.compact),
-                          child: Row(
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.only(right: 8.0),
-                                child: Icon(
-                                  Icons.delete_forever,
-                                  color: Colors.black,
-                                  size: 20,
-                                ),
-                              ),
-                              const Text('löschen'),
-                            ],
-                          ),
                         ),
-                        TextButton(
+                        TextButton.icon(
+                          icon: const Icon(
+                            Icons.edit,
+                            color: Colors.black,
+                            size: 20,
+                          ),
+                          label: const Text('bearbeiten'),
                           //EditElementPage
                           onPressed: () => {
                             Navigator.push(
@@ -150,18 +161,6 @@ class _ExpandableInformationObjectCardState
                           },
                           style: const ButtonStyle(
                               visualDensity: VisualDensity.compact),
-                          child: Row(
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.only(right: 8.0),
-                                child: Icon(
-                                  Icons.edit,
-                                  size: 20,
-                                ),
-                              ),
-                              const Text('bearbeiten'),
-                            ],
-                          ),
                         ),
                       ],
                     ),
@@ -171,71 +170,44 @@ class _ExpandableInformationObjectCardState
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         if (!widget.isSpecies)
-                          TextButton(
+                          TextButton.icon(
+                            icon: const Icon(
+                              Icons.add,
+                              color: Colors.black,
+                              size: 20,
+                            ),
+                            label: const Text('hinzufügen'),
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        AddElementToGardenAmountPage(
-                                          object: widget.object,
-                                        )),
-                              );
+                              _handle_add_measure_to_garden(context);
                             },
                             style: const ButtonStyle(
                                 visualDensity: VisualDensity.compact),
-                            child: Row(
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.only(right: 8.0),
-                                  child: Icon(
-                                    Icons.add,
-                                    size: 20,
-                                  ),
-                                ),
-                                const Text('hinzufügen'),
-                              ],
-                            ),
                           ),
-                        // : TextButton(
-                        //     onPressed: null,
-                        //     style: const ButtonStyle(
-                        //         visualDensity: VisualDensity.compact),
-                        //     child: Row(
-                        //       children: [
-                        //         const Padding(
-                        //           padding: EdgeInsets.only(right: 8.0),
-                        //           child: Icon(
-                        //             Icons.add_circle_outline_outlined,
-                        //             size: 20,
-                        //           ),
-                        //         ),
-                        //         const Text('aktivitätsradius'),
-                        //       ],
-                        //     ),
-                        //   ),
-                        TextButton(
-                          onPressed: () =>
-                              Provider.of<User>(context, listen: false)
-                                  .likeUnlikeElement(widget.object.name),
+                         // TextButton.icon(
+                         //   icon: const Icon(
+                         //     Icons.add_circle_outline_outlined,
+                         //     size: 20,
+                         //   ),
+                         //    label: const Text('aktivitätsradius'),
+                         //    onPressed: null,
+                         //    style: const ButtonStyle(
+                         //        visualDensity: VisualDensity.compact),
+                         //  ),
+                        TextButton.icon(
+                          icon: Icon(
+                            Icons.favorite,
+                            color: Provider.of<User>(context)
+                                    .doesLikeElement(widget.object.name)
+                                ? Colors.red
+                                : Colors.black,
+                            size: 20,
+                          ),
+                          label: const Text('merken'),
+                          onPressed: () {
+                            _handle_like_button(context);
+                          },
                           style: const ButtonStyle(
                               visualDensity: VisualDensity.compact),
-                          child: Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: Icon(
-                                  Icons.favorite,
-                                  color: Provider.of<User>(context)
-                                          .doesLikeElement(widget.object.name)
-                                      ? Colors.red
-                                      : Colors.black,
-                                  size: 20,
-                                ),
-                              ),
-                              const Text('merken'),
-                            ],
-                          ),
                         ),
                       ],
                     ),
@@ -273,16 +245,10 @@ class _ExpandableInformationObjectCardState
                             IconButton(
                               icon: const Icon(
                                 Icons.add,
+                                color: Colors.black,
                               ),
                               onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          AddElementToGardenAmountPage(
-                                            object: widget.object,
-                                          )),
-                                );
+                                _handle_add_measure_to_garden(context);
                               },
                             ),
                           // : const IconButton(
@@ -299,9 +265,7 @@ class _ExpandableInformationObjectCardState
                                   : Colors.black38,
                             ),
                             onPressed: () {
-                              setState(() {
-                                user.likeUnlikeElement(widget.object.name);
-                              });
+                              _handle_like_button(context);
                             },
                           ),
                         ],
@@ -316,7 +280,10 @@ class _ExpandableInformationObjectCardState
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.delete_forever),
+                            icon: const Icon(
+                              Icons.delete_forever,
+                              color: Colors.black,
+                            ),
                             onPressed: () {
                               Navigator.push(
                                 context,
@@ -331,6 +298,7 @@ class _ExpandableInformationObjectCardState
                           IconButton(
                             icon: const Icon(
                               Icons.edit,
+                              color: Colors.black,
                             ),
                             onPressed: () => {
                               Navigator.push(
@@ -382,7 +350,7 @@ class _ExpandableInformationObjectCardState
                         }
                       },
                       child: const Text(
-                        'Weitere infos',
+                        'Weitere Infos',
                         style: TextStyle(decoration: TextDecoration.underline),
                       ),
                     ),
@@ -394,5 +362,38 @@ class _ExpandableInformationObjectCardState
         ],
       ),
     );
+  }
+
+  ///handles the result of a tap on a like "merken" button
+  void _handle_like_button(BuildContext context) {
+    if (Provider.of<User>(context, listen: false).isLoggedIn) {
+      Provider.of<User>(context, listen: false)
+          .likeUnlikeElement(widget.object.name);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Bitte melde Dich zuerst an')));
+    }
+  }
+
+  ///handles the result of a tap on a add "hinzufügen" button
+  void _handle_add_measure_to_garden(BuildContext context) {
+    if (Provider.of<User>(context, listen: false).isLoggedIn) {
+      if (ServiceProvider.instance.gardenService
+          .getAllGardensFromUser(Provider.of<User>(context, listen: false))
+          .isNotEmpty) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AddElementToGardenAmountPage(
+                      object: widget.object,
+                    )));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Bitte erstelle zuerst einen Garten')));
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Bitte melde Dich zuerst an')));
+    }
   }
 }

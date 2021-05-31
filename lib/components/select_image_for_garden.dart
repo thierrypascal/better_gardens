@@ -25,7 +25,7 @@ class select_garden_image extends StatefulWidget {
   final Function(Uint8List rawImageData ) saveFunction;
 
   /// The image that will be saved upon saveCallback. used to Display
-  Uint8List toSaveImage;
+  final Uint8List toSaveImage;
 
   @override
   _select_garden_imageState createState() => _select_garden_imageState();

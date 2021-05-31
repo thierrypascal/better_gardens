@@ -84,13 +84,13 @@ class _MyGardenAddState extends State<MyGardenAdd> {
           garden.coordinates = (selLoc != null)
               ? GeoPoint(selLoc.latitude, selLoc.longitude)
               : GeoPoint(mapInteractions.defaultLocation.latitude, mapInteractions.defaultLocation.longitude);
-          garden.saveGarden();
+          await garden.saveGarden();
           user.addGarden(garden);
           Provider.of<Garden>(context, listen: false).switchGarden(garden);
           Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (context) => WhiteRedirectPage(
                     'Der Garten $_name wurde erstellt.',
-                    (widget.route != null) ? widget.route : MyGarden(),
+                    widget.route ?? MyGarden(),
                     duration: 2,
                   )));
         }
@@ -156,6 +156,7 @@ class _MyGardenAddState extends State<MyGardenAdd> {
                 child: TextFormField(
                   decoration: const InputDecoration(
                       labelText: 'Garten Adresse',
+                      hintText: 'Strasse Nr, PLZ Ort',
                       contentPadding: EdgeInsets.symmetric(vertical: 4)),
                   onSaved: (value) {
                     _address = value;

@@ -15,22 +15,18 @@ Future<bool> showPrivacyAgreement(BuildContext context) async {
       insetPadding: const EdgeInsets.all(5),
       actions: [
         ElevatedButton(
-          onPressed: () => Navigator.pop(context, 'akzeptiert'),
-          child: const Text('Akzeptieren'),
-        ),
-        ElevatedButton(
           onPressed: () => Navigator.pop(context),
           child: const Text('Schliessen'),
         ),
-      ],
-      content: SingleChildScrollView(
-        child: Column(
-          children: [
-            MarkdownBody(
-                data: _privacyAgreement,
-                onTapLink: (_, url, __) => launch(url)),
-          ],
+        ElevatedButton(
+          onPressed: () => Navigator.pop(context, 'akzeptiert'),
+          child: const Text('Akzeptieren'),
         ),
+      ],
+      content: SizedBox(
+        width: MediaQuery.of(context).size.width * .85,
+        child: Markdown(
+            data: _privacyAgreement, onTapLink: (_, url, __) => launch(url)),
       ),
     ),
   );

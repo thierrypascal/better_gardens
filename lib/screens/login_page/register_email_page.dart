@@ -3,7 +3,7 @@ import 'dart:developer' as logging;
 import 'package:biodiversity/components/privacy_agreement.dart';
 import 'package:biodiversity/components/screen_with_logo_and_waves.dart';
 import 'package:biodiversity/models/user.dart' as biodiversity_user;
-import 'package:biodiversity/screens/login_page/welcome_page.dart';
+import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -133,7 +133,7 @@ class _RegisterFormState extends State<RegisterForm> {
                             });
                           },
                           child: const Text(
-                              'Ich habe das Privacy-Agreement gelesen.'),
+                              'Ich habe das Privacy-Agreement gelesen'),
                         ),
                         Checkbox(
                           value: field.value,
@@ -151,7 +151,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 );
               },
               validator: (value) =>
-                  value ? null : 'Bitte lies das Privacy, agreement'),
+                  value ? null : 'Bitte lies das Privacy-Agreement'),
           const SizedBox(
             height: 40,
           ),
@@ -174,7 +174,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   name: _name, surname: _surname, nickname: _nickname);
       if (errorMessage == null) {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => WelcomePage()));
+            context, MaterialPageRoute(builder: (context) => MyGarden()));
       } else {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(errorMessage)));
