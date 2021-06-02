@@ -13,7 +13,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart' as fb_auth;
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+
 
 /// The User class holds all information about the User of the app
 /// The class is built to be used as a singleton,
@@ -383,6 +385,12 @@ class User extends ChangeNotifier {
     return null;
   }
 
+  /// Signs the user in with the provided Apple account
+  Future<LoginResult> signInWithApple() async {
+    //TODO: Implement signInWithApple
+    return null;
+  }
+
   Future<LoginResult> _signInWithCredential(
       {@required OAuthCredential credential,
       @required String email,
@@ -500,6 +508,12 @@ class User extends ChangeNotifier {
         email: data['email'],
         signOutCallback: _storage.facebookAuth.logOut);
     return result;
+  }
+
+  /// Signs the user in with the provided Apple account
+  Future<LoginResult> registerWithApple(BuildContext context) async {
+    //TODO: Implement registerWithApple
+    return null;
   }
 
   /// signs in a user with the provided credential and loads the User details.
