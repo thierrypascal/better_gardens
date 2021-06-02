@@ -4,6 +4,7 @@ import 'package:biodiversity/screens/login_page/email_login_page.dart';
 import 'package:biodiversity/screens/login_page/register_page.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -54,12 +55,18 @@ class LoginPage extends StatelessWidget {
             ],
           ),
         ),
-        SignInButton(
-          name: 'Google',
-          icon: FontAwesomeIcons.google,
-          signInFunction:
-              Provider.of<User>(context, listen: false).signInWithGoogle,
-        ),
+        (defaultTargetPlatform == TargetPlatform.iOS)
+            ? SignInButton(
+                signInFunction:
+                    Provider.of<User>(context, listen: false).signInWithApple,
+                name: 'Apple',
+                icon: FontAwesomeIcons.apple)
+            : SignInButton(
+                name: 'Google',
+                icon: FontAwesomeIcons.google,
+                signInFunction:
+                    Provider.of<User>(context, listen: false).signInWithGoogle,
+              ),
         // SignInButton(
         //   name: 'Facebook',
         //   icon: FontAwesomeIcons.facebook,

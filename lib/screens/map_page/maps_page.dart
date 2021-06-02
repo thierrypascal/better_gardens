@@ -10,6 +10,7 @@ import 'package:biodiversity/screens/information_list_page/biodiversity_elements
 import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -86,6 +87,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         children: <Widget>[
           GoogleMap(
             myLocationEnabled: true,
+            myLocationButtonEnabled: (defaultTargetPlatform == TargetPlatform.iOS) ? false : true,
             onMapCreated: (controller) => mapController = controller,
             initialCameraPosition: (widget.garden != null)
                 ? CameraPosition(target: widget.garden.getLatLng(), zoom: _zoom)
