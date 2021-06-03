@@ -16,7 +16,7 @@ class TakeHomeMessageService extends ChangeNotifier {
   TakeHomeMessageService({StorageProvider storageProvider})
       : _storage = storageProvider ?? StorageProvider.instance {
     _streamSubscription = _storage.database
-        .collection('takeHomeMessage')
+        .collection('takeHomeMessages')
         .snapshots()
         .listen(_updateElements);
   }

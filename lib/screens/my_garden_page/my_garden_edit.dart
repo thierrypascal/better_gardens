@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:biodiversity/components/edit_dialog.dart';
@@ -40,17 +41,20 @@ class _MyGardenEditState extends State<MyGardenEdit> {
   ];
 
   @override
+  void initState() {
+    Provider.of<MapInteractionContainer>(context, listen: false).reset();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     String _toDeleteURL;
+    Timer _timer;
     final garden = Provider.of<Garden>(context, listen: false);
-    final mapInteractions =
-        Provider.of<MapInteractionContainer>(context, listen: false);
+    final mapInteractions = Provider.of<MapInteractionContainer>(context);
     if (garden.gardenType != null && _gardenType.contains(garden.gardenType)) {
       _selectedType = garden.gardenType;
     }
-    mapInteractions
-        .getLocationOfAddress(garden.street)
-        .then((result) => mapInteractions.selectedLocation = result);
 
     return EditDialog(
       title: ('Mein Garten'),
@@ -62,7 +66,7 @@ class _MyGardenEditState extends State<MyGardenEdit> {
         if (_saveRequested) {
           garden.imageURL = await ServiceProvider.instance.imageService
               .uploadImage(_toSaveImage, 'gardenpictures',
-                  filename: '${garden.name}_${const Uuid().v4()}');
+              filename: '${garden.name}_${const Uuid().v4()}');
         }
         if (_deleteRequested) {
           ServiceProvider.instance.imageService
@@ -90,7 +94,7 @@ class _MyGardenEditState extends State<MyGardenEdit> {
 
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
                 child: TextFormField(
                   initialValue: garden.name,
                   decoration: const InputDecoration(
@@ -122,10 +126,10 @@ class _MyGardenEditState extends State<MyGardenEdit> {
                           child: Text(dropDownStringItem),
                         );
                       }).toList(),
-                      onChanged: (String _value) => {
+                      onChanged: (value) => {
                         setState(() {
-                          _gartenType = _value;
-                          _selectedType = _value;
+                          _gartenType = value;
+                          _selectedType = value;
                         }),
                       },
                       hint: const Text('Garten auswählen'),
@@ -138,9 +142,11 @@ class _MyGardenEditState extends State<MyGardenEdit> {
 
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
                 child: TextFormField(
-                  initialValue: garden.street,
+                  key: Key(mapInteractions.lastSelectedAddress),
+                  initialValue:
+                      mapInteractions.lastSelectedAddress ?? garden.street,
                   decoration: const InputDecoration(
                       labelText: 'Garten Adresse',
                       hintText: 'Strasse Nr, PLZ Ort',
@@ -149,12 +155,17 @@ class _MyGardenEditState extends State<MyGardenEdit> {
                     _address = value;
                   },
                   onChanged: (value) {
-                    mapInteractions.getLocationOfAddress(value).then(
-                        (result) => mapInteractions.selectedLocation = result);
+                    _timer?.cancel();
+                    _timer = Timer(const Duration(milliseconds: 1000),
+                        () => mapInteractions.getLocationOfAddress(value));
                   },
                 ),
               ),
-              select_garden_image(
+              SubMap(
+                  initialPosition:
+                      mapInteractions.selectedLocation ?? garden.getLatLng()),
+              const SizedBox(height: 20),
+              SelectGardenImage(
                 deleteFunction: (toDeleteURL) {
                   _toDeleteURL = toDeleteURL;
                   _deleteRequested = true;
@@ -170,7 +181,6 @@ class _MyGardenEditState extends State<MyGardenEdit> {
                 garden: garden,
               ),
               //Show minimap of Garden
-              SubMap(garden: garden),
             ],
           ),
         ),

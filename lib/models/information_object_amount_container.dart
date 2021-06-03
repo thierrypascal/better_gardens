@@ -1,4 +1,3 @@
-import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/information_object.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -10,4 +9,10 @@ class InformationObjectAmountContainer extends ChangeNotifier {
 
   /// to which garden the InformationObjects are associated
   String garden;
+
+  /// resets the Container to the initial value
+  void clear() {
+    garden = null;
+    amounts.clear();
+  }
 }

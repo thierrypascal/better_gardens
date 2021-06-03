@@ -11,7 +11,6 @@ class GlobalModel {
   final TargetPlatform platform;
   final TextDirection textDirection;
 
-
   GlobalModel copyWith({
     TargetPlatform platform,
     TextDirection textDirection,
@@ -25,24 +24,24 @@ class GlobalModel {
   @override
   bool operator ==(Object other) =>
       other is GlobalModel &&
-          platform == other.platform && textDirection == other.textDirection;
+      platform == other.platform &&
+      textDirection == other.textDirection;
 
   @override
   int get hashCode => hashValues(platform, textDirection);
 
   static GlobalModel of(BuildContext context) {
     final scope =
-    context.dependOnInheritedWidgetOfExactType<_ModelBindingScope>();
+        context.dependOnInheritedWidgetOfExactType<_ModelBindingScope>();
     return scope.modelBindingState.currentModel;
   }
 
   static void update(BuildContext context, GlobalModel newModel) {
     final scope =
-    context.dependOnInheritedWidgetOfExactType<_ModelBindingScope>();
+        context.dependOnInheritedWidgetOfExactType<_ModelBindingScope>();
     scope.modelBindingState.updateModel(newModel);
   }
 }
-
 
 class _ModelBindingScope extends InheritedWidget {
   _ModelBindingScope({

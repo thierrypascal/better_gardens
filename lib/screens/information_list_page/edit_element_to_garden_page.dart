@@ -15,15 +15,13 @@ class EditElementPage extends StatefulWidget {
   EditElementPage({Key key, this.object}) : super(key: key);
 
   @override
-  _EditElementPageState createState() =>
-      _EditElementPageState();
+  _EditElementPageState createState() => _EditElementPageState();
 
   ///Selected InformationObject
   final InformationObject object;
 }
 
-class _EditElementPageState
-    extends State<EditElementPage> {
+class _EditElementPageState extends State<EditElementPage> {
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -40,33 +38,21 @@ class _EditElementPageState
       save: 'Speichern',
       saveIcon: Icons.save,
       saveCallback: () {
-        _formKey.currentState.save();    
-         //save amount and element to selected garden
-        Provider.of<Garden>(context, listen: false).addOwnedObject(
-            Provider.of<InformationObjectAmountContainer>(context,
-                    listen: false)
-                .amounts
-                .keys
-                .first
-                .name,
-            Provider.of<InformationObjectAmountContainer>(context,
-                    listen: false)
-                .amounts
-                .values
-                .first);
-        Provider.of<Garden>(context, listen: false).saveGarden();
+        _formKey.currentState.save();
 
-        //clear the container
-        Provider.of<InformationObjectAmountContainer>(context, listen: false)
-            .amounts
-            .clear();
+        //save amount and element to selected garden
+        final container = Provider.of<InformationObjectAmountContainer>(context,
+            listen: false);
+        Provider.of<Garden>(context, listen: false).addOwnedObject(
+            container.amounts.keys.first.name, container.amounts.values.first,
+            overrideAmount: true);
+        container.clear();
 
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => WhiteRedirectPage(
-                  'Element wurde angepasst',
-                  MyGarden())),
+              builder: (context) =>
+                  WhiteRedirectPage('Element wurde angepasst', MyGarden())),
         );
       },
       body: Column(
@@ -77,7 +63,7 @@ class _EditElementPageState
             'Lebensraum bearbeiten',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           SimpleInformationObjectCard(
             widget.object,
             formKey: _formKey,

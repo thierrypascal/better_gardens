@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:biodiversity/components/edit_dialog.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/information_object_amount_container.dart';
@@ -27,16 +25,13 @@ class _AddElementToGardenLocationPageState
   List<Garden> gardens = [];
   List<bool> isSelected = [];
 
-  //TODO: default selection of first garden
-
   @override
   void initState() {
+    super.initState();
     gardens = ServiceProvider.instance.gardenService
         .getAllGardensFromUser(Provider.of<User>(context, listen: false));
     isSelected = List.generate(gardens.length, (index) => false);
     isSelected[0] = true;
-
-    super.initState();
   }
 
   @override
@@ -64,12 +59,14 @@ class _AddElementToGardenLocationPageState
                       listen: false)
                   .garden = selectedGarden.name;
               //switch garden to selected
-              final _garden = gardens.where((garden) => garden == selectedGarden).first;
+              final _garden =
+                  gardens.where((garden) => garden == selectedGarden).first;
               Provider.of<Garden>(context, listen: false).switchGarden(_garden);
               //redirect to overview
               Navigator.push(
                 context,
                 MaterialPageRoute(
+                    settings: const RouteSettings(name: 'AddElementToGarden'),
                     builder: (context) => AddElementToGardenOverviewPage()),
               );
             } else {
@@ -82,11 +79,13 @@ class _AddElementToGardenLocationPageState
           _showMyDialog();
         }
       },
-      cancelCallback: (){
+      cancelCallback: () {
         Provider.of<InformationObjectAmountContainer>(context, listen: false)
             .amounts
             .clear();
-        Navigator.pop(context);
+        // go back 3 times to leave the AddElementToGarden workflow
+        var i = 0;
+        Navigator.popUntil(context, (route) => route.isFirst || i++ == 2);
       },
       body: Container(
         child: Column(
@@ -105,14 +104,14 @@ class _AddElementToGardenLocationPageState
                 ? Container(
                     width: double.infinity,
                     child: ToggleButtons(
-                      selectedBorderColor: Theme.of(context).primaryColor,
-                        selectedColor:  Theme.of(context).primaryColor,
+                        selectedBorderColor: Theme.of(context).primaryColor,
+                        selectedColor: Theme.of(context).primaryColor,
                         direction: Axis.vertical,
                         borderRadius:
                             const BorderRadius.all(Radius.circular(5)),
                         onPressed: (int index) {
                           setState(() {
-                            for (int indexBtn = 0;
+                            for (var indexBtn = 0;
                                 indexBtn < isSelected.length;
                                 indexBtn++) {
                               if (indexBtn == index) {
@@ -137,7 +136,9 @@ class _AddElementToGardenLocationPageState
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => MyGardenAdd(route: BiodiversityElementListPage(),)),
+                                builder: (context) => MyGardenAdd(
+                                      route: BiodiversityElementListPage(),
+                                    )),
                           );
                         });
                       },

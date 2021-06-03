@@ -49,8 +49,8 @@ class _RegisterApplePageState extends State<RegisterApplePage> {
     final registerMessage = await Provider.of<User>(context, listen: false)
         .registerWithApple(context);
     if (registerMessage == null) {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => MyGarden()));
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (context) => MyGarden()));
     } else {
       setState(() {
         _errorText = 'Currently not implemented';

@@ -23,7 +23,6 @@ class _AddElementToGardenOverviewPageState
     extends State<AddElementToGardenOverviewPage> {
   @override
   Widget build(BuildContext context) {
-
     return EditDialog(
       title: 'Lebensraum hinzufügen',
       abort: 'Zurück',
@@ -54,11 +53,14 @@ class _AddElementToGardenOverviewPageState
                   BiodiversityElementListPage())),
         );
       },
-      cancelCallback: (){
+      cancelCallback: () {
         Provider.of<InformationObjectAmountContainer>(context, listen: false)
             .amounts
             .clear();
-        Navigator.pop(context);
+
+        // go back 2 times to leave the AddElementToGarden workflow
+        var i = 0;
+        Navigator.popUntil(context, (route) => route.isFirst || i++ == 3);
       },
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,

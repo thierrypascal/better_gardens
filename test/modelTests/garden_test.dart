@@ -12,7 +12,7 @@ void main() {
     expect(garden.name, '', reason: 'name was not empty');
     expect(garden.owner, '', reason: 'owner was not empty');
     expect(garden.street, '', reason: 'street was not empty');
-    expect(garden.coordinates, GeoPoint(0, 0), reason: 'coordinates was not (0,0))');
+    expect(garden.coordinates, const GeoPoint(0, 0), reason: 'coordinates was not (0,0))');
   });
 
   test('Valid garden creation', () {
@@ -20,7 +20,7 @@ void main() {
       'name': "Mr. Lewis' Garden",
       'street': 'via G.G. Nessi 4B',
       'owner': 'Lisa',
-      'coordinates': GeoPoint(46.948915, 7.445423),
+      'coordinates': const GeoPoint(46.948915, 7.445423),
       'ownedObjects': {'dummy': 9, 'second dummy': 1},
       'ownedLinkingProjects': ['grasfroschteam']
     };
@@ -49,7 +49,7 @@ void main() {
       'owner': 'Tom',
       'ownedObjects': {'dummy': 9, 'second dummy': 1},
       'ownedLinkingProjects': ['grasfroschteam'],
-      'coordinates': GeoPoint(46.948915, 7.445423),
+      'coordinates': const GeoPoint(46.948915, 7.445423),
     };
     final garden = Garden.fromMap(gardenAttributes, storageProvider: storage);
     await garden.saveGarden();

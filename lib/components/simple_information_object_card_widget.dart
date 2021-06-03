@@ -50,11 +50,11 @@ class SimpleInformationObjectCard extends StatelessWidget {
     if(object.runtimeType == BiodiversityMeasure) {
       final biodiversityObject = object as BiodiversityMeasure;
       if (biodiversityObject.dimension == 'Fläche') {
-        _unit = 'Fläche (m\u00B2)';
+        _unit = 'm\u00B2';
       } else if (biodiversityObject.dimension == 'Linie') {
-        _unit = 'Linie (m)'; //TODO Linie -> Länge?
+        _unit = 'm';
       } else {
-        _unit = 'Anzahl';
+        _unit = 'Stück';
       }
     }
 

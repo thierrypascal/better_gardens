@@ -13,9 +13,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart' as fb_auth;
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
 
 /// The User class holds all information about the User of the app
 /// The class is built to be used as a singleton,
@@ -198,37 +196,16 @@ class User extends ChangeNotifier {
 
   /// returns the users favoredObjects of type HabitatElement
   List<BiodiversityMeasure> get favoredHabitatObjects {
-    List<BiodiversityMeasure> result = [];
-    List<BiodiversityMeasure> allMeasures = ServiceProvider
-        .instance.biodiversityService
-        .getFullBiodiversityObjectList();
-
-    for (var favored in _favoredObjects) {
-      for (var obj in allMeasures) {
-        if (favored == obj.name) {
-          result.add(obj);
-        }
-      }
-    }
-
-    return result;
+    return ServiceProvider.instance.biodiversityService
+        .getFullBiodiversityObjectList()
+        .where((element) => _favoredObjects.contains(element.name));
   }
 
   /// returns the users favoredObjects of type Species
   List<Species> get favoredSpeciesObjects {
-    List<Species> result = [];
-    List<Species> allSpecies =
-        ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
-
-    for (var favored in _favoredObjects) {
-      for (var obj in allSpecies) {
-        if (favored == obj.name) {
-          result.add(obj);
-        }
-      }
-    }
-
-    return result;
+    return ServiceProvider.instance.speciesService
+        .getFullSpeciesObjectList()
+        .where((element) => _favoredObjects.contains(element.name));
   }
 
   /// is true if the User has confirmed his email address by the sent link
@@ -579,11 +556,14 @@ class User extends ChangeNotifier {
     }
   }
 
-  /// change password
+  /// change password, can only be used if the user is registered with email and password
   Future<String> changePassword(
       {@required String oldPassword, @required String newPassword}) async {
+    if (!isRegisteredWithEmail) {
+      return null;
+    }
     try {
-      final credential = await _storage.auth
+      await _storage.auth
           .signInWithEmailAndPassword(email: mail, password: oldPassword);
       await _storage.auth.currentUser.updatePassword(newPassword);
     } on FirebaseAuthException catch (exception) {
@@ -635,7 +615,8 @@ class User extends ChangeNotifier {
           idToken: googleAuth.idToken,
         );
       } else if (info.providerId == FacebookAuthProvider.PROVIDER_ID) {
-        credential = FacebookAuthProvider.credential(token); // TODO might need some fixes once facebook login is available
+        credential = FacebookAuthProvider.credential(
+            token); // TODO might need some fixes once facebook login is available
       } else {
         return 'Dein Anmelde Provider wurde nicht gefunden';
       }

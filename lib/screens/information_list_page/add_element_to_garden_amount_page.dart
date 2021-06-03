@@ -41,10 +41,11 @@ class _AddElementToGardenAmountPageState
         Navigator.push(
           context,
           MaterialPageRoute(
+              settings: const RouteSettings(name: 'AddElementToGarden'),
               builder: (context) => AddElementToGardenLocationPage()),
         );
       },
-      cancelCallback: (){
+      cancelCallback: () {
         Provider.of<InformationObjectAmountContainer>(context, listen: false)
             .amounts
             .clear();
@@ -59,8 +60,7 @@ class _AddElementToGardenAmountPageState
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
-          const Text(
-              'Gib die Menge an, welche Du hinzufügen möchtest'),
+          const Text('Gib die Menge an, welche Du hinzufügen möchtest'),
           const SizedBox(height: 20),
           SimpleInformationObjectCard(
             widget.object,
