@@ -1,6 +1,7 @@
 import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/information_object.dart';
+import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/detailview_page/detailview_page_information_object.dart';
 import 'package:biodiversity/screens/information_list_page/add_element_to_garden_amount_page.dart';
@@ -19,6 +20,10 @@ class ExpandableInformationObjectCard extends StatefulWidget {
   /// if this flag is set, the buttons hinzufügen and merken will be removed
   final bool hideLikeAndAdd;
 
+  /// if this flag is set, the buttons hinzufügen und merken will be aranged in a list.
+  /// This is useful when Species and BiodiversityElements are mixed in one list
+  final bool arrangeLikeAndAddAsRow;
+
   /// if this flag is set, the buttons bearbeiten and löschen will be removed
   final bool showDeleteAndEdit;
 
@@ -35,12 +40,15 @@ class ExpandableInformationObjectCard extends StatefulWidget {
   ExpandableInformationObjectCard(this.object,
       {hideLikeAndAdd = false,
       this.showDeleteAndEdit = false,
-      this.isSpecies = false,
       this.additionalInfo,
+      arrangeLikeAndAddAsRow = false,
       ServiceProvider serviceProvider,
       Key key})
       : _serviceProvider = serviceProvider ??= ServiceProvider.instance,
         hideLikeAndAdd = hideLikeAndAdd || additionalInfo != null,
+        arrangeLikeAndAddAsRow =
+            arrangeLikeAndAddAsRow || additionalInfo != null,
+        isSpecies = object is Species,
         super(key: key);
 
   @override
@@ -52,7 +60,6 @@ class _ExpandableInformationObjectCardState
     extends State<ExpandableInformationObjectCard> {
   bool _expanded = false;
 
-  //TODO: check if user logged in (and if garden exists)
   @override
   Widget build(BuildContext context) {
     String _unit;
@@ -64,7 +71,7 @@ class _ExpandableInformationObjectCardState
       } else if (biodiversityObject.dimension == 'Linie') {
         _unit = 'm';
       } else {
-        _unit = 'Anzahl'; //TODO suggestion: replace with "Stück"
+        _unit = 'Stück';
       }
     }
     return Container(
@@ -164,7 +171,7 @@ class _ExpandableInformationObjectCardState
                         ),
                       ],
                     ),
-                  if (!widget.hideLikeAndAdd)
+                  if (!widget.hideLikeAndAdd && !widget.arrangeLikeAndAddAsRow)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -183,16 +190,16 @@ class _ExpandableInformationObjectCardState
                             style: const ButtonStyle(
                                 visualDensity: VisualDensity.compact),
                           ),
-                         // TextButton.icon(
-                         //   icon: const Icon(
-                         //     Icons.add_circle_outline_outlined,
-                         //     size: 20,
-                         //   ),
-                         //    label: const Text('aktivitätsradius'),
-                         //    onPressed: null,
-                         //    style: const ButtonStyle(
-                         //        visualDensity: VisualDensity.compact),
-                         //  ),
+                        // TextButton.icon(
+                        //   icon: const Icon(
+                        //     Icons.add_circle_outline_outlined,
+                        //     size: 20,
+                        //   ),
+                        //    label: const Text('aktivitätsradius'),
+                        //    onPressed: null,
+                        //    style: const ButtonStyle(
+                        //        visualDensity: VisualDensity.compact),
+                        //  ),
                         TextButton.icon(
                           icon: Icon(
                             Icons.favorite,
@@ -211,6 +218,39 @@ class _ExpandableInformationObjectCardState
                         ),
                       ],
                     ),
+                  if (!widget.hideLikeAndAdd && widget.arrangeLikeAndAddAsRow)
+                    Consumer<User>(builder: (context, user, child) {
+                      if (user == null) {
+                        return const Text('');
+                      }
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (!widget.isSpecies)
+                            IconButton(
+                              icon: const Icon(
+                                Icons.add,
+                                color: Colors.black,
+                              ),
+                              onPressed: () {
+                                _handle_add_measure_to_garden(context);
+                              },
+                            ),
+                          TextButton.icon(
+                            label: const Text('merken'),
+                            icon: Icon(
+                              Icons.favorite,
+                              color: user.doesLikeElement(widget.object.name)
+                                  ? Colors.red
+                                  : Colors.black38,
+                            ),
+                            onPressed: () {
+                              _handle_like_button(context);
+                            },
+                          ),
+                        ],
+                      );
+                    }),
                   if (widget.additionalInfo != null)
                     Text(
                       widget.additionalInfo,
@@ -224,6 +264,7 @@ class _ExpandableInformationObjectCardState
                       height: 60, width: 60, fit: BoxFit.cover),
                 ],
               ),
+              // expanded card
               secondChild: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

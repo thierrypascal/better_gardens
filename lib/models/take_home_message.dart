@@ -38,22 +38,16 @@ class TakeHomeMessage implements InformationObject {
         name = map.containsKey('title') ? map['title'] as String : '',
         readTime = map.containsKey('readTime') ? map['readTime'] as String : '',
         description = '',
-        shortDescription = '' {
+        shortDescription = map.containsKey('shortDescription')
+            ? map['shortDescription'] as String
+            : '' {
     _loadDescription();
   }
 
   Future<void> _loadDescription() async {
     description = await _storage
-        .getTextFromFileStorage('/takeHomeMessages/body/$name.md');
+        .getTextFromFileStorage('takeHomeMessages/description/$name.md');
     description ??= 'Keine Beschreibung gefunden.';
-
-    if (description.length > 400) {
-      var pointIndex = description.indexOf('\.', 400);
-      if (pointIndex == -1) pointIndex = 400;
-      shortDescription = '${description.substring(0, pointIndex)}.';
-    } else {
-      shortDescription = description;
-    }
   }
 
   /// load a [TakeHomeMessage] form a database snapshot

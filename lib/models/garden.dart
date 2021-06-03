@@ -133,10 +133,6 @@ class Garden extends ChangeNotifier {
       'imageURL': imageURL,
     });
   }
- 
-
-  /// fucntion to load the details from the first garden of a user
-  void switchGardenFromUser(User user) {}
 
   /// function to load the details of another garden
   void switchGarden(Garden garden) {
@@ -158,9 +154,13 @@ class Garden extends ChangeNotifier {
 
   /// adds an element with to a garden with the specified count
   /// and saves the garden to the database
-  void addOwnedObject(String object, int count) {
+  void addOwnedObject(String object, int count, {bool overrideAmount = false}) {
     if (object != null && object.isNotEmpty && count > 0) {
-      ownedObjects[object] = count;
+      if (!overrideAmount && ownedObjects.containsKey(object)) {
+        ownedObjects[object] += count;
+      } else {
+        ownedObjects[object] = count;
+      }
       saveGarden();
     }
   }
@@ -197,25 +197,6 @@ class Garden extends ChangeNotifier {
     return LatLng(coordinates.latitude, coordinates.longitude);
   }
 
-  int _countAreaObjects(String dimension) {
-    final elementList = ServiceProvider.instance.biodiversityService
-        .getBiodiversityObjectList(dimension);
-    List<BiodiversityMeasure> areaElements = [];
-    int result = 0;
-
-    elementList.forEach((element) {
-      if (ownedObjects.keys.contains(element.name)) {
-        areaElements.add(element);
-      }
-    });
-
-    areaElements.forEach((element) {
-      result += ownedObjects[element.name];
-    });
-
-    return result;
-  }
-
   /// returns the nickname of the garden owner if showGardenOnMap is set to true for this user
   Future<bool> isShowImageOnGarden() async {
     final doc = await _storage.database.doc('users/$owner').get();
@@ -229,72 +210,30 @@ class Garden extends ChangeNotifier {
     return false;
   }
 
-
-  int _countPointObjects(String dimension) {
-    final elementList = ServiceProvider.instance.biodiversityService
-        .getBiodiversityObjectList(dimension);
-    List<BiodiversityMeasure> areaElements = [];
-    int result = 0;
-
-    elementList.forEach((element) {
-      if (ownedObjects.keys.contains(element.name)) {
-        areaElements.add(element);
-      }
-    });
-
-    areaElements.forEach((element) {
-      result += ownedObjects[element.name];
-    });
-
-    return result;
-  }
-
-  int _countLenghtObjects(String dimension) {
-    final elementList = ServiceProvider.instance.biodiversityService
-        .getBiodiversityObjectList(dimension);
-    List<BiodiversityMeasure> areaElements = [];
-    int result = 0;
-
-    elementList.forEach((element) {
-      if (ownedObjects.keys.contains(element.name)) {
-        areaElements.add(element);
-      }
-    });
-
-    areaElements.forEach((element) {
-      result += ownedObjects[element.name];
-    });
-
-    return result;
+  int _countOwnedObjects(String dimension) {
+    return ServiceProvider.instance.biodiversityService
+        .getBiodiversityObjectList(dimension)
+        .where((e) => ownedObjects.keys.contains(e.name))
+        .fold(0, (value, element) => value += ownedObjects[element.name]);
   }
 
   int _countSupportedSpeciesObjects() {
-    final elementList = ServiceProvider.instance.biodiversityService
-        .getFullBiodiversityObjectList();
-    List<BiodiversityMeasure> areaElements = [];
-    int result = 0;
-
-    elementList.forEach((element) {
-      if (ownedObjects.keys.contains(element.name)) {
-        areaElements.add(element);
-      }
-    });
-
-    areaElements.forEach((element) {
-      result += element.beneficialFor.length;
-    });
-
-    return result;
+    return ServiceProvider.instance.biodiversityService
+        .getFullBiodiversityObjectList()
+        .where((e) => ownedObjects.keys.contains(e.name))
+        .expand((element) => element.beneficialFor)
+        .toSet()
+        .length;
   }
 
   /// count of area objects
-  int get totalAreaObjects => _countAreaObjects('Fläche');
+  int get totalAreaObjects => _countOwnedObjects('Fläche');
 
   /// count of point objects
-  int get totalPointObjects => _countPointObjects('Punkt');
+  int get totalPointObjects => _countOwnedObjects('Punkt');
 
   /// count of point objects
-  int get totalLengthObjects => _countLenghtObjects('Linie');
+  int get totalLengthObjects => _countOwnedObjects('Linie');
 
   /// count of point objects
   int get totalSupportedSpecies => _countSupportedSpeciesObjects();

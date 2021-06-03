@@ -1,8 +1,8 @@
 import 'package:biodiversity/components/edit_dialog.dart';
+import 'package:biodiversity/components/image_picker_page.dart';
 import 'package:biodiversity/components/white_redirect_page.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/account_page/account_page.dart';
-import 'package:biodiversity/screens/account_page/image_picker_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -25,12 +25,20 @@ class _EditProfilePage extends State<EditProfilePage> {
   String _nickname;
   String _email;
   String _imageURL;
+  bool _showNameOnMap;
+  bool _showGardenImageOnMap;
+
+  @override
+  void initState() {
+    final user = Provider.of<User>(context, listen: false);
+    _showNameOnMap = user.showNameOnMap;
+    _showGardenImageOnMap = user.showGardenImageOnMap;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context, listen: false);
-    var _showNameOnMap = user.showNameOnMap;
-    var _showGardenImageOnMap = user.showGardenImageOnMap;
     return EditDialog(
         title: 'Profil bearbeiten',
         abortCallback: () => Navigator.of(context).pop(),

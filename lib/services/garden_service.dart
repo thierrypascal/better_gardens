@@ -12,6 +12,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 /// A service which loads all gardens and stores them
@@ -44,10 +45,14 @@ class GardenService extends ChangeNotifier {
   }
 
   ///handles the routing to MyGardenAdd, if logged in: redirects to MyGardenAdd, if not: redirect to LoginPage
-  void handle_create_garden(BuildContext context) {
+  void handle_create_garden(BuildContext context, {LatLng startingPosition}) {
     if (Provider.of<User>(context, listen: false).isLoggedIn) {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => MyGardenAdd()));
+          context,
+          MaterialPageRoute(
+              builder: (context) => MyGardenAdd(
+                    startingPosition: startingPosition,
+                  )));
     } else {
       Navigator.pushReplacement(
           context,
@@ -61,14 +66,12 @@ class GardenService extends ChangeNotifier {
   List<Garden> getAllGardensFromUser(User user) {
     return _gardens.where((garden) => garden.owner == user.userUUID).toList();
   }
-  
+
   ///Delete all gardens from the user when the account is being deleted
   void deleteAllGardensFromUser(User user) {
     final gardens = [];
-    
-    gardens.addAll(_gardens
-        .where((garden) => garden.owner == user.userUUID)
-    );
+
+    gardens.addAll(_gardens.where((garden) => garden.owner == user.userUUID));
     gardens.forEach((element) {
       deleteGarden(element);
     });

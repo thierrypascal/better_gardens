@@ -1,9 +1,9 @@
 import 'dart:convert';
+import 'dart:developer' as logging;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -43,9 +43,17 @@ class StorageProvider {
   /// returns the content of a file from the fileStorage as String
   Future<String> getTextFromFileStorage(String path) async {
     try {
-      final data = await fileStorage.ref().child(path).getData(1024 * 1024);
-      return data != null ? const Utf8Decoder().convert(data) : null;
-    } on PlatformException {
+      final parent = await fileStorage.ref().child(path).parent.listAll();
+      if (parent.items.map((e) => e.fullPath).contains(path)) {
+        final data = await fileStorage.ref().child(path).getData(1024 * 1024);
+        return data != null ? const Utf8Decoder().convert(data) : null;
+      } else {
+        logging.log('No element found at address $path');
+        return null;
+      }
+    } catch (e) {
+      logging.log('Something went wrong on text loading from storage.'
+          '\nError: $e');
       return null;
     }
   }

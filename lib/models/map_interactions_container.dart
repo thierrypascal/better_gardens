@@ -8,6 +8,7 @@ import 'package:location/location.dart' as loc;
 class MapInteractionContainer extends ChangeNotifier {
   BiodiversityMeasure _element;
   LatLng _selectedLocation;
+  String _lastSelectedAddress;
 
   /// creates a new Container with a element at a given location
   MapInteractionContainer(this._element, this._selectedLocation);
@@ -23,6 +24,9 @@ class MapInteractionContainer extends ChangeNotifier {
 
   /// returns a [LatLng] object of the stored location
   LatLng get selectedLocation => _selectedLocation;
+
+  /// returns the resolved address for the last selected location
+  String get lastSelectedAddress => _lastSelectedAddress;
 
   ///returns a [LatLng] object of the default location
   LatLng get defaultLocation => _defaultLocation;
@@ -40,11 +44,16 @@ class MapInteractionContainer extends ChangeNotifier {
     notifyListeners();
   }
 
+  set lastSelectedAddress(String addr) {
+    _lastSelectedAddress = addr;
+    notifyListeners();
+  }
+
   /// resets the container to null
   void reset() {
     _element = null;
     _selectedLocation = null;
-    notifyListeners();
+    _lastSelectedAddress = null;
   }
 
   /// returns the users current location as LatLng
@@ -64,7 +73,7 @@ class MapInteractionContainer extends ChangeNotifier {
   /// a default message is returned if no coordinates are stored
   Future<String> getAddressOfSelectedLocation() async {
     if (_selectedLocation == null) {
-      return 'Keine Adresse ausgewählt';
+      return '';
     }
     final placeMark = await placemarkFromCoordinates(
         _selectedLocation.latitude, _selectedLocation.longitude);
@@ -74,10 +83,14 @@ class MapInteractionContainer extends ChangeNotifier {
   /// returns the address of the stored coordinates as string.
   /// a default message is returned if no coordinates are stored
   Future<LatLng> getLocationOfAddress(String adr) async {
+    if (adr == null || adr.isEmpty) {
+      return _defaultLocation;
+    }
     var result = _defaultLocation;
     try {
       final location = await locationFromAddress(adr);
       result = LatLng(location.first.latitude, location.first.longitude);
+      selectedLocation = result;
     } catch (e) {
       return result;
     }

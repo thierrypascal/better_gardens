@@ -3,12 +3,9 @@ import 'dart:ui';
 import 'package:biodiversity/components/circlesOverview.dart';
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/information_object_list_widget.dart';
-import 'package:biodiversity/components/white_redirect_page.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/user.dart';
-import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:biodiversity/screens/map_page/maps_page.dart';
-import 'package:biodiversity/screens/my_garden_page/my_garden_add.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_delete.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_edit.dart';
 import 'package:biodiversity/services/image_service.dart';
@@ -33,8 +30,9 @@ class _MyGardenState extends State<MyGarden> {
 
   @override
   Widget build(BuildContext context) {
-    gardens = ServiceProvider.instance.gardenService
-        .getAllGardensFromUser(Provider.of<User>(context));
+    final user = Provider.of<User>(context);
+    gardens =
+        ServiceProvider.instance.gardenService.getAllGardensFromUser(user);
     garden = Provider.of<Garden>(context);
     if (gardens.isNotEmpty && garden.isEmpty) {
       garden = gardens.first;
@@ -50,7 +48,24 @@ class _MyGardenState extends State<MyGarden> {
             itemBuilder: (context) {
               final _gardens = gardens.map((garden) => garden.name);
               final _menuItems = [
-                if (gardens.isNotEmpty)
+                PopupMenuItem(
+                  value: 'gardenAddPage',
+                  child: Row(
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(right: 10),
+                        child: Icon(
+                          Icons.add,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const Text('Garten hinzufügen')
+                    ],
+                  ),
+                )
+              ];
+              if (gardens.isNotEmpty) {
+                _menuItems.addAll([
                   PopupMenuItem(
                     value: 'MyGardenEdit',
                     child: Row(
@@ -66,22 +81,6 @@ class _MyGardenState extends State<MyGarden> {
                       ],
                     ),
                   ),
-                PopupMenuItem(
-                  value: 'gardenAddPage',
-                  child: Row(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.only(right: 10),
-                        child: Icon(
-                          Icons.add,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const Text('Garten hinzufügen')
-                    ],
-                  ),
-                ),
-                if (gardens.isNotEmpty)
                   PopupMenuItem(
                     value: 'MyGardenDelete',
                     child: Row(
@@ -97,29 +96,34 @@ class _MyGardenState extends State<MyGarden> {
                       ],
                     ),
                   ),
-              ];
-              if (_gardens.length <= 1) {
+                ]);
+              }
+
+              if (_gardens.length < 2) {
                 return _menuItems;
               }
               for (final _garden in _gardens) {
-                _menuItems.add(PopupMenuItem(
-                  value: _garden,
-                  child: Row(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.only(right: 10),
-                        child: Icon(
-                          Icons.home,
-                          color: Colors.black,
+                if (_garden !=
+                    Provider.of<Garden>(context, listen: false).name) {
+                  _menuItems.add(PopupMenuItem(
+                    value: _garden,
+                    child: Row(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(right: 10),
+                          child: Icon(
+                            Icons.home,
+                            color: Colors.black,
+                          ),
                         ),
-                      ),
-                      Flexible(
-                          child: Text(
-                        'Zu $_garden wechseln',
-                      )),
-                    ],
-                  ),
-                ));
+                        Flexible(
+                            child: Text(
+                          'Zu $_garden wechseln',
+                        )),
+                      ],
+                    ),
+                  ));
+                }
               }
               return _menuItems;
             },
@@ -153,7 +157,8 @@ class _MyGardenState extends State<MyGarden> {
                       const SizedBox(height: 30),
                       ElevatedButton(
                         onPressed: () {
-                          ServiceProvider.instance.gardenService.handle_create_garden(context);
+                          ServiceProvider.instance.gardenService
+                              .handle_create_garden(context);
                         },
                         child: const Text('Einen Garten erstellen'),
                       ),
@@ -205,17 +210,21 @@ class _MyGardenState extends State<MyGarden> {
                             fontSize: 20, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
+                      const Text(
+                          'Hier sehen Sie die Lebenräume, die Sie registriert haben. '
+                          'Die Menge der einzelnen Lebensräume wird je nach Typ unterschiedlich berechnet. '
+                          'Je mehr unterschiedliche Lebensräume in ihrem Garten vorhanden sind, '
+                          'desto grösser ist die Anzahl der Arten, die in Ihrem Garten vorkommen könnten.'),
+                      const SizedBox(height: 20),
                       CirclesOverview(context, garden),
                       const SizedBox(height: 15.0),
                       TextButton(
-                          //TODO functionality to see the garden in the map
                           onPressed: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => MapsPage(
-                                          garden: garden,
-                                        )));
+                                    builder: (context) =>
+                                        MapsPage(garden: garden)));
                           },
                           child: Row(
                             children: <Widget>[
@@ -238,6 +247,7 @@ class _MyGardenState extends State<MyGarden> {
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 ),
                 InformationObjectListWidget(
+                  key: Key(garden.name),
                   objects: ServiceProvider.instance.gardenService
                       .getAllBiodiversityMeasuresFromGarden(garden),
                   showDeleteAndEdit: true,
@@ -251,8 +261,6 @@ class _MyGardenState extends State<MyGarden> {
     );
   }
 
-
-
   void _handleTopMenu(String value) {
     if (value == 'MyGardenEdit') {
       Navigator.push(
@@ -263,10 +271,8 @@ class _MyGardenState extends State<MyGarden> {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => MyGardenDelete()));
     } else {
-      setState(() {
-        final _garden = gardens.where((garden) => garden.name == value).first;
-        Provider.of<Garden>(context, listen: false).switchGarden(_garden);
-      });
+      final _garden = gardens.where((garden) => garden.name == value).first;
+      Provider.of<Garden>(context, listen: false).switchGarden(_garden);
     }
   }
 }

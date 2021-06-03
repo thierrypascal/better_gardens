@@ -42,8 +42,10 @@ class MapMarkerService extends ChangeNotifier {
   Future<void> _loadIcons() async {
     //TODO: add images for linking project
 
-     final gardenIcon = await BitmapDescriptor.fromAssetImage(
-        const ImageConfiguration(), 'res/gardenIcon.png',);
+    final gardenIcon = await BitmapDescriptor.fromAssetImage(
+      const ImageConfiguration(),
+      'res/gardenIcon.png',
+    );
 
     _icons.putIfAbsent('garden', () => gardenIcon);
   }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:biodiversity/components/edit_dialog.dart';
@@ -18,10 +19,13 @@ import 'package:uuid/uuid.dart';
 ///creates a new garden for the user
 class MyGardenAdd extends StatefulWidget {
   ///MyGardenAdd constructor
-  MyGardenAdd({this.route, Key key}) : super(key: key);
+  MyGardenAdd({this.route, this.startingPosition, Key key}) : super(key: key);
 
   /// the Page which you will be redirected to after the timeout
   final Widget route;
+
+  /// the coordinates where the garden should be created
+  final LatLng startingPosition;
 
   @override
   _MyGardenAddState createState() => _MyGardenAddState();
@@ -29,29 +33,41 @@ class MyGardenAdd extends StatefulWidget {
 
 class _MyGardenAddState extends State<MyGardenAdd> {
   final _formKey = GlobalKey<FormState>();
+  Timer _timer;
   String _toDeleteURL;
   bool _deleteRequested = false;
   Uint8List _toSaveImage;
   bool _saveRequested = false;
   String _name;
-  String _gartenType = '';
   String _selectedType;
   String _address;
   final _gardenType = [
     'Familiengarten',
     'Hausgarten',
     'Dachgarten',
-    'Balkon / Terrase',
+    'Balkon / Terrasse',
     'Gemeinschaftsgarten',
     'Innenhof'
   ];
 
   @override
+  void initState() {
+    Provider.of<MapInteractionContainer>(context, listen: false).reset();
+    Provider.of<MapInteractionContainer>(context, listen: false)
+        .selectedLocation = widget.startingPosition;
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final garden = Garden.empty();
-    final mapInteractions =
-        Provider.of<MapInteractionContainer>(context, listen: false);
-    mapInteractions.reset();
+    final mapInteractions = Provider.of<MapInteractionContainer>(context);
 
     return EditDialog(
       title: ('Mein Garten'),
@@ -79,11 +95,12 @@ class _MyGardenAddState extends State<MyGardenAdd> {
         } else {
           garden.name = _name;
           garden.street = _address;
-          garden.gardenType = _gartenType;
+          garden.gardenType = _selectedType ?? '';
           garden.owner = user.userUUID;
           garden.coordinates = (selLoc != null)
               ? GeoPoint(selLoc.latitude, selLoc.longitude)
-              : GeoPoint(mapInteractions.defaultLocation.latitude, mapInteractions.defaultLocation.longitude);
+              : GeoPoint(mapInteractions.defaultLocation.latitude,
+                  mapInteractions.defaultLocation.longitude);
           await garden.saveGarden();
           user.addGarden(garden);
           Provider.of<Garden>(context, listen: false).switchGarden(garden);
@@ -105,70 +122,70 @@ class _MyGardenAddState extends State<MyGardenAdd> {
 
               Padding(
                 padding:
-                const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-                child: TextFormField(
-                  decoration: const InputDecoration(
-                      labelText: 'Spitzname Garten',
-                      contentPadding: EdgeInsets.symmetric(vertical: 4)),
-                  onSaved: (value) => _name = value,
-                ),
-              ),
-              const SizedBox(),
-
-              const Padding(
-                padding: EdgeInsets.only(left: 20, bottom: 5.0),
-                child: Text('Gartentyp'),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 15, right: 15),
-                child: Container(
-                  padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey, width: 1),
-                      borderRadius: BorderRadius.circular(10)),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      isExpanded: true,
-                      value: _selectedType,
-                      items: _gardenType.map((String dropDownStringItem) {
-                        return DropdownMenuItem<String>(
-                          value: dropDownStringItem,
-                          child: Text(dropDownStringItem),
-                        );
-                      }).toList(),
-                      onChanged: (String _value) => {
-                        setState(() {
-                          _gartenType = _value;
-                          _selectedType = _value;
-                        }),
-                      },
-                      hint: const Text('Garten auswählen'),
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextFormField(
+                      decoration: const InputDecoration(
+                          labelText: 'Spitzname Garten',
+                          contentPadding: EdgeInsets.symmetric(vertical: 4)),
+                      onSaved: (value) => _name = value,
                     ),
-                  ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10, bottom: 4),
+                      child: Text('Gartentyp',
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.6))),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey, width: 1),
+                          borderRadius: BorderRadius.circular(10)),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton(
+                          isExpanded: true,
+                          value: _selectedType,
+                          onChanged: (value) =>
+                              setState(() => _selectedType = value),
+                          hint: const Text('Garten auswählen'),
+                          items: _gardenType.map((String dropDownStringItem) {
+                            return DropdownMenuItem<String>(
+                              value: dropDownStringItem,
+                              child: Text(dropDownStringItem),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                    TextFormField(
+                      key: Key(mapInteractions.lastSelectedAddress),
+                      initialValue: mapInteractions.lastSelectedAddress,
+                      autofocus: false,
+                      decoration: const InputDecoration(
+                          labelText: 'Garten Adresse',
+                          hintText: 'Strasse Nr, PLZ Ort',
+                          contentPadding: EdgeInsets.symmetric(vertical: 4)),
+                      onSaved: (value) {
+                        _address = value;
+                      },
+                      onChanged: (value) {
+                        _timer?.cancel();
+                        _timer = Timer(const Duration(milliseconds: 1000),
+                            () => mapInteractions.getLocationOfAddress(value));
+                      },
+                    ),
+                  ],
                 ),
               ),
-
-              const SizedBox(),
-
-              Padding(
-                padding:
-                const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-                child: TextFormField(
-                  decoration: const InputDecoration(
-                      labelText: 'Garten Adresse',
-                      hintText: 'Strasse Nr, PLZ Ort',
-                      contentPadding: EdgeInsets.symmetric(vertical: 4)),
-                  onSaved: (value) {
-                    _address = value;
-                  },
-                  onChanged: (value) {
-                    mapInteractions.getLocationOfAddress(value).then(
-                        (result) => mapInteractions.selectedLocation = result);
-                  },
-                ),
-              ),
-
-              select_garden_image(
+              SubMap(initialPosition: mapInteractions.selectedLocation),
+              const SizedBox(height: 20),
+              SelectGardenImage(
                 deleteFunction: (toDeleteURL) {
                   _toDeleteURL = toDeleteURL;
                   _deleteRequested = true;
@@ -182,9 +199,9 @@ class _MyGardenAddState extends State<MyGardenAdd> {
                 },
                 toSaveImage: _toSaveImage,
                 garden: garden,
+                displayText: 'Gartenbild hinzufügen',
               ),
               //Show minimap of Garden
-              SubMap(),
             ],
           ),
         ),

@@ -22,11 +22,13 @@ class CirclesOverview extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _createCircle('${garden.totalAreaObjects}', 'Lebensraum-Flächen\n(m\u00B2)'),
+              _createCircle('${garden.totalAreaObjects}',
+                  'Lebensraum-Flächen\n(m\u00B2)'),
             ],
           ),
           Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            _createCircle('${garden.totalLengthObjects}', 'Lebensraum-Längen\n(m)')
+            _createCircle(
+                '${garden.totalLengthObjects}', 'Lebensraum-Längen\n(m)')
           ]),
         ],
       ),
@@ -36,8 +38,8 @@ class CirclesOverview extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _createCircle(
-                  '${garden.totalPointObjects}', 'Lebensraum-Strukturen\n(Anzahl)'),
+              _createCircle('${garden.totalPointObjects}',
+                  'Lebensraum-Strukturen\n(Anzahl)'),
             ],
           ),
           Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
@@ -65,11 +67,16 @@ class CirclesOverview extends StatelessWidget {
               //borderRadius: new BorderRadius.circular(30.0),
               color: Colors.white,
             ),
-            child: Center(child: Text(number, style: const TextStyle(fontSize: 20.0))),
+            child: Center(
+                child: Text(number, style: const TextStyle(fontSize: 20.0))),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-            child: Text(text, style: const TextStyle(color: Colors.grey), textAlign: TextAlign.center,),
+            child: Text(
+              text,
+              style: const TextStyle(color: Colors.grey),
+              textAlign: TextAlign.center,
+            ),
           )
         ],
       ),

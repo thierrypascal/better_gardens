@@ -127,7 +127,6 @@ void main() {
     });
 
     testWidgets('test filter tags', (tester) async {
-      final list = <InformationObject>[];
       for (final type in [BiodiversityMeasure, Species, TakeHomeMessage]) {
         final list = <InformationObject>[];
         // do not increase, since the list is constructed with a Listview.builder

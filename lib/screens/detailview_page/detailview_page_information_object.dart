@@ -76,6 +76,7 @@ class _DetailViewPageInformationObjectState
               padding: const EdgeInsets.all(20.0),
               children: [
                 _headRow(),
+                const SizedBox(height: 10),
                 MarkdownBody(
                   data: widget.object.description,
                   onTapLink: (text, link, title) => launch(link),
@@ -189,7 +190,6 @@ class _DetailViewPageInformationObjectState
   }
 
   Widget _showTags() {
-    //TODO: change "connection" to "beneficial for"
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),

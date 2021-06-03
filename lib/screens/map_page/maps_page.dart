@@ -1,4 +1,3 @@
-import 'dart:developer' as logging;
 import 'dart:math' as math;
 
 import 'package:biodiversity/components/circlesOverview.dart';
@@ -6,7 +5,6 @@ import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/text_field_with_descriptor.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
-import 'package:biodiversity/screens/information_list_page/biodiversity_elements_list_page.dart';
 import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -36,7 +34,6 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     Icons.playlist_add,
     Icons.house,
   ];
-  LatLng _currentLocation;
   final double _zoom = 14.0;
   Set<Marker> _markers = {};
 
@@ -87,7 +84,8 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         children: <Widget>[
           GoogleMap(
             myLocationEnabled: true,
-            myLocationButtonEnabled: (defaultTargetPlatform == TargetPlatform.iOS) ? false : true,
+            myLocationButtonEnabled:
+                (defaultTargetPlatform == TargetPlatform.iOS) ? false : true,
             onMapCreated: (controller) => mapController = controller,
             initialCameraPosition: (widget.garden != null)
                 ? CameraPosition(target: widget.garden.getLatLng(), zoom: _zoom)
@@ -201,18 +199,21 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                     FutureBuilder(
                       future: _tappedGarden.isShowImageOnGarden(),
                       builder: (context, showGardenImageOnMap) {
-                        if (showGardenImageOnMap.hasData) {
-                          return (_tappedGarden.imageURL.isNotEmpty)
-                              ? ImageService().getImageByUrl(
-                                  _tappedGarden.imageURL,
-                                  width: MediaQuery.of(context).size.width,
-                                  fit: BoxFit.fitWidth)
-                              : Image(
-                                  image: const AssetImage('res/myGarden.jpg'),
-                                  width: MediaQuery.of(context).size.width,
-                                  fit: BoxFit.fitWidth,
-                                  semanticLabel: _tappedGarden.name,
-                                );
+                        if (showGardenImageOnMap.hasData &&
+                            showGardenImageOnMap.data) {
+                          if (_tappedGarden.imageURL.isNotEmpty) {
+                            return ImageService().getImageByUrl(
+                                _tappedGarden.imageURL,
+                                width: MediaQuery.of(context).size.width,
+                                fit: BoxFit.fitWidth);
+                          } else {
+                            return Image(
+                              image: const AssetImage('res/myGarden.jpg'),
+                              width: MediaQuery.of(context).size.width,
+                              fit: BoxFit.fitWidth,
+                              semanticLabel: _tappedGarden.name,
+                            );
+                          }
                         } else {
                           return const Text('');
                         }
@@ -235,46 +236,17 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         child: ScaleTransition(
           scale: CurvedAnimation(
             parent: _fabController,
-            curve: Interval(0.0, 1.0 - 0 / icons.length / 2.0,
-                curve: Curves.easeOut),
-          ),
-          child: FloatingActionButton(
-            //TODO should be "Vernetzungsprojekte", not "Lebensräume" (Tooltip, Icon and Redirect)
-            heroTag: null,
-            tooltip: 'Lebensraum hinzufügen',
-            backgroundColor: Theme.of(context).cardColor,
-            onPressed: () {
-              Provider.of<MapInteractionContainer>(context, listen: false)
-                  .selectedLocation = _focusedLocation;
-              logging.log(_focusedLocation.toString());
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => BiodiversityElementListPage()),
-              );
-            },
-            child: Icon(icons[0], color: Theme.of(context).accentColor),
-          ),
-        ),
-      ),
-      Container(
-        height: 56.0,
-        width: 75.0,
-        alignment: FractionalOffset.centerLeft,
-        child: ScaleTransition(
-          scale: CurvedAnimation(
-            parent: _fabController,
             curve: Interval(0.0, 1.0 - 1 / icons.length / 2.0,
                 curve: Curves.easeOut),
           ),
           child: FloatingActionButton(
-            //TODO make the creation of the Garden use the selected location (and make apparent which location this is), if we dont use the location, giving this option makes no sense here
             heroTag: null,
             tooltip: 'Garten erstellen',
             backgroundColor: Theme.of(context).cardColor,
             onPressed: () {
-              ServiceProvider.instance.gardenService
-                  .handle_create_garden(context); //TODO maybe replace by Snackbar
+              ServiceProvider.instance.gardenService.handle_create_garden(
+                  context,
+                  startingPosition: _focusedLocation);
             },
             child: Icon(icons[1], color: Theme.of(context).accentColor),
           ),

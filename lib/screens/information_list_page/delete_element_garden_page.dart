@@ -59,10 +59,10 @@ class _DeleteElementGardenPageState
             'Lebensraum löschen',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 10),
-          Text(
+          const SizedBox(height: 10),
+          const Text(
               'Wollen Sie das ausgewählte Element wirklich löschen?'),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           SimpleInformationObjectCard(
             widget.object,
             formKey: _formKey,

@@ -19,12 +19,13 @@ class InformationObjectListWidget extends StatefulWidget {
   /// if this flag is set, the buttons bearbeiten and löschen will be removed
   final bool showDeleteAndEdit;
 
-  /// if this flag is set, the card is used for species and hinzufügen and merken will be changed to vernetzungsprojekt erstellen and merken
-  /// as vernetzungsprojekte is not yet implemented, hinzufügen will be removed if isSpecies is set
-  final bool isSpecies;
-
   /// A list of InformationObjects which should be displayed
   final List<InformationObject> objects;
+
+  /// if this flag is set, the buttons hinzufügen und merken will be aranged in a list.
+  /// This is useful when Species and BiodiversityElements are mixed in one list.
+  /// Only used with expandable cards
+  final bool arrangeLikeAndAddAsRow;
 
   final ServiceProvider _serviceProvider;
 
@@ -38,7 +39,7 @@ class InformationObjectListWidget extends StatefulWidget {
       this.showDeleteAndEdit = false,
       this.useSimpleCard = false,
       this.hideLikeAndAdd = false,
-      this.isSpecies = false,
+      this.arrangeLikeAndAddAsRow = false,
       this.physics = const ScrollPhysics(),
       ServiceProvider serviceProvider})
       : _serviceProvider = serviceProvider ?? ServiceProvider.instance,
@@ -272,12 +273,13 @@ class _InformationObjectListWidgetState
                                 serviceProvider: widget._serviceProvider,
                               )
                             : ExpandableInformationObjectCard(
-                                element,
+                          element,
                                 hideLikeAndAdd: widget.hideLikeAndAdd,
                                 additionalInfo: element.additionalInfo,
                                 showDeleteAndEdit: widget.showDeleteAndEdit,
                                 serviceProvider: widget._serviceProvider,
-                                isSpecies: widget.isSpecies,
+                                arrangeLikeAndAddAsRow:
+                                    widget.arrangeLikeAndAddAsRow,
                               );
                       },
                       separatorBuilder: (context, index) {

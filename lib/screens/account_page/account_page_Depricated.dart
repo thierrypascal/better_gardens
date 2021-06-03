@@ -1,8 +1,8 @@
 import 'package:biodiversity/components/drawer.dart';
+import 'package:biodiversity/components/image_picker_page.dart';
 import 'package:biodiversity/components/text_field_with_descriptor.dart';
 import 'package:biodiversity/components/white_redirect_page.dart';
 import 'package:biodiversity/models/user.dart';
-import 'package:biodiversity/screens/account_page/image_picker_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
