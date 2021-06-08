@@ -1,4 +1,5 @@
 import 'dart:core';
+import 'dart:developer' as logging;
 
 import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/storage_provider.dart';
@@ -58,29 +59,21 @@ class Garden extends ChangeNotifier {
     imageURL = '';
   }
 
-  /// creates a garden from the garden which is assigned to the user
-  factory Garden.fromUser(User user, {StorageProvider storageProvider}) {
+  /// loads the first garden of a user if one is present
+  void loadGardenFromUser(User user) {
+    if (!user.isLoggedIn || user.gardens.isEmpty) {
+      return;
+    }
     final gardens =
         ServiceProvider.instance.gardenService.getAllGardensFromUser(user);
-    if (gardens.isEmpty) {
-      return Garden.empty(storageProvider: storageProvider);
-    } else {
-      final garden = Garden.empty(storageProvider: storageProvider);
-      garden.name = gardens.first.name;
-      garden.street = gardens.first.street;
-      garden.owner = gardens.first.owner;
-      garden.ownedObjects.addAll(gardens.first.ownedObjects);
-      garden.gardenType = gardens.first.gardenType;
-      garden.ownedLinkingProjects.addAll(gardens.first.ownedLinkingProjects);
-      garden._isEmpty = gardens.first._isEmpty;
-      garden.reference = gardens.first.reference;
-      garden.coordinates = gardens.first.coordinates;
-      garden.imageURL = gardens.first.imageURL;
-      return garden;
+    if (gardens.isNotEmpty) {
+      logging
+          .log('load garden ${gardens.first.name} from user ${user.nickname}');
+      switchGarden(gardens.first);
     }
   }
 
-  /// which [Vernetzungsprojekte] are contained in this garden
+  /// which Vernetzungsprojekte are contained in this garden
   //TODO: Implement Vernetzungsprojekte and switch String to Vernetzungsprojekt
   List<String> ownedLinkingProjects;
 
@@ -116,6 +109,7 @@ class Garden extends ChangeNotifier {
   /// saves the garden object to the database
   /// any information already present on the database will be overridden
   Future<void> saveGarden() async {
+    logging.log('Save garden $name');
     if (_isEmpty || reference == null) {
       reference = _storage.database.doc('gardens/${const Uuid().v4()}');
       _isEmpty = false;
@@ -162,6 +156,8 @@ class Garden extends ChangeNotifier {
         ownedObjects[object] = count;
       }
       saveGarden();
+    } else {
+      logging.log("can't add object $object with count $count");
     }
   }
 

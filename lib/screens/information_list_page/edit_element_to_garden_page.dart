@@ -35,8 +35,6 @@ class _EditElementPageState extends State<EditElementPage> {
             .clear();
         Navigator.pop(context);
       },
-      save: 'Speichern',
-      saveIcon: Icons.save,
       saveCallback: () {
         _formKey.currentState.save();
 

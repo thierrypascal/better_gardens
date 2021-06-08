@@ -212,7 +212,6 @@ class _DetailViewPageInformationObjectState
                 final element = widget.object.associationMap.values
                     .elementAt(category)
                     .elementAt(index);
-                print(element);
                 return ElevatedButton(
                   style: const ButtonStyle(
                     visualDensity: VisualDensity.compact,

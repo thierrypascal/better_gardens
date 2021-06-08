@@ -98,11 +98,20 @@ class MyDrawer extends StatelessWidget {
                             ListTile(
                               title: const Text('Mein Garten'),
                               onTap: () {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => MyGarden()),
-                                );
+                                if (Provider.of<User>(context, listen: false)
+                                    .isLoggedIn) {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => MyGarden()));
+                                } else {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => WhiteRedirectPage(
+                                            'Bitte melde Dich zuerst an', LoginPage())),
+                                  );
+                                }
                               },
                             ),
                             ListTile(

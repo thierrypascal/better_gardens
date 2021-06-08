@@ -10,8 +10,8 @@ setup_phase:
   stage: setup
   script:
     - flutter clean
-    - flutter channel stable
-    - flutter upgrade
+    #    - flutter channel stable
+    #    - flutter upgrade
     - flutter pub upgrade
     - flutter doctor --android-licenses
     - flutter doctor -v

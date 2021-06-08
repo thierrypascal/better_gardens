@@ -67,7 +67,7 @@ class User extends ChangeNotifier {
   /// Loads the details like nickname, liked objects etc. form the database
   /// After the details are loaded, the listeners are notified
   /// Reruns false if the User is not logged in
-  /// or the document referenced by [documentPath] was not found.<br>
+  /// or the document referenced by `documentPath` was not found.<br>
   /// If the flag informListeners is set, the listeners will be notified.
   Future<bool> loadDetailsFromLoggedInUser(
       {bool informListeners = true}) async {
@@ -75,7 +75,6 @@ class User extends ChangeNotifier {
       return false;
     }
     final doc = await _storage.database.doc(documentPath).get();
-    logging.log('doc $documentPath');
     if (!doc.exists) {
       logging.log('Loading failed, no doc found');
       return false;
@@ -118,7 +117,7 @@ class User extends ChangeNotifier {
   }
 
   ///saves all information from the [User] Class to the database
-  ///returns [false] if no user is logged in
+  ///returns `false` if no user is logged in
   Future<bool> saveUser() async {
     if (!_loggedIn) {
       return false;
@@ -157,7 +156,7 @@ class User extends ChangeNotifier {
     if (newNickname != null) {
       nickname = newNickname;
       if (_loggedIn) {
-        _storage.auth.currentUser.updateProfile(displayName: nickname);
+        _storage.auth.currentUser.updateDisplayName(nickname);
       }
     }
     if (newImageURL != null) imageURL = newImageURL;
@@ -198,14 +197,16 @@ class User extends ChangeNotifier {
   List<BiodiversityMeasure> get favoredHabitatObjects {
     return ServiceProvider.instance.biodiversityService
         .getFullBiodiversityObjectList()
-        .where((element) => _favoredObjects.contains(element.name));
+        .where((element) => _favoredObjects.contains(element.name))
+        .toList();
   }
 
   /// returns the users favoredObjects of type Species
   List<Species> get favoredSpeciesObjects {
     return ServiceProvider.instance.speciesService
         .getFullSpeciesObjectList()
-        .where((element) => _favoredObjects.contains(element.name));
+        .where((element) => _favoredObjects.contains(element.name))
+        .toList();
   }
 
   /// is true if the User has confirmed his email address by the sent link
@@ -272,7 +273,7 @@ class User extends ChangeNotifier {
 
   /// Signs the user in with a google account.<br>
   /// The selection which User should be used will appear as a pop up
-  /// In case of success returns [null], otherwise a [LoginResult] object
+  /// In case of success returns `null`, otherwise a [LoginResult] object
   /// with the message set and additionally the flag isPrivacyAgreementAccepted
   /// set to false if the user isn't registered
   Future<LoginResult> signInWithGoogle() async {
@@ -294,8 +295,8 @@ class User extends ChangeNotifier {
   }
 
   /// Signs the user in with a Facebook account.<br>
-  /// In case of success returns [null], otherwise a [LoginResult] object
-  /// with the message set and additionally the flag isPrivacyAgreementAccepted
+  /// In case of success returns `null`, otherwise a [LoginResult] object
+  /// with the message set and additionally the flag `isPrivacyAgreementAccepted`
   /// set to false if the user isn't registered
   Future<LoginResult> signInWithFacebook({bool register = false}) async {
     if (isLoggedIn) {
@@ -329,9 +330,9 @@ class User extends ChangeNotifier {
 
   ///Signs the user in with the provided Email and password
   ///if an error occurs returns a [LoginResult] object
-  ///with a message as string and a flag [isEmailConfirmed which indicates
+  ///with a message as string and a flag isEmailConfirmed which indicates
   ///if the user has already confirmed his email address
-  ///<br> if no error occurs [null] is returned.
+  ///<br> if no error occurs null is returned.
   Future<LoginResult> signInWithEmail(String email, String password) async {
     if (!isLoggedIn) {
       try {
@@ -429,13 +430,13 @@ class User extends ChangeNotifier {
   /// The User is not logged in afterwards.
   /// Sign in is only possible after the user has confirmed his email address.
   /// <br>returns an error Message which can be displayed if something
-  /// goes wrong. Or [null] if everything is fine.
+  /// goes wrong. Or null if everything is fine.
   Future<String> registerWithEmail(String email, String password,
       {String nickname, String name, String surname}) async {
     try {
       final cred = await _storage.auth
           .createUserWithEmailAndPassword(email: email, password: password);
-      cred.user.updateProfile(displayName: nickname);
+      cred.user.updateDisplayName(nickname);
       updateUserData(newName: name, newSurname: surname, newNickname: nickname);
       cred.user.sendEmailVerification();
     } on FirebaseAuthException catch (error) {
@@ -510,7 +511,7 @@ class User extends ChangeNotifier {
     }
     try {
       final authUser = await _storage.auth.signInWithCredential(credential);
-      authUser.user.updateProfile(displayName: displayName);
+      authUser.user.updateDisplayName(displayName);
       authUser.user.updateEmail(email);
       updateUserData(
           newNickname: displayName, informListeners: false, newMail: mail);
@@ -621,11 +622,9 @@ class User extends ChangeNotifier {
         return 'Dein Anmelde Provider wurde nicht gefunden';
       }
       try {
-        print(credential);
         await _storage.auth.currentUser
             .reauthenticateWithCredential(credential);
-      } on FirebaseAuthException catch (e) {
-        print(e.message);
+      } on FirebaseAuthException {
         return 'Etwas ist schiefgelaufen';
       }
     }
@@ -655,6 +654,17 @@ class User extends ChangeNotifier {
       } else {
         return 'Etwas ist schiefgelaufen';
       }
+    }
+  }
+
+  ///Remove a user account.
+  Future<String> deleteAccountEmail() async {
+    try {
+      await _storage.database.doc(documentPath).delete();
+      await FirebaseAuth.instance.currentUser.delete();
+      return 'Der Account wurde erfolgreich entfernt';
+    } on FirebaseAuthException {
+      return 'Etwas is schiefgelaufen';
     }
   }
 }

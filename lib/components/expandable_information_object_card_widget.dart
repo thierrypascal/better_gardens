@@ -20,8 +20,9 @@ class ExpandableInformationObjectCard extends StatefulWidget {
   /// if this flag is set, the buttons hinzufügen and merken will be removed
   final bool hideLikeAndAdd;
 
-  /// if this flag is set, the buttons hinzufügen und merken will be aranged in a list.
+  /// if this flag is set, the buttons hinzufügen und merken will be arranged in a list.
   /// This is useful when Species and BiodiversityElements are mixed in one list
+  /// this has no effect if the screen size is too small
   final bool arrangeLikeAndAddAsRow;
 
   /// if this flag is set, the buttons bearbeiten and löschen will be removed
@@ -62,6 +63,7 @@ class _ExpandableInformationObjectCardState
 
   @override
   Widget build(BuildContext context) {
+    final _screenWidth = MediaQuery.of(context).size.width;
     String _unit;
     final garden = Provider.of<Garden>(context, listen: false);
     if (widget.object.runtimeType == BiodiversityMeasure) {
@@ -120,7 +122,7 @@ class _ExpandableInformationObjectCardState
                         ),
                         if (widget.showDeleteAndEdit)
                           Text(garden.ownedObjects[widget.object.name]
-                                  .toString() +
+                              .toString() +
                               ' $_unit'),
                       ],
                     ),
@@ -142,8 +144,8 @@ class _ExpandableInformationObjectCardState
                               context,
                               MaterialPageRoute(
                                   builder: (context) => DeleteElementGardenPage(
-                                        object: widget.object,
-                                      )),
+                                    object: widget.object,
+                                  )),
                             );
                           },
                           style: const ButtonStyle(
@@ -171,7 +173,8 @@ class _ExpandableInformationObjectCardState
                         ),
                       ],
                     ),
-                  if (!widget.hideLikeAndAdd && !widget.arrangeLikeAndAddAsRow)
+                  if (!widget.hideLikeAndAdd &&
+                      (!widget.arrangeLikeAndAddAsRow || _screenWidth < 400))
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -204,7 +207,7 @@ class _ExpandableInformationObjectCardState
                           icon: Icon(
                             Icons.favorite,
                             color: Provider.of<User>(context)
-                                    .doesLikeElement(widget.object.name)
+                                .doesLikeElement(widget.object.name)
                                 ? Colors.red
                                 : Colors.black,
                             size: 20,
@@ -218,7 +221,8 @@ class _ExpandableInformationObjectCardState
                         ),
                       ],
                     ),
-                  if (!widget.hideLikeAndAdd && widget.arrangeLikeAndAddAsRow)
+                  if (!widget.hideLikeAndAdd &&
+                      (widget.arrangeLikeAndAddAsRow && _screenWidth >= 400))
                     Consumer<User>(builder: (context, user, child) {
                       if (user == null) {
                         return const Text('');
@@ -292,12 +296,6 @@ class _ExpandableInformationObjectCardState
                                 _handle_add_measure_to_garden(context);
                               },
                             ),
-                          // : const IconButton(
-                          //     icon: Icon(
-                          //       Icons.add_circle_outline_outlined,
-                          //     ),
-                          //     onPressed: null,
-                          //   ),
                           IconButton(
                             icon: Icon(
                               Icons.favorite,
@@ -346,8 +344,8 @@ class _ExpandableInformationObjectCardState
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => EditElementPage(
-                                          object: widget.object,
-                                        )),
+                                      object: widget.object,
+                                    )),
                               ),
                             },
                           ),
@@ -384,7 +382,7 @@ class _ExpandableInformationObjectCardState
                                       widget.object,
                                       hideLikeAndAdd: widget.hideLikeAndAdd,
                                       showDeleteAndEdit:
-                                          widget.showDeleteAndEdit,
+                                      widget.showDeleteAndEdit,
                                       isSpecies: widget.isSpecies,
                                     )),
                           );
