@@ -201,39 +201,37 @@ class _InformationObjectListWidgetState
                           );
                         },
                       ),
-                      Container(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            TextButton(
-                              onPressed: () {
-                                _tagStateKey.currentState.setAllItemsActive();
-                                filterClassResults();
-                              },
-                              child: const Text('Alles selektieren'),
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              _tagStateKey.currentState.setAllItemsActive();
+                              filterClassResults();
+                            },
+                            child: const Text('Alles selektieren'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              _tagStateKey.currentState.setAllItemsInactive();
+                              filterClassResults();
+                            },
+                            child: const Text('Selektion aufheben'),
+                          ),
+                          IconButton(
+                            alignment: Alignment.bottomCenter,
+                            onPressed: () {
+                              setState(() {
+                                scroll_visibility = false;
+                              });
+                            },
+                            iconSize: 20,
+                            icon: Transform.rotate(
+                              angle: 90 * math.pi / 180,
+                              child: const Icon(Icons.arrow_back_ios),
                             ),
-                            TextButton(
-                              onPressed: () {
-                                _tagStateKey.currentState.setAllItemsInactive();
-                                filterClassResults();
-                              },
-                              child: const Text('Selektion aufheben'),
-                            ),
-                            IconButton(
-                              alignment: Alignment.bottomCenter,
-                              onPressed: () {
-                                setState(() {
-                                  scroll_visibility = false;
-                                });
-                              },
-                              iconSize: 20,
-                              icon: Transform.rotate(
-                                angle: 90 * math.pi / 180,
-                                child: const Icon(Icons.arrow_back_ios),
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ],
                   ),

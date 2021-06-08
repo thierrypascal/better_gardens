@@ -10,6 +10,11 @@ linter:
     use_key_in_widget_constructors: true
     prefer_const_constructors: true
     unawaited_futures: false
+    avoid_print: true
+    comment_references: true
+    avoid_empty_else: true
+    valid_regexps: true
+    iterable_contains_unrelated_type: true
 
 
 analyzer:

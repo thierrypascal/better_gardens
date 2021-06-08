@@ -1,5 +1,5 @@
-import 'package:biodiversity/models/global_model.dart';
 import 'package:biodiversity/models/garden.dart';
+import 'package:biodiversity/models/global_model.dart';
 import 'package:biodiversity/models/information_object_amount_container.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/user.dart';
@@ -48,7 +48,9 @@ class MyApp extends StatelessWidget {
                 ),
                 ChangeNotifierProxyProvider<User, Garden>(
                     create: (context) => Garden.empty(),
-                    update: (context, user, garden) => Garden.fromUser(user)),
+                    update: (context, user, garden) =>
+                        garden..loadGardenFromUser(user),
+                    lazy: false),
                 ChangeNotifierProvider(
                     create: (context) => MapInteractionContainer.empty()),
                 ChangeNotifierProvider(

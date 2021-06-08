@@ -23,6 +23,8 @@ class _AddElementToGardenOverviewPageState
     extends State<AddElementToGardenOverviewPage> {
   @override
   Widget build(BuildContext context) {
+    final container =
+        Provider.of<InformationObjectAmountContainer>(context, listen: false);
     return EditDialog(
       title: 'Lebensraum hinzufügen',
       abort: 'Zurück',
@@ -32,17 +34,13 @@ class _AddElementToGardenOverviewPageState
       },
       saveCallback: () {
         //save amount and element to selected garden
-        final amounts = Provider.of<InformationObjectAmountContainer>(context,
-                listen: false)
-            .amounts;
+        final amounts = container.amounts;
         Provider.of<Garden>(context, listen: false)
             .addOwnedObject(amounts.keys.first.name, amounts.values.first);
         Provider.of<Garden>(context, listen: false).saveGarden();
 
         //clear the container
-        Provider.of<InformationObjectAmountContainer>(context, listen: false)
-            .amounts
-            .clear();
+        container.amounts.clear();
 
         //redirect back to list
         Navigator.push(
@@ -54,9 +52,7 @@ class _AddElementToGardenOverviewPageState
         );
       },
       cancelCallback: () {
-        Provider.of<InformationObjectAmountContainer>(context, listen: false)
-            .amounts
-            .clear();
+        container.amounts.clear();
 
         // go back 2 times to leave the AddElementToGarden workflow
         var i = 0;
@@ -74,31 +70,20 @@ class _AddElementToGardenOverviewPageState
           const Text('Element bestätigen.'),
           const SizedBox(height: 20),
           SimpleInformationObjectCard(
-            Provider.of<InformationObjectAmountContainer>(context,
-                    listen: false)
-                .amounts
-                .keys
-                .first,
+            container.amounts.keys.first,
             amountLocked: true,
-            amount: Provider.of<InformationObjectAmountContainer>(context,
-                    listen: false)
-                .amounts
-                .values
-                .first,
+            amount: container.amounts.values.first,
           ),
           const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               const Icon(Icons.house),
-              Text(' Gewählter Garten: ' +
-                  Provider.of<InformationObjectAmountContainer>(context,
-                          listen: false)
-                      .garden),
+              Text(' Gewählter Garten: ${container.gardenName}'),
             ],
           ),
           const SizedBox(height: 20),
-          SubMap(),
+          SubMap(initialPosition: container.garden.getLatLng()),
         ],
       ),
     );

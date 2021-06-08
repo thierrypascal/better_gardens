@@ -3,6 +3,7 @@ import 'package:biodiversity/components/white_redirect_page.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,11 +19,12 @@ class MyAccountDelete extends StatefulWidget {
 
 class _MyAccountDeleteState extends State<MyAccountDelete> {
   final _formKey = GlobalKey<FormState>();
-  String _password = '';
+  bool _password_ok = false;
 
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context, listen: false);
+//TODO Get an alternative for google logged in, as this only works for mail like this
     return EditDialog(
       isScrollable: false,
       title: 'Account löschen',
@@ -31,66 +33,57 @@ class _MyAccountDeleteState extends State<MyAccountDelete> {
       },
       save: 'Löschen',
       saveIcon: Icons.delete_forever,
-      saveCallback: () async {
-        String res;
-
-        if (user.isRegisteredWithEmail) {
-          _formKey.currentState.save();
-          res = await user.reauthenticate_with_email(_password);
-        } else {
-         res = await user.reauthenticate();
-        }
-        if (res == null) {
-          _confirm_delete(context);
-        } else {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('$res')));
-        }
-      },
+      saveCallback: _password_ok
+          ? () {
+              _confirm_delete(context);
+            }
+          : null,
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          if (user.isRegisteredWithEmail)
-            Form(
-              key: _formKey,
-              child: TextFormField(
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    helperText:
-                        'Bitte gib dein Passwort ein um deinen Account zu löschen',
-                    labelText: 'Passwort',
-                  ),
-                  onSaved: (password) async {
-                    _password = password;
-                  }),
-            ),
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text('Folgendes wird gelöscht:',
-                style: TextStyle(fontSize: 20)),
-          ),
-          const Padding(
-            padding:  EdgeInsets.fromLTRB(8.0, 8, 0, 8),
-            child: Text('- Dein Account', style:  TextStyle(fontSize: 16)),
-          ),
-          const Padding(
-            padding:  EdgeInsets.fromLTRB(8.0, 8, 0, 8),
-            child: Text('- Folgende Gärten', style:  TextStyle(fontSize: 16)),
-          ),
-          if (user.gardens.isNotEmpty)
-            Expanded(
-              child: ListView(
-                children: List.generate(user.gardens.length, (index) {
-                  return Padding(
-                    padding: const EdgeInsets.fromLTRB(16.0, 8, 0, 0),
-                    child: Text('- ${user.gardens.elementAt(index)}',
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  );
+          Form(
+            key: _formKey,
+            child: TextFormField(
+                obscureText: true,
+                decoration: const InputDecoration(
+                  helperText:
+                      'Bitte gib Dein Passwort ein um deinen Account zu löschen',
+                  labelText: 'Passwort',
+                ),
+                onSaved: (password) async {
+                  EmailAuthCredential credential = EmailAuthProvider.credential(
+                      email: user.mail, password: password);
+                  if (password == '') {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Bitte gib ein Passwort ein')));
+                  } else {
+                    try {
+                      await FirebaseAuth.instance.currentUser
+                          .reauthenticateWithCredential(credential);
+                      setState(() {
+                        _password_ok = true;
+                      });
+                    } on FirebaseAuthException catch (e) {
+                      if (e.code == 'wrong-password') {
+                        _password_ok = false;
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Das Passwort ist falsch')));
+                      } else {
+                        _password_ok = false;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Etwas ist schiefgelaufen')));
+                      }
+                    }
+                  }
                 }),
-              ),
-            ),
+          ),
+          ElevatedButton(
+              onPressed: () => _formKey.currentState.save(),
+              child: const Text('Passwort bestätigen')),
         ],
       ),
     );
@@ -129,18 +122,17 @@ class _MyAccountDeleteState extends State<MyAccountDelete> {
               ),
             )).then((value) async {
       if (value != null) {
-        String res;
-        final user = Provider.of<User>(context, listen: false);
-        ServiceProvider.instance.gardenService.deleteAllGardensFromUser(user);
-        res = await user.deleteAccount();
-        await user.signOut(save: false);
+        ServiceProvider.instance.gardenService.deleteAllGardensFromUser(
+            Provider.of<User>(context, listen: false));
+        final res = await Provider.of<User>(context, listen: false)
+            .deleteAccountEmail();
+        await Provider.of<User>(context, listen: false).signOut(save: false);
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
               builder: (context) => WhiteRedirectPage('$res', LoginPage())),
         );
       }
-      ;
     });
   }
 }

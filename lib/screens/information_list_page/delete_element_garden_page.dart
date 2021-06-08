@@ -67,6 +67,7 @@ class _DeleteElementGardenPageState
             widget.object,
             formKey: _formKey,
             amount: garden.ownedObjects[widget.object.name],
+            amountLocked: true,
           ),
         ],
       ),
