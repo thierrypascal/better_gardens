@@ -207,12 +207,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                                 width: MediaQuery.of(context).size.width,
                                 fit: BoxFit.fitWidth);
                           } else {
-                            return Image(
-                              image: const AssetImage('res/myGarden.jpg'),
-                              width: MediaQuery.of(context).size.width,
-                              fit: BoxFit.fitWidth,
-                              semanticLabel: _tappedGarden.name,
-                            );
+                            return const Text('');
                           }
                         } else {
                           return const Text('');
