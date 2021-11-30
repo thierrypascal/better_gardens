@@ -45,12 +45,12 @@ analyze:sonarqube:
     - export PATH="$PATH:/usr/lib/dart/bin"
     - flutter pub upgrade
   allow_failure: true
-  only:
-    - master
-    - release
-    - development
-    - sonar-cube
-    - more_testing
+  #only:
+   # - master
+   #- release
+   # - development
+   # - sonar-cube
+   # - more_testing
   script:
     - flutter pub get # Download dependencies
     - flutter test --machine > tests.output # Run tests
